@@ -1,12 +1,10 @@
 package com.r2mobile.mytravelasia;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;
-import roboguice.activity.RoboFragmentActivity;
-import roboguice.inject.InjectView;
 
-public class SplashActivity extends RoboFragmentActivity {
-    @InjectView(R.id.txt_hello)
+public class SplashActivity extends FragmentActivity {
     private TextView mTxtHello;
 
     /**
@@ -16,6 +14,8 @@ public class SplashActivity extends RoboFragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        mTxtHello = (TextView) findViewById(R.id.txt_hello);
+
         mTxtHello.setText("MyTravelPhilippines");
     }
 }
