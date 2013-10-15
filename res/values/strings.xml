@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Philippines</string>
+    <string name="lbl_my_travel">MyTravel</string>
+    <string name="lbl_asia">Asia</string>
+    <string name="lbl_mytravel_ph">MyTravel PH</string>
 </resources>

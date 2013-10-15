@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="places">
+        <item quantity="one">place</item>
+        <item quantity="many">places</item>
+        <item quantity="few">places</item>
+        <item quantity="other">places</item>
+    </plurals>
+</resources>
