@@ -20,7 +20,7 @@ public class SplashActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash);
+        setContentView(R.layout.splash_activity);
         showScreenMetrics();
 
         Thread timerThread = new Thread() {
