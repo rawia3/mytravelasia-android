@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       style="@style/LayoutMatchMatch">
+
+    <TextView
+            style="@style/StartUpTitleBar"
+            android:text="@string/hdr_website"/>
+
+    <LinearLayout style="@style/StartUpHeader">
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                style="@style/LayoutMatchWrap">
+
+            <ImageView
+                    android:src="@drawable/ic_launcher"
+                    android:layout_marginRight="@dimen/hdr_logo_margin_right"
+                    style="@style/LayoutWrapWrap"/>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    style="@style/LayoutWrapWrap">
+
+                <TextView
+                        android:textSize="@dimen/hdr_startup_minor_text_size"
+                        style="@style/LayoutWrapWrap"
+                        android:text="@string/lbl_my_travel"/>
+
+                <TextView
+                        android:textSize="@dimen/hdr_startup_major_text_size"
+                        style="@style/LayoutWrapWrap"
+                        android:text="@string/app_name"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+                android:id="@+id/btn_enter"
+                android:layout_marginTop="20dp"
+                android:text="@string/btn_enter"
+                style="@style/StartUpButton"/>
+    </LinearLayout>
+
+    <ImageView
+            android:id="@+id/img_preview"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/placeholder"/>
+
+    <WebView
+            android:id="@+id/wv_ads"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            style="@style/LayoutWrapWrap"/>
+</merge>
