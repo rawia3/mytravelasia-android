@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <ImageView android:id="@+id/iv_poi_thumbnail"
+               android:layout_alignParentLeft="true"
+               android:src="@drawable/ic_launcher"
+               style="@style/LayoutWrapWrap"/>
+    <TextView android:id="@+id/tv_poi_name"
+              android:layout_alignParentTop="true"
+              android:layout_toRightOf="@id/iv_poi_thumbnail"
+              android:layout_marginLeft="10dp"
+              android:text="Rizal Park"
+              style="@style/LayoutWrapWrap"/>
+    <TextView android:id="@+id/tv_address"
+              android:layout_below="@id/tv_poi_name"
+              android:layout_toRightOf="@id/iv_poi_thumbnail"
+              android:layout_marginLeft="10dp"
+              android:text="Luneta"
+              style="@style/LayoutWrapWrap"/>
+    <TextView android:id="@+id/tv_likes"
+              android:layout_below="@id/tv_address"
+              android:layout_toRightOf="@id/iv_poi_thumbnail"
+              android:layout_marginLeft="10dp"
+              android:text="0"
+              style="@style/LayoutWrapWrap"/>
+    <TextView android:id="@+id/tv_comments"
+              android:layout_below="@id/tv_address"
+              android:layout_toRightOf="@id/tv_likes"
+              android:layout_marginLeft="15dp"
+              android:text="0"
+              style="@style/LayoutWrapWrap"/>
+    <TextView android:id="@+id/tv_price"
+              android:layout_below="@id/tv_address"
+              android:layout_toRightOf="@id/tv_comments"
+              android:layout_marginLeft="15dp"
+              android:text="0"
+              style="@style/LayoutWrapWrap"/>
+    <TextView android:id="@+id/tv_distance"
+              android:layout_below="@id/tv_address"
+              android:layout_alignParentRight="true"
+              android:layout_marginRight="15dp"
+              android:text="0m"
+              style="@style/LayoutWrapWrap"/>
+</RelativeLayout>

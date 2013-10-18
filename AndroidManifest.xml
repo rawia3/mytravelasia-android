@@ -25,5 +25,6 @@
         <activity android:name=".StartUpActivity"
                   android:theme="@android:style/Theme.Holo.NoActionBar"
                   android:label="@string/lbl_mytravel_ph"/>
+        <activity android:name=".MainActivity"/>
     </application>
 </manifest>
