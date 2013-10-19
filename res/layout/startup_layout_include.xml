@@ -46,7 +46,8 @@
             android:id="@+id/img_preview"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:src="@drawable/placeholder"/>
+            android:scaleType="fitXY"
+            android:src="@drawable/city"/>
 
     <WebView
             android:id="@+id/wv_ads"

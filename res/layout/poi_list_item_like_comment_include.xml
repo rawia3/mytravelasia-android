@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+            android:id="@+id/tv_likes"
+            android:layout_below="@id/tv_poi_subtitle"
+            android:layout_toRightOf="@id/iv_poi_thumbnail"
+            android:layout_marginLeft="10dp"
+            android:drawableLeft="@drawable/btn_like"
+            android:drawablePadding="5dp"
+            android:text="0"
+            style="@style/LayoutWrapWrap"/>
+
+    <TextView
+            android:id="@+id/tv_comments"
+            android:layout_below="@id/tv_poi_subtitle"
+            android:layout_toRightOf="@id/tv_likes"
+            android:layout_marginLeft="15dp"
+            android:drawablePadding="5dp"
+            android:drawableLeft="@drawable/btn_comment"
+            android:text="0"
+            style="@style/LayoutWrapWrap"/>
+</merge>

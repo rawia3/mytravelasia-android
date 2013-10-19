@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="mta_splash_red">#FFDD4B39</color>
+    <color name="yellow">#f7ed00</color>
 </resources>
