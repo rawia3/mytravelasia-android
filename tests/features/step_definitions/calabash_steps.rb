@@ -13,10 +13,10 @@ Given(/^an ad is at the bottom of the screen$/) do
 end
 
 When(/^I press the ad$/) do
-  wv_element = "webview css:'#google_ads_frame1_anchor'"
   wv_touch_fail_msg = "WebView is untouchable"
 
-  wait_for(:timeout => 20) { touch(wv_element) } or fail(msg=wv_touch_fail_msg)
+  wait_for_elements_exist(["webview css:'body'"], :timeout => 20)
+  touch("webview css:'body'")["success"] or fail(msg=wv_touch_fail_msg)
 end
 
 Then(/^I should be taken to the browser$/) do
@@ -77,4 +77,8 @@ end
 
 Then(/^I should see a list of places near me$/) do
   pending # express the regexp above with the code you wish you had
+end
+
+And(/^I can see the "(.*?)" button$/) do |arg1|
+  element_exists("button text:'#{arg1}'") or fail(msg="No such button #{arg1}")
 end
