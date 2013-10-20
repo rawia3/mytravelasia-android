@@ -1,6 +1,8 @@
 package com.twormobile.mytravelasia.model;
 
 import android.provider.BaseColumns;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * This class serves as a model that maps both to a db table and webservice data. Exposed members are used by GSON to
@@ -8,7 +10,7 @@ import android.provider.BaseColumns;
  *
  * @author avendael
  */
-public class Poi {
+public class Poi implements BaseColumns {
     /**
      * The name of the table being represented by this class.
      */
@@ -93,7 +95,7 @@ public class Poi {
      * SQL command to create the POI table.
      */
     public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
-            + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + RESOURCE_ID + " INTEGER, "
             + NAME + " TEXT, "
             + ADDRESS + " TEXT, "
@@ -115,4 +117,232 @@ public class Poi {
      * SQL command to destroy the table.
      */
     public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+
+    /**
+     * ID of the POI from the local database.
+     */
+    private long id;
+
+    /**
+     * ID of the POI item from the remote resource. This is different from the row id stored in the local database.
+     */
+    @Expose
+    @SerializedName("id")
+    private long resourceId;
+
+    /**
+     * POI's name. Usually a name of a place.
+     */
+    @Expose
+    @SerializedName("poi_name")
+    private String name;
+
+    /**
+     * POI's location in human readable form.
+     */
+    @Expose
+    private String address;
+
+    /**
+     * Content that was applied by the FB user.
+     */
+    @Expose
+    private String content;
+
+    /**
+     * Facebook profile ID of the user that created the POI.
+     */
+    @Expose
+    @SerializedName("profile_id")
+    private long fbUserProfileId;
+
+    /**
+     * Facebook profile name of the user that created the POI.
+     */
+    @Expose
+    @SerializedName("user")
+    private String fbUserProfileName;
+
+    /**
+     * The date when the POI was created in the remote resource. Creation date in the local db are not being recorded.
+     */
+    @Expose
+    private String createdAt;
+
+    /**
+     * Location of the POI in longitude.
+     */
+    @Expose
+    private double longitude;
+
+    /**
+     * Location of the POI in latitude.
+     */
+    @Expose
+    private double latitude;
+
+    /**
+     * Feed type. Can either be "like" or "comment".
+     */
+    @Expose
+    private String feedType;
+
+    /**
+     * Type of POI. Can either be "attraction", "hotel", etc.
+     */
+    @Expose
+    private String poiType;
+
+    /**
+     * Image URL of the image thumbnail.
+     */
+    @Expose
+    @SerializedName("picture_thumb_path")
+    private String imageThumbUrl;
+
+    /**
+     * An annotation that indicates where the feed should belong.
+     */
+    @Expose
+    private String annotationType;
+
+    /**
+     * Total number of likes in the feed.
+     */
+    @Expose
+    private long totalLikes;
+
+    /**
+     * Total number of comments in the feed.
+     */
+    @Expose
+    private long totalComments;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(long resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public long getFbUserProfileId() {
+        return fbUserProfileId;
+    }
+
+    public void setFbUserProfileId(long fbUserProfileId) {
+        this.fbUserProfileId = fbUserProfileId;
+    }
+
+    public String getFbUserProfileName() {
+        return fbUserProfileName;
+    }
+
+    public void setFbUserProfileName(String fbUserProfileName) {
+        this.fbUserProfileName = fbUserProfileName;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getFeedType() {
+        return feedType;
+    }
+
+    public void setFeedType(String feedType) {
+        this.feedType = feedType;
+    }
+
+    public String getPoiType() {
+        return poiType;
+    }
+
+    public void setPoiType(String poiType) {
+        this.poiType = poiType;
+    }
+
+    public String getImageThumbUrl() {
+        return imageThumbUrl;
+    }
+
+    public void setImageThumbUrl(String imageThumbUrl) {
+        this.imageThumbUrl = imageThumbUrl;
+    }
+
+    public String getAnnotationType() {
+        return annotationType;
+    }
+
+    public void setAnnotationType(String annotationType) {
+        this.annotationType = annotationType;
+    }
+
+    public long getTotalLikes() {
+        return totalLikes;
+    }
+
+    public void setTotalLikes(long totalLikes) {
+        this.totalLikes = totalLikes;
+    }
+
+    public long getTotalComments() {
+        return totalComments;
+    }
+
+    public void setTotalComments(long totalComments) {
+        this.totalComments = totalComments;
+    }
 }
