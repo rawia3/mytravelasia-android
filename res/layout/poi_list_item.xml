@@ -24,11 +24,17 @@
               android:text="Luneta"
               style="@style/LayoutWrapWrap"/>
 
-    <include layout="@layout/poi_list_item_like_comment_include"/>
+    <LinearLayout android:id="@+id/ll_like_comment"
+                  android:orientation="horizontal"
+                  android:layout_below="@id/tv_poi_subtitle"
+                  android:layout_toRightOf="@id/iv_poi_thumbnail"
+                  style="@style/LayoutWrapWrap">
+        <include layout="@layout/poi_list_item_like_comment_include"/>
+    </LinearLayout>
 
     <TextView android:id="@+id/tv_price"
               android:layout_below="@id/tv_poi_subtitle"
-              android:layout_toRightOf="@id/tv_comments"
+              android:layout_toRightOf="@id/ll_like_comment"
               android:layout_marginLeft="25dp"
               android:textColor="@color/yellow"
               android:text="0"

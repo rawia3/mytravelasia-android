@@ -9,14 +9,14 @@ Given(/^an ad is at the bottom of the screen$/) do
   wv_element = "webview css:'#google_ads_frame1_anchor'"
   wv_non_exist_fail_msg = "WebView element does not exist"
 
-  wait_for_elements_exist([wv_element], :timeout => 2) or fail(msg=wv_non_exist_fail_msg)
+  wait_for_elements_exist([wv_element], :timeout => 20) or fail(msg=wv_non_exist_fail_msg)
 end
 
 When(/^I press the ad$/) do
   wv_element = "webview css:'#google_ads_frame1_anchor'"
   wv_touch_fail_msg = "WebView is untouchable"
 
-  wait_for(:timeout => 10) { touch(wv_element) } or fail(msg=wv_touch_fail_msg)
+  wait_for(:timeout => 20) { touch(wv_element) } or fail(msg=wv_touch_fail_msg)
 end
 
 Then(/^I should be taken to the browser$/) do
@@ -24,8 +24,7 @@ Then(/^I should be taken to the browser$/) do
   wv_element = "webview css:'#google_ads_frame1_anchor'"
   fail_msg = "WebView still exists. Browser not launched."
 
-  wait_for(:timeout => 10) { !element_exists(wv_element) } or fail(msg=fail_msg)
-  wait_for(5)
+  wait_for(:timeout => 20) { !element_exists(wv_element) } or fail(msg=fail_msg)
 end
 
 Given(/^that I am viewing the list of places near me$/) do

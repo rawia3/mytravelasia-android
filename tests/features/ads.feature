@@ -5,5 +5,3 @@ Feature: Ads
     And an ad is at the bottom of the screen
     When I press the ad
     Then I should be taken to the browser
-    Then I go back
-    And an ad is at the bottom of the screen
