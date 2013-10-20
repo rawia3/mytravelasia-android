@@ -1,7 +1,10 @@
 .gradle
+.DS_Store
+.classpath
+.irb-history
 /local.properties
 /.idea/workspace.xml
-.DS_Store
 gen
-.classpath
 out/
+test_servers/
+tests/screenshot*.png
