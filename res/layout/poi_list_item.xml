@@ -13,7 +13,6 @@
               android:layout_alignParentTop="true"
               android:layout_toRightOf="@id/iv_poi_thumbnail"
               android:layout_marginLeft="10dp"
-              android:text="Rizal Park"
               android:textStyle="bold"
               android:textSize="17sp"
               style="@style/LayoutWrapWrap"/>
@@ -21,7 +20,6 @@
               android:layout_below="@id/tv_poi_title"
               android:layout_toRightOf="@id/iv_poi_thumbnail"
               android:layout_marginLeft="10dp"
-              android:text="Luneta"
               style="@style/LayoutWrapWrap"/>
 
     <LinearLayout android:id="@+id/ll_like_comment"
@@ -37,13 +35,11 @@
               android:layout_toRightOf="@id/ll_like_comment"
               android:layout_marginLeft="25dp"
               android:textColor="@color/yellow"
-              android:text="0"
               style="@style/LayoutWrapWrap"/>
     <TextView android:id="@+id/tv_distance"
               android:layout_below="@id/tv_poi_subtitle"
               android:layout_alignParentRight="true"
               android:layout_marginRight="15dp"
               android:textColor="@android:color/darker_gray"
-              android:text="0m"
               style="@style/LayoutWrapWrap"/>
 </RelativeLayout>
