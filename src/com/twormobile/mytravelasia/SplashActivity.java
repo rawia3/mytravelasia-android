@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
+import com.twormobile.mytravelasia.util.AppConstants;
+import com.twormobile.mytravelasia.util.Log;
 
 /**
  * An activity which displays a splash screen.
@@ -21,7 +22,7 @@ public class SplashActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
-        showScreenMetrics();
+        if (AppConstants.DEBUG) showScreenMetrics();
 
         Thread timerThread = new Thread() {
             @Override
