@@ -26,5 +26,11 @@
                   android:theme="@android:style/Theme.Holo.NoActionBar"
                   android:label="@string/lbl_mytravel_ph"/>
         <activity android:name=".MainActivity"/>
+
+        <provider
+                android:authorities="com.twormobile.mytravelasia.db.MtaPhProvider"
+                android:name="com.twormobile.mytravelasia.db.MtaPhProvider"
+                android:exported="false"
+                android:multiprocess="true" />
     </application>
 </manifest>

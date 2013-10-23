@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
+import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.model.Poi;
 import com.twormobile.mytravelasia.util.AppConstants;
 
@@ -49,8 +50,7 @@ public class PoiListFragment extends ListFragment {
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            // TODO: Second param must not be null. Implement a content provider.
-            return new CursorLoader(getActivity(), null, projection, null, null, null);
+            return new CursorLoader(getActivity(), MtaPhProvider.POI_URI, projection, null, null, null);
         }
 
         @Override
