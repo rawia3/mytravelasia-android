@@ -2,11 +2,14 @@ package com.twormobile.mytravelasia;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.http.FeedHttpClient;
@@ -31,8 +34,20 @@ public class StartUpActivity extends Activity {
         setContentView(R.layout.startup_activity);
 
         mWvAds = (WebView) findViewById(R.id.wv_ads);
+        Button enterButton = (Button) findViewById(R.id.btn_enter);
+
+        enterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainIntent = new Intent(StartUpActivity.this, MainActivity.class);
+
+                startActivity(mainIntent);
+            }
+        });
 
         initAds();
+        getContentResolver().delete(MtaPhProvider.POI_URI, null, null);
+
         FeedHttpClient.getFeeds(new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(String content) {

@@ -1,12 +1,12 @@
 package com.twormobile.mytravelasia.feed;
 
 import android.app.Activity;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import android.widget.ListView;
 import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.model.Poi;
 import com.twormobile.mytravelasia.util.AppConstants;
+import com.twormobile.mytravelasia.util.Log;
 
 /**
  * A fragment which shows a list of POIs (points of interest).
@@ -22,7 +23,10 @@ import com.twormobile.mytravelasia.util.AppConstants;
  * @author avendael
  */
 public class PoiListFragment extends ListFragment {
+    private static final String TAG = PoiListFragment.class.getSimpleName();
+
     private PoiCursorAdapter mAdapter;
+    private LoaderCallbacks<Cursor> mLoader;
 
     private Callbacks mCallbacks = sDummyCallbacks;
     private static Callbacks sDummyCallbacks = new Callbacks() {
@@ -42,7 +46,7 @@ public class PoiListFragment extends ListFragment {
     /**
      * Loads POI items from the DB into the adapter asynchronously.
      */
-    private class PoiListLoader implements LoaderManager.LoaderCallbacks<Cursor> {
+    private class PoiListLoader implements LoaderCallbacks<Cursor> {
         String[] projection = {
                 Poi._ID, Poi.NAME, Poi.ADDRESS, Poi.TOTAL_COMMENTS, Poi.TOTAL_LIKES,
                 Poi.LATITUDE, Poi.LONGITUDE
@@ -50,11 +54,13 @@ public class PoiListFragment extends ListFragment {
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            Log.d(TAG, "created loader");
             return new CursorLoader(getActivity(), MtaPhProvider.POI_URI, projection, null, null, null);
         }
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            Log.d(TAG, "load finsihed");
             mAdapter.swapCursor(data);
         }
 
@@ -77,11 +83,15 @@ public class PoiListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView() -- START");
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mAdapter = new PoiCursorAdapter(getActivity(), null, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        mLoader = new PoiListLoader();
 
         setListAdapter(mAdapter);
+        getLoaderManager().initLoader(0, null, mLoader);
 
+        Log.d(TAG, "onCreateView() -- END");
         return view;
     }
 
