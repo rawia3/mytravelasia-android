@@ -32,5 +32,8 @@
                 android:name="com.twormobile.mytravelasia.db.MtaPhProvider"
                 android:exported="false"
                 android:multiprocess="true" />
+        <service
+                android:name=".http.FeedIntentService"
+                android:label="FeedIntentService"/>
     </application>
 </manifest>
