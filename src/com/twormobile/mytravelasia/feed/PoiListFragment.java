@@ -49,7 +49,7 @@ public class PoiListFragment extends ListFragment {
     private class PoiListLoader implements LoaderCallbacks<Cursor> {
         String[] projection = {
                 Poi._ID, Poi.NAME, Poi.ADDRESS, Poi.TOTAL_COMMENTS, Poi.TOTAL_LIKES,
-                Poi.LATITUDE, Poi.LONGITUDE
+                Poi.LATITUDE, Poi.LONGITUDE, Poi.IMAGE_THUMB_URL
         };
 
         @Override

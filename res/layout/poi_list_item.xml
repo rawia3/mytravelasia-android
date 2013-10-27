@@ -4,11 +4,12 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <ImageView android:id="@+id/iv_poi_thumbnail"
-               android:layout_width="55dp"
-               android:layout_height="55dp"
-               android:background="@android:color/darker_gray"
-               android:layout_alignParentLeft="true"/>
+    <com.loopj.android.image.SmartImageView
+            android:id="@+id/iv_poi_thumbnail"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:background="@android:color/darker_gray"
+            android:layout_alignParentLeft="true"/>
     <TextView android:id="@+id/tv_poi_title"
               android:layout_alignParentTop="true"
               android:layout_toRightOf="@id/iv_poi_thumbnail"

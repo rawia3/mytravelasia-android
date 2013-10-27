@@ -6,8 +6,8 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+import com.loopj.android.image.SmartImageView;
 import com.twormobile.mytravelasia.R;
 import com.twormobile.mytravelasia.model.Poi;
 
@@ -25,7 +25,7 @@ public class PoiCursorAdapter extends CursorAdapter {
      * <a href="http://www.youtube.com/watch?v=N6YdwzAvwOA">YouTube</a>
      */
     static class ViewHolder {
-        ImageView ivThumbnail;
+        SmartImageView ivThumbnail;
         TextView tvTitle;
         TextView tvSubTitle;
         TextView tvLikes;
@@ -43,7 +43,7 @@ public class PoiCursorAdapter extends CursorAdapter {
         View view = inflater.inflate(R.layout.poi_list_item, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder();
 
-        viewHolder.ivThumbnail = (ImageView) view.findViewById(R.id.iv_poi_thumbnail);
+        viewHolder.ivThumbnail = (SmartImageView) view.findViewById(R.id.iv_poi_thumbnail);
         viewHolder.tvTitle = (TextView) view.findViewById(R.id.tv_poi_title);
         viewHolder.tvSubTitle = (TextView) view.findViewById(R.id.tv_poi_subtitle);
         viewHolder.tvLikes = (TextView) view.findViewById(R.id.tv_likes);
@@ -61,9 +61,11 @@ public class PoiCursorAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         String title = cursor.getString(cursor.getColumnIndex(Poi.NAME));
         String subTitle = cursor.getString(cursor.getColumnIndex(Poi.ADDRESS));
+        String imgPath = cursor.getString(cursor.getColumnIndex(Poi.IMAGE_THUMB_URL));
         long totalLikes = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_LIKES));
         long totalComments = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_COMMENTS));
 
+        viewHolder.ivThumbnail.setImageUrl(imgPath);
         viewHolder.tvTitle.setText(title);
         viewHolder.tvSubTitle.setText(subTitle);
         viewHolder.tvLikes.setText(totalLikes + "");
