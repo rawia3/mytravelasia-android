@@ -62,6 +62,7 @@ public class PoiListFragment extends ListFragment {
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             Log.d(TAG, "load finsihed");
             mAdapter.swapCursor(data);
+            setListShown(true);
         }
 
         @Override
@@ -89,10 +90,16 @@ public class PoiListFragment extends ListFragment {
         mLoader = new PoiListLoader();
 
         setListAdapter(mAdapter);
-        getLoaderManager().initLoader(0, null, mLoader);
 
         Log.d(TAG, "onCreateView() -- END");
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setListShown(false);
+        getLoaderManager().initLoader(0, null, mLoader);
     }
 
     @Override
