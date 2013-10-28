@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="nav_items">
+        <item>Home</item>
+        <item>Login</item>
+        <item>Near Me</item>
+        <item>News Feed</item>
+        <item>Featured</item>
+        <item>Most Viewed</item>
+        <item>Recent</item>
+        <item>Attractions</item>
+        <item>Hotels</item>
+        <item>Restaurants</item>
+        <item>Car Rentals</item>
+        <item>Tours</item>
+        <item>Promos</item>
+        <item>Events</item>
+        <item>Travel Blogs</item>
+        <item>Itineraries</item>
+        <item>Tour and Travel Agencies</item>
+    </string-array>
+</resources>

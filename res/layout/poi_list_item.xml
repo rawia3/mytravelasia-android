@@ -3,11 +3,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="wrap_content">
     <com.loopj.android.image.SmartImageView
             android:id="@+id/iv_poi_thumbnail"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="61dp"
+            android:layout_height="61dp"
             android:background="@android:color/darker_gray"
             android:layout_alignParentLeft="true"/>
     <TextView android:id="@+id/tv_poi_title"
@@ -15,12 +15,16 @@
               android:layout_toRightOf="@id/iv_poi_thumbnail"
               android:layout_marginLeft="10dp"
               android:textStyle="bold"
-              android:textSize="17sp"
+              android:textSize="16sp"
+              android:maxLines="1"
+              android:ellipsize="end"
               style="@style/LayoutWrapWrap"/>
     <TextView android:id="@+id/tv_poi_subtitle"
               android:layout_below="@id/tv_poi_title"
               android:layout_toRightOf="@id/iv_poi_thumbnail"
               android:layout_marginLeft="10dp"
+              android:maxLines="1"
+              android:ellipsize="end"
               style="@style/LayoutWrapWrap"/>
 
     <LinearLayout android:id="@+id/ll_like_comment"
