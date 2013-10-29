@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="lbl_splash_text_size">30sp</dimen>
-    <dimen name="hdr_startup_padding_top">20dp</dimen>
-    <dimen name="hdr_startup_minor_text_size">25sp</dimen>
-    <dimen name="hdr_startup_major_text_size">35sp</dimen>
-    <dimen name="hdr_logo_margin_right">10dp</dimen>
+    <dimen name="splash_lbl_text_size">30sp</dimen>
+
+    <dimen name="startup_ads_width">315dp</dimen>
+    <dimen name="startup_ads_height">265dp</dimen>
+    <dimen name="startup_ads_margin_top">50dp</dimen>
+    <dimen name="startup_hdr_padding_top">20dp</dimen>
+    <dimen name="startup_hdr_minor_text_size">25sp</dimen>
+    <dimen name="startup_hdr_major_text_size">35sp</dimen>
+    <dimen name="startup_hdr_logo_margin_right">10dp</dimen>
+    <dimen name="startup_img_banner_height">150dp</dimen>
 </resources>

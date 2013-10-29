@@ -9,7 +9,6 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
-import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.http.FeedIntentService;
 
 /**
@@ -41,7 +40,6 @@ public class StartUpActivity extends Activity {
         });
 
         initAds();
-        getContentResolver().delete(MtaPhProvider.POI_URI, null, null);
     }
 
     @Override

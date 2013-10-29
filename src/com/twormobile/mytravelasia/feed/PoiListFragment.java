@@ -60,9 +60,14 @@ public class PoiListFragment extends ListFragment {
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            Log.d(TAG, "load finsihed");
+            Log.d(TAG, "load finished");
             mAdapter.swapCursor(data);
-            setListShown(true);
+            if (data != null && data.getCount() > 0) {
+                setListShown(true);
+            } else {
+                // Otherwise, show a view for an empty dataset.
+                // TODO: empty dataset is better handled by the activity showing a different fragment instead of this one.
+            }
         }
 
         @Override

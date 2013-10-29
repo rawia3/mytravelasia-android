@@ -15,7 +15,7 @@
 
             <ImageView
                     android:src="@drawable/ic_launcher"
-                    android:layout_marginRight="@dimen/hdr_logo_margin_right"
+                    android:layout_marginRight="@dimen/startup_hdr_logo_margin_right"
                     style="@style/LayoutWrapWrap"/>
 
             <LinearLayout
@@ -24,12 +24,12 @@
                     style="@style/LayoutWrapWrap">
 
                 <TextView
-                        android:textSize="@dimen/hdr_startup_minor_text_size"
+                        android:textSize="@dimen/startup_hdr_minor_text_size"
                         style="@style/LayoutWrapWrap"
                         android:text="@string/lbl_my_travel"/>
 
                 <TextView
-                        android:textSize="@dimen/hdr_startup_major_text_size"
+                        android:textSize="@dimen/startup_hdr_major_text_size"
                         style="@style/LayoutWrapWrap"
                         android:text="@string/app_name"/>
             </LinearLayout>
@@ -45,13 +45,14 @@
     <ImageView
             android:id="@+id/img_preview"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/startup_img_banner_height"
             android:scaleType="fitXY"
             android:src="@drawable/city"/>
 
-    <WebView
-            android:id="@+id/wv_ads"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"
-            style="@style/LayoutWrapWrap"/>
+    <WebView android:id="@+id/wv_ads"
+             android:layout_width="@dimen/startup_ads_width"
+             android:layout_height="@dimen/startup_ads_height"
+             android:layout_marginTop="@dimen/startup_ads_margin_top"
+             android:layout_gravity="center"
+             android:background="@android:color/transparent"/>
 </merge>

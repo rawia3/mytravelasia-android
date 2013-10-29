@@ -27,7 +27,7 @@
     </style>
 
     <style name="SplashText" parent="LayoutWrapWrap">
-        <item name="android:textSize">@dimen/lbl_splash_text_size</item>
+        <item name="android:textSize">@dimen/splash_lbl_text_size</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
@@ -37,7 +37,7 @@
 
     <style name="StartUpHeader" parent="LayoutMatchWrap">
         <item name="android:orientation">vertical</item>
-        <item name="android:paddingTop">@dimen/hdr_startup_padding_top</item>
+        <item name="android:paddingTop">@dimen/startup_hdr_padding_top</item>
         <item name="android:background">@android:color/darker_gray</item>
     </style>
 

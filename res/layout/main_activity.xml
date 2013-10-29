@@ -6,4 +6,5 @@
         style="@style/LayoutMatchMatch">
     <FrameLayout android:id="@+id/fl_list_container"
                  style="@style/LayoutMatchMatch"/>
+    <include layout="@layout/side_nav_include"/>
 </android.support.v4.widget.DrawerLayout>

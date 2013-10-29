@@ -3,6 +3,7 @@ package com.twormobile.mytravelasia.http;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.model.Poi;
@@ -36,13 +37,16 @@ public class FeedIntentService extends IntentService {
             @Override
             public void onFailure(Throwable error, String content) {
                 Log.d(TAG, "response failed");
+                // TODO: Implement a proper UI level response handler. Toast from a service is bad.
+                Toast.makeText(FeedIntentService.this, "Error retrieving feeds", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onSuccess(String content) {
                 Log.d(TAG, "response is " + content);
-                // TODO: Move the getFeed call to a Service or IntentService
                 FeedResponse feedResponse = FeedHttpClient.getFeedGsonParser().fromJson(content, FeedResponse.class);
+
+                getContentResolver().delete(MtaPhProvider.POI_URI, null, null);
 
                 for (Poi poi : feedResponse.getFeeds()) {
                     Log.d(TAG, "poi name: " + poi.getName());

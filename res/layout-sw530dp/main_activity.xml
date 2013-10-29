@@ -12,12 +12,5 @@
                      android:layout_toRightOf="@id/fl_list_container"
                      style="@style/LayoutMatchMatch"/>
     </RelativeLayout>
-    <ListView android:id="@+id/lv_sidenav"
-              android:layout_width="240dp"
-              android:layout_height="match_parent"
-              android:layout_gravity="start"
-              android:choiceMode="singleChoice"
-              android:divider="@color/dark_gray"
-              android:dividerHeight="1dp"
-              android:background="@color/darker_gray"/>
+    <include layout="@layout/side_nav_include"/>
 </android.support.v4.widget.DrawerLayout>
