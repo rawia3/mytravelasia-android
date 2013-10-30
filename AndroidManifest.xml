@@ -25,7 +25,8 @@
         <activity android:name=".StartUpActivity"
                   android:theme="@android:style/Theme.Holo.NoActionBar"
                   android:label="@string/lbl_mytravel_ph"/>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity"
+                  android:theme="@style/Theme.Mtaph"/>
 
         <provider
                 android:authorities="com.twormobile.mytravelasia.db.MtaPhProvider"

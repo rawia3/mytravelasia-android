@@ -5,23 +5,80 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <!-- Action Bar Style -->
+    <style name="Theme.Mtaph" parent="@android:style/Theme.Holo">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_mtaph</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Mtaph</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Mtaph</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Mtaph</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Mtaph</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Mtaph</item>
+        <item name="android:actionModeBackground">@drawable/cab_background_top_mtaph</item>
+        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_mtaph</item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Mtaph</item>
+    </style>
+
+    <style name="ActionBar.Solid.Mtaph" parent="@android:style/Widget.Holo.ActionBar.Solid">
+        <item name="android:background">@drawable/ab_solid_mtaph</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mtaph</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_mtaph</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Mtaph</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Mtaph" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_mtaph</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Mtaph</item>
+    </style>
+
+    <style name="PopupMenu.Mtaph" parent="@android:style/Widget.Holo.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mtaph</item>
+    </style>
+
+    <style name="DropDownListView.Mtaph" parent="@android:style/Widget.Holo.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_mtaph</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Mtaph" parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_mtaph</item>
+    </style>
+
+    <style name="DropDownNav.Mtaph" parent="@android:style/Widget.Holo.Spinner">
+        <item name="android:background">@drawable/spinner_background_ab_mtaph</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mtaph</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_mtaph</item>
+    </style>
+
+    <style name="ProgressBar.Mtaph" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_mtaph</item>
+    </style>
+
+    <style name="ActionButton.CloseMode.Mtaph" parent="@android:style/Widget.Holo.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_mtaph</item>
+    </style>
+
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.Mtaph.Widget" parent="@android:style/Theme.Holo">
+        <item name="android:popupMenuStyle">@style/PopupMenu.Mtaph</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Mtaph</item>
+    </style>
+
     <!-- Styles -->
-    <style name="LayoutMatchWrap">
+    <style name="LayoutMatchWrap" parent="Theme.Mtaph">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="LayoutMatchMatch">
+    <style name="LayoutMatchMatch" parent="Theme.Mtaph">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="LayoutWrapMatch">
+    <style name="LayoutWrapMatch" parent="Theme.Mtaph">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="LayoutWrapWrap">
+    <style name="LayoutWrapWrap" parent="Theme.Mtaph">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>

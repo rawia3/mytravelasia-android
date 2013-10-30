@@ -4,4 +4,5 @@
     <color name="yellow">#F7ED00</color>
     <color name="dark_gray">#888</color>
     <color name="darker_gray">#333</color>
+    <color name="pressed">#CC33B5E5</color>
 </resources>

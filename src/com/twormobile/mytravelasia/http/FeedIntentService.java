@@ -43,6 +43,12 @@ public class FeedIntentService extends IntentService {
 
             @Override
             public void onSuccess(String content) {
+                if (null == content) {
+                    // TODO: Implement a proper UI level response handler. Toast from a service is bad.
+                    Toast.makeText(FeedIntentService.this, "Error retrieving feeds", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 Log.d(TAG, "response is " + content);
                 FeedResponse feedResponse = FeedHttpClient.getFeedGsonParser().fromJson(content, FeedResponse.class);
 
