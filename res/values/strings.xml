@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Philippines</string>
+
+    <string name="btn_enter">Enter</string>
+    <string name="btn_overview">Overview</string>
+    <string name="btn_climate">Climate</string>
+
+    <string name="hdr_website">mytravel-asia.com</string>
+    <string name="hint_search">Search Places</string>
+
     <string name="lbl_my_travel">My Travel</string>
     <string name="lbl_my_travel_splash">MyTravel</string>
     <string name="lbl_asia">Asia</string>
     <string name="lbl_mytravel_ph">MyTravel PH</string>
-    <string name="btn_enter">Enter</string>
-    <string name="btn_overview">Overview</string>
-    <string name="btn_climate">Climate</string>
-    <string name="hdr_website">mytravel-asia.com</string>
+    <string name="lbl_search">Search</string>
 </resources>

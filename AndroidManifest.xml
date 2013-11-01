@@ -26,7 +26,13 @@
                   android:theme="@android:style/Theme.Holo.NoActionBar"
                   android:label="@string/lbl_mytravel_ph"/>
         <activity android:name=".MainActivity"
-                  android:theme="@style/Theme.Mtaph"/>
+                  android:theme="@style/Theme.Mtaph">
+            <meta-data android:name="android.app.searchable"
+                       android:resource="@xml/search_poi"/>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+        </activity>
 
         <provider
                 android:authorities="com.twormobile.mytravelasia.db.MtaPhProvider"
