@@ -1,6 +1,5 @@
 package com.twormobile.mytravelasia;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -12,7 +11,7 @@ import com.twormobile.mytravelasia.util.Log;
 /**
  * An activity which displays a splash screen.
  */
-public class SplashActivity extends Activity {
+public class SplashActivity extends BaseMtaActivity {
     private static final String TAG = SplashActivity.class.getSimpleName();
     private static final int MAX_DURATION = 1000;
 
@@ -22,6 +21,8 @@ public class SplashActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
+        setOrientationLock();
+
         if (AppConstants.DEBUG) showScreenMetrics();
 
         Thread timerThread = new Thread() {

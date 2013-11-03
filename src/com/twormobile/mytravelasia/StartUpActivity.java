@@ -1,6 +1,5 @@
 package com.twormobile.mytravelasia;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -17,7 +16,7 @@ import com.twormobile.mytravelasia.http.FeedIntentService;
  *
  * @author avendael
  */
-public class StartUpActivity extends Activity {
+public class StartUpActivity extends BaseMtaActivity {
     private static final String TAG = StartUpActivity.class.getSimpleName();
     private static final String ADS_URL = "http://www.mytravel-asia.com/mobile/adsense";
 
@@ -26,6 +25,7 @@ public class StartUpActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.startup_activity);
+        setOrientationLock();
 
         mWvAds = (WebView) findViewById(R.id.wv_ads);
         Button enterButton = (Button) findViewById(R.id.btn_enter);

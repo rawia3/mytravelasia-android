@@ -18,4 +18,9 @@ public class AppConstants {
      * fragment's callbacks.
      */
     public static final String EXC_ACTIVITY_CALLBACK = "Activity must implement fragment's callbacks";
+
+    /**
+     * The usual density dpi of the smallest tablet.
+     */
+    public static final int TABLET_MIN_SW = 530;
 }

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -26,7 +25,7 @@ import com.twormobile.mytravelasia.feed.PoiListFragment;
  *
  * @author avendael
  */
-public class MainActivity extends FragmentActivity implements PoiListFragment.Callbacks {
+public class MainActivity extends BaseMtaFragmentActivity implements PoiListFragment.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_FEED_LIST = "com.twormobile.mytravelasia.feed.PoiListFragment";
 
@@ -40,6 +39,7 @@ public class MainActivity extends FragmentActivity implements PoiListFragment.Ca
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        setOrientationLock();
         mIsDualPane = findViewById(R.id.fl_map_container) != null;
 
         initSideNav();
