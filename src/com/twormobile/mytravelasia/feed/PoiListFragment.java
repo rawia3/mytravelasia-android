@@ -27,6 +27,8 @@ public class PoiListFragment extends ListFragment {
 
     private PoiCursorAdapter mAdapter;
     private LoaderCallbacks<Cursor> mLoader;
+    private long mCurrentPage;
+    private long mTotalPages;
 
     private Callbacks mCallbacks = sDummyCallbacks;
     private static Callbacks sDummyCallbacks = new Callbacks() {
@@ -112,5 +114,21 @@ public class PoiListFragment extends ListFragment {
         super.onListItemClick(listView, view, position, id);
 
         mCallbacks.onPoiSelected(position);
+    }
+
+    public long getCurrentPage() {
+        return mCurrentPage;
+    }
+
+    public void setCurrentPage(long currentPage) {
+        mCurrentPage = currentPage;
+    }
+
+    public long getTotalPages() {
+        return mTotalPages;
+    }
+
+    public void setTotalPages(long totalPages) {
+        mTotalPages = totalPages;
     }
 }

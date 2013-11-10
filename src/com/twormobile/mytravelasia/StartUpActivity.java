@@ -48,6 +48,7 @@ public class StartUpActivity extends BaseMtaActivity {
         mWvAds.loadUrl(ADS_URL);
 
         Intent getFeedIntent = new Intent(this, FeedIntentService.class);
+        getFeedIntent.putExtra(FeedIntentService.EXTRAS_FEED_FETCH_PAGE, 1);
         startService(getFeedIntent);
     }
 

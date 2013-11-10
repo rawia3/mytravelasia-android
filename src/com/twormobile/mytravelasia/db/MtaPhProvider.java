@@ -74,7 +74,7 @@ public class MtaPhProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)) {
             case POI_TABLE:
-                id = db.insert(Poi.TABLE_NAME, null, values);
+                id = db.insertWithOnConflict(Poi.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
                 if (id > 0) {
                     resultUri = ContentUris.withAppendedId(POI_URI, id);

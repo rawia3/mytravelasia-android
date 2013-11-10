@@ -3,7 +3,7 @@ package com.twormobile.mytravelasia.http;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.widget.Toast;
+import android.support.v4.content.LocalBroadcastManager;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.model.Poi;
@@ -16,6 +16,34 @@ import com.twormobile.mytravelasia.util.Log;
  */
 public class FeedIntentService extends IntentService {
     private static final String TAG = FeedIntentService.class.getSimpleName();
+
+    /**
+     * Name of the broadcast event sent after an attempt to retrieve feeds from the server.
+     */
+    public static final String BROADCAST_GET_FEED = "get_feed";
+
+    /**
+     * Name of the broadcast message sent after successfully retrieving feeds from the server. The message format is an
+     * array of longs that contains the following:
+     *
+     * <ul>
+     *     <li>The requested page number</li>
+     *     <li>Total number of pages</li>
+     * </ul>
+     */
+    public static final String BROADCAST_GET_FEED_SUCCESS = "get_feed_success";
+
+    /**
+     * Name of the broadcast message sent after a failed attempt to retrieve feeds from the server. The message
+     * contains whatever failure message is received by the HTTP client.
+     */
+    public static final String BROADCAST_GET_FEED_FAILED = "get_feed_failed";
+
+    /**
+     * Key to use for the intent extra to tell {@link com.twormobile.mytravelasia.http.FeedIntentService} which page to
+     * fetch.
+     */
+    public static final String EXTRAS_FEED_FETCH_PAGE = "com.twormobile.mytravelasia.extras.fetch_page";
 
     public FeedIntentService() {
         super(TAG);
@@ -31,28 +59,30 @@ public class FeedIntentService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(final Intent intent) {
         Log.d(TAG, "handling intent");
+        final long page = intent.getLongExtra(EXTRAS_FEED_FETCH_PAGE, 1);
+
         FeedHttpClient.getFeeds(new AsyncHttpResponseHandler() {
             @Override
             public void onFailure(Throwable error, String content) {
                 Log.d(TAG, "response failed");
-                // TODO: Implement a proper UI level response handler. Toast from a service is bad.
-                Toast.makeText(FeedIntentService.this, "Error retrieving feeds", Toast.LENGTH_LONG).show();
+                broadcastFailure(content);
             }
 
             @Override
             public void onSuccess(String content) {
                 if (null == content) {
-                    // TODO: Implement a proper UI level response handler. Toast from a service is bad.
-                    Toast.makeText(FeedIntentService.this, "Error retrieving feeds", Toast.LENGTH_LONG).show();
-                    return;
+                    broadcastFailure("loopj error: null content"); // TODO: Define error message protocol
                 }
 
                 Log.d(TAG, "response is " + content);
                 FeedResponse feedResponse = FeedHttpClient.getFeedGsonParser().fromJson(content, FeedResponse.class);
 
-                getContentResolver().delete(MtaPhProvider.POI_URI, null, null);
+                Intent broadcastIntent = new Intent(BROADCAST_GET_FEED);
+
+                broadcastIntent.putExtra(BROADCAST_GET_FEED_SUCCESS, new long[]{page, feedResponse.getTotalPages()});
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
 
                 for (Poi poi : feedResponse.getFeeds()) {
                     Log.d(TAG, "poi name: " + poi.getName());
@@ -77,6 +107,13 @@ public class FeedIntentService extends IntentService {
                     getContentResolver().insert(MtaPhProvider.POI_URI, values);
                 }
             }
-        });
+        }, page);
+    }
+
+    private void broadcastFailure(String message) {
+        Intent broadcastIntent = new Intent(BROADCAST_GET_FEED);
+
+        broadcastIntent.putExtra(BROADCAST_GET_FEED_FAILED, message);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
     }
 }
