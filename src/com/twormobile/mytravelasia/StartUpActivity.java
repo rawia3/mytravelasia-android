@@ -8,7 +8,6 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
-import com.twormobile.mytravelasia.http.FeedIntentService;
 
 /**
  * An activity which serves as the startup entry point of the app. It shows an overview about Philippines, and some ads at
@@ -46,10 +45,6 @@ public class StartUpActivity extends BaseMtaActivity {
     protected void onResume() {
         super.onResume();
         mWvAds.loadUrl(ADS_URL);
-
-        Intent getFeedIntent = new Intent(this, FeedIntentService.class);
-        getFeedIntent.putExtra(FeedIntentService.EXTRAS_FEED_FETCH_PAGE, 1);
-        startService(getFeedIntent);
     }
 
     private void initAds() {

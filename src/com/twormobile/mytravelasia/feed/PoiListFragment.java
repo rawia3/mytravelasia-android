@@ -1,6 +1,7 @@
 package com.twormobile.mytravelasia.feed;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
+import com.twormobile.mytravelasia.R;
 import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.model.Poi;
 import com.twormobile.mytravelasia.util.AppConstants;
@@ -96,8 +98,6 @@ public class PoiListFragment extends ListFragment {
         mAdapter = new PoiCursorAdapter(getActivity(), null, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         mLoader = new PoiListLoader();
 
-        setListAdapter(mAdapter);
-
         Log.d(TAG, "onCreateView() -- END");
         return view;
     }
@@ -105,7 +105,12 @@ public class PoiListFragment extends ListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ListView listView = getListView();
+        View listViewFooter = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.poi_list_footer, null, false);
+
         setListShown(false);
+        listView.addFooterView(listViewFooter);
+        setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, mLoader);
     }
 

@@ -61,7 +61,7 @@ public class FeedIntentService extends IntentService {
     @Override
     protected void onHandleIntent(final Intent intent) {
         Log.d(TAG, "handling intent");
-        final long page = intent.getLongExtra(EXTRAS_FEED_FETCH_PAGE, 1);
+        final long page = intent.getLongExtra(EXTRAS_FEED_FETCH_PAGE, 1L);
 
         FeedHttpClient.getFeeds(new AsyncHttpResponseHandler() {
             @Override

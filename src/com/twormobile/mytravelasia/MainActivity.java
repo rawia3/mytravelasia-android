@@ -49,8 +49,8 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
         setOrientationLock();
         mIsDualPane = findViewById(R.id.fl_map_container) != null;
 
-        initBroadcastReceiver();
         initSideNav();
+        initBroadcastReceiver();
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -59,6 +59,10 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                 .beginTransaction()
                 .replace(R.id.fl_list_container, new PoiListFragment(), TAG_FEED_LIST)
                 .commit();
+
+        Intent getFeedIntent = new Intent(MainActivity.this, FeedIntentService.class);
+        getFeedIntent.putExtra(FeedIntentService.EXTRAS_FEED_FETCH_PAGE, 1L);
+        startService(getFeedIntent);
     }
 
     @Override
@@ -123,7 +127,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                     Toast.makeText(MainActivity.this, "Failed to retrieve feeds", Toast.LENGTH_LONG).show();
                 } else if (intent.hasExtra(FeedIntentService.BROADCAST_GET_FEED_SUCCESS)) {
                     Log.d(TAG, "successfully retrieved feeds");
-                    int[] pageData = intent.getIntArrayExtra(FeedIntentService.BROADCAST_GET_FEED_SUCCESS);
+                    long[] pageData = intent.getLongArrayExtra(FeedIntentService.BROADCAST_GET_FEED_SUCCESS);
                     PoiListFragment poiListFragment = (PoiListFragment) getSupportFragmentManager()
                             .findFragmentByTag(TAG_FEED_LIST);
 
