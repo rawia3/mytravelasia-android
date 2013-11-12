@@ -11,6 +11,7 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import com.twormobile.mytravelasia.R;
@@ -31,20 +32,31 @@ public class PoiListFragment extends ListFragment {
     private LoaderCallbacks<Cursor> mLoader;
     private long mCurrentPage;
     private long mTotalPages;
+    private boolean isLoadingNextPage;
 
     private Callbacks mCallbacks = sDummyCallbacks;
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
         public void onPoiSelected(int position) {
         }
+
+        @Override
+        public void onNextPage(long page) {
+        }
     };
+
 
     public interface Callbacks {
         /**
-         * The action that the activity will execute when a POI is clicked.
-         * @param position The clicked POI's position in the list.
+         * The action that the activity will execute when a POI is clicked. @param position The clicked POI's position
+         * in the list.
          */
         public void onPoiSelected(int position);
+
+        /**
+         * The action that the activity should perform when the list has reached the last item of the current page.
+         */
+        public void onNextPage(long page);
     }
 
     /**
@@ -110,6 +122,24 @@ public class PoiListFragment extends ListFragment {
 
         setListShown(false);
         listView.addFooterView(listViewFooter);
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {}
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int lastItemInScreen = firstVisibleItem + visibleItemCount;
+
+                Log.d(TAG, "last item " + lastItemInScreen + " first " + firstVisibleItem + " visible " + visibleItemCount + " total " + totalItemCount);
+                Log.d(TAG, "current page " + mCurrentPage + " total pages " + mTotalPages + " loading " + isLoadingNextPage);
+                if (mCurrentPage < mTotalPages && (lastItemInScreen == totalItemCount) && !isLoadingNextPage) {
+                    Log.d(TAG, "attempt to load the next page " + mCurrentPage + " " + mTotalPages);
+                    isLoadingNextPage = true;
+
+                    mCallbacks.onNextPage(mCurrentPage + 1L);
+                }
+            }
+        });
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, mLoader);
     }
@@ -126,6 +156,9 @@ public class PoiListFragment extends ListFragment {
     }
 
     public void setCurrentPage(long currentPage) {
+        Log.d(TAG, "setCurrentPage() -- " + mCurrentPage + " " + currentPage);
+        if (currentPage == mCurrentPage + 1) isLoadingNextPage = false;
+
         mCurrentPage = currentPage;
     }
 

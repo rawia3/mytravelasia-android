@@ -59,10 +59,6 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                 .beginTransaction()
                 .replace(R.id.fl_list_container, new PoiListFragment(), TAG_FEED_LIST)
                 .commit();
-
-        Intent getFeedIntent = new Intent(MainActivity.this, FeedIntentService.class);
-        getFeedIntent.putExtra(FeedIntentService.EXTRAS_FEED_FETCH_PAGE, 1L);
-        startService(getFeedIntent);
     }
 
     @Override
@@ -70,6 +66,13 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
                 new IntentFilter(FeedIntentService.BROADCAST_GET_FEED));
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        onNextPage(1L);
     }
 
     @Override
@@ -117,6 +120,13 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
     @Override
     public void onPoiSelected(int position) {
         // TODO
+    }
+
+    @Override
+    public void onNextPage(long page) {
+        Intent getFeedIntent = new Intent(MainActivity.this, FeedIntentService.class);
+        getFeedIntent.putExtra(FeedIntentService.EXTRAS_FEED_FETCH_PAGE, page);
+        startService(getFeedIntent);
     }
 
     private void initBroadcastReceiver() {
