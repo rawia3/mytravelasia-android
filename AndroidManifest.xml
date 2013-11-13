@@ -34,13 +34,13 @@
             </intent-filter>
         </activity>
 
-        <provider
-                android:authorities="com.twormobile.mytravelasia.db.MtaPhProvider"
-                android:name="com.twormobile.mytravelasia.db.MtaPhProvider"
-                android:exported="false"
-                android:multiprocess="true" />
-        <service
-                android:name=".http.FeedIntentService"
-                android:label="FeedIntentService"/>
+        <provider android:authorities="com.twormobile.mytravelasia.db.MtaPhProvider"
+                  android:name="com.twormobile.mytravelasia.db.MtaPhProvider"
+                  android:exported="false"
+                  android:multiprocess="true" />
+        <service android:name=".http.FeedListIntentService"
+                 android:label="FeedListIntentService"/>
+        <service android:name=".http.FeedDetailIntentService"
+                 android:label="FeedDetailIntentService"/>
     </application>
 </manifest>

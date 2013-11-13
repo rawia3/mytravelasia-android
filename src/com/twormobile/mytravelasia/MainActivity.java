@@ -21,7 +21,8 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 import com.twormobile.mytravelasia.feed.PoiListFragment;
-import com.twormobile.mytravelasia.http.FeedIntentService;
+import com.twormobile.mytravelasia.http.FeedDetailIntentService;
+import com.twormobile.mytravelasia.http.FeedListIntentService;
 import com.twormobile.mytravelasia.util.Log;
 
 /**
@@ -40,7 +41,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
     private DrawerLayout mDlContainer;
     private ListView mLvNav;
     private ActionBarDrawerToggle mDrawerToggle;
-    private BroadcastReceiver mBroadcastReceiver;
+    private BroadcastReceiver mFeedListBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
         mIsDualPane = findViewById(R.id.fl_map_container) != null;
 
         initSideNav();
-        initBroadcastReceiver();
+        initBroadcastReceivers();
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -64,8 +65,8 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver,
-                new IntentFilter(FeedIntentService.BROADCAST_GET_FEED));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mFeedListBroadcastReceiver,
+                new IntentFilter(FeedListIntentService.BROADCAST_GET_FEED_LIST));
     }
 
     @Override
@@ -77,7 +78,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mFeedListBroadcastReceiver);
         super.onPause();
     }
 
@@ -118,31 +119,37 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
     }
 
     @Override
-    public void onPoiSelected(int position) {
-        // TODO
+    public void onPoiSelected(long feedId) {
+        Intent getDetailsIntent = new Intent(MainActivity.this, FeedDetailIntentService.class);
+        getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID, feedId);
+        startService(getDetailsIntent);
     }
 
     @Override
     public void onNextPage(long page) {
-        Intent getFeedIntent = new Intent(MainActivity.this, FeedIntentService.class);
-        getFeedIntent.putExtra(FeedIntentService.EXTRAS_FEED_FETCH_PAGE, page);
+        Intent getFeedIntent = new Intent(MainActivity.this, FeedListIntentService.class);
+        getFeedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_FETCH_PAGE, page);
         startService(getFeedIntent);
     }
 
-    private void initBroadcastReceiver() {
-        mBroadcastReceiver = new BroadcastReceiver() {
+    private void initBroadcastReceivers() {
+        mFeedListBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.hasExtra(FeedIntentService.BROADCAST_GET_FEED_FAILED)) {
+                if (intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_FAILED)) {
                     Toast.makeText(MainActivity.this, "Failed to retrieve feeds", Toast.LENGTH_LONG).show();
-                } else if (intent.hasExtra(FeedIntentService.BROADCAST_GET_FEED_SUCCESS)) {
+                } else if (intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_SUCCESS)) {
                     Log.d(TAG, "successfully retrieved feeds");
-                    long[] pageData = intent.getLongArrayExtra(FeedIntentService.BROADCAST_GET_FEED_SUCCESS);
+                    long[] pageData = intent.getLongArrayExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_SUCCESS);
+                    long currentPage = pageData[0];
+                    long totalPages = pageData[1];
                     PoiListFragment poiListFragment = (PoiListFragment) getSupportFragmentManager()
                             .findFragmentByTag(TAG_FEED_LIST);
 
-                    poiListFragment.setCurrentPage(pageData[0]);
-                    poiListFragment.setTotalPages(pageData[1]);
+                    poiListFragment.setCurrentPage(currentPage);
+                    poiListFragment.setTotalPages(totalPages);
+
+                    if (currentPage < totalPages && currentPage < 5) onNextPage(currentPage + 1L);
                 }
             }
         };

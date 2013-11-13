@@ -37,7 +37,7 @@ public class PoiListFragment extends ListFragment {
     private Callbacks mCallbacks = sDummyCallbacks;
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onPoiSelected(int position) {
+        public void onPoiSelected(long feedId) {
         }
 
         @Override
@@ -51,7 +51,7 @@ public class PoiListFragment extends ListFragment {
          * The action that the activity will execute when a POI is clicked. @param position The clicked POI's position
          * in the list.
          */
-        public void onPoiSelected(int position);
+        public void onPoiSelected(long feedId);
 
         /**
          * The action that the activity should perform when the list has reached the last item of the current page.
@@ -65,7 +65,7 @@ public class PoiListFragment extends ListFragment {
     private class PoiListLoader implements LoaderCallbacks<Cursor> {
         String[] projection = {
                 Poi._ID, Poi.NAME, Poi.ADDRESS, Poi.TOTAL_COMMENTS, Poi.TOTAL_LIKES,
-                Poi.LATITUDE, Poi.LONGITUDE, Poi.IMAGE_THUMB_URL
+                Poi.LATITUDE, Poi.LONGITUDE, Poi.IMAGE_THUMB_URL, Poi.RESOURCE_ID
         };
 
         @Override
@@ -132,7 +132,8 @@ public class PoiListFragment extends ListFragment {
 
                 Log.d(TAG, "last item " + lastItemInScreen + " first " + firstVisibleItem + " visible " + visibleItemCount + " total " + totalItemCount);
                 Log.d(TAG, "current page " + mCurrentPage + " total pages " + mTotalPages + " loading " + isLoadingNextPage);
-                if (mCurrentPage < mTotalPages && (lastItemInScreen == totalItemCount) && !isLoadingNextPage) {
+                Log.d(TAG, "" + (mCurrentPage < mTotalPages) + " " + (lastItemInScreen == totalItemCount) + " " + !isLoadingNextPage);
+                if (mCurrentPage < mTotalPages && (lastItemInScreen == totalItemCount)) { // && !isLoadingNextPage) {
                     Log.d(TAG, "attempt to load the next page " + mCurrentPage + " " + mTotalPages);
                     isLoadingNextPage = true;
 
@@ -148,7 +149,7 @@ public class PoiListFragment extends ListFragment {
     public void onListItemClick(ListView listView, View view, int position, long id) {
         super.onListItemClick(listView, view, position, id);
 
-        mCallbacks.onPoiSelected(position);
+        mCallbacks.onPoiSelected(mAdapter.getItemId(position));
     }
 
     public long getCurrentPage() {

@@ -1,6 +1,5 @@
 package com.twormobile.mytravelasia.http;
 
-import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
@@ -14,13 +13,13 @@ import com.twormobile.mytravelasia.util.Log;
  *
  * @author avendael
  */
-public class FeedIntentService extends IntentService {
-    private static final String TAG = FeedIntentService.class.getSimpleName();
+public class FeedListIntentService extends BaseFeedIntentService {
+    private static final String TAG = FeedListIntentService.class.getSimpleName();
 
     /**
      * Name of the broadcast event sent after an attempt to retrieve feeds from the server.
      */
-    public static final String BROADCAST_GET_FEED = "get_feed";
+    public static final String BROADCAST_GET_FEED_LIST = "get_feed_list";
 
     /**
      * Name of the broadcast message sent after successfully retrieving feeds from the server. The message format is an
@@ -31,21 +30,21 @@ public class FeedIntentService extends IntentService {
      *     <li>Total number of pages</li>
      * </ul>
      */
-    public static final String BROADCAST_GET_FEED_SUCCESS = "get_feed_success";
+    public static final String BROADCAST_GET_FEED_LIST_SUCCESS = "get_feed_list_success";
 
     /**
      * Name of the broadcast message sent after a failed attempt to retrieve feeds from the server. The message
      * contains whatever failure message is received by the HTTP client.
      */
-    public static final String BROADCAST_GET_FEED_FAILED = "get_feed_failed";
+    public static final String BROADCAST_GET_FEED_LIST_FAILED = "get_feed_list_failed";
 
     /**
-     * Key to use for the intent extra to tell {@link com.twormobile.mytravelasia.http.FeedIntentService} which page to
+     * Key to use for the intent extra to tell {@link FeedListIntentService} which page to
      * fetch.
      */
     public static final String EXTRAS_FEED_FETCH_PAGE = "com.twormobile.mytravelasia.extras.fetch_page";
 
-    public FeedIntentService() {
+    public FeedListIntentService() {
         super(TAG);
     }
 
@@ -54,7 +53,7 @@ public class FeedIntentService extends IntentService {
      *
      * @param name Used to name the worker thread, important only for debugging.
      */
-    public FeedIntentService(String name) {
+    public FeedListIntentService(String name) {
         super(name);
     }
 
@@ -67,21 +66,23 @@ public class FeedIntentService extends IntentService {
             @Override
             public void onFailure(Throwable error, String content) {
                 Log.d(TAG, "response failed");
-                broadcastFailure(content);
+                broadcastFailure(BROADCAST_GET_FEED_LIST, BROADCAST_GET_FEED_LIST_FAILED, content);
+
+                return;
             }
 
             @Override
             public void onSuccess(String content) {
-                if (null == content) {
-                    broadcastFailure("loopj error: null content"); // TODO: Define error message protocol
+                if (content == null) {
+                    broadcastFailure(BROADCAST_GET_FEED_LIST, BROADCAST_GET_FEED_LIST_FAILED, "loopj error: null content"); // TODO: Define error message protocol
                 }
 
                 Log.d(TAG, "response is " + content);
                 FeedResponse feedResponse = FeedHttpClient.getFeedGsonParser().fromJson(content, FeedResponse.class);
 
-                Intent broadcastIntent = new Intent(BROADCAST_GET_FEED);
+                Intent broadcastIntent = new Intent(BROADCAST_GET_FEED_LIST);
 
-                broadcastIntent.putExtra(BROADCAST_GET_FEED_SUCCESS, new long[]{page, feedResponse.getTotalPages()});
+                broadcastIntent.putExtra(BROADCAST_GET_FEED_LIST_SUCCESS, new long[]{page, feedResponse.getTotalPages()});
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
 
                 for (Poi poi : feedResponse.getFeeds()) {
@@ -108,12 +109,5 @@ public class FeedIntentService extends IntentService {
                 }
             }
         }, page);
-    }
-
-    private void broadcastFailure(String message) {
-        Intent broadcastIntent = new Intent(BROADCAST_GET_FEED);
-
-        broadcastIntent.putExtra(BROADCAST_GET_FEED_FAILED, message);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
     }
 }

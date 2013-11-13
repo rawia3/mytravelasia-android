@@ -33,6 +33,7 @@ public class PoiCursorAdapter extends CursorAdapter {
         TextView tvPrice;
         TextView tvDistance;
     }
+
     public PoiCursorAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
@@ -70,5 +71,14 @@ public class PoiCursorAdapter extends CursorAdapter {
         viewHolder.tvSubTitle.setText(subTitle);
         viewHolder.tvLikes.setText(totalLikes + "");
         viewHolder.tvComments.setText(totalComments + "");
+    }
+
+    @Override
+    public long getItemId(int position) {
+        Cursor cursor = getCursor();
+
+        cursor.moveToPosition(position);
+
+        return cursor.getLong(cursor.getColumnIndex(Poi.RESOURCE_ID));
     }
 }
