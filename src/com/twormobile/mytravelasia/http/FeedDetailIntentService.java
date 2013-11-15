@@ -2,8 +2,12 @@ package com.twormobile.mytravelasia.http;
 
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.twormobile.mytravelasia.util.Log;
+import org.json.JSONObject;
 
 /**
  * Calls the get feed details webservice and saves the response to the content provider.
@@ -61,30 +65,33 @@ public class FeedDetailIntentService extends BaseFeedIntentService {
         final long feedId = intent.getLongExtra(EXTRAS_FEED_ID, -1);
 
         Log.d(TAG, "feed id to fetch " + feedId);
+        Log.d(TAG, "request queue is null " + (mRequestQueue == null));
         if (feedId == -1) {
             broadcastFailure(BROADCAST_GET_FEED_DETAIL, BROADCAST_GET_FEED_DETAIL_FAILED, "Invalid feed id");
             return;
         }
 
-        FeedHttpClient.getFeedDetail(new AsyncHttpResponseHandler() {
-            @Override
-            public void onFailure(Throwable error, String content) {
-                Log.d(TAG, "response failed");
-                broadcastFailure(BROADCAST_GET_FEED_DETAIL, BROADCAST_GET_FEED_DETAIL_FAILED, content);
-            }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                FeedHttpClient.BASE_URL + FeedHttpClient.POI_RESOURCE + feedId + ".json", null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "the response is " + response.toString());
+                        Intent broadcastIntent = new Intent(BROADCAST_GET_FEED_DETAIL);
 
-            @Override
-            public void onSuccess(String content) {
-                Log.d(TAG, "response is " + content);
-                if (null == content) {
-                    broadcastFailure(BROADCAST_GET_FEED_DETAIL, BROADCAST_GET_FEED_DETAIL_FAILED, "loopj error: null content"); // TODO: Define error message protocol
-                }
+                        broadcastIntent.putExtra(BROADCAST_GET_FEED_DETAIL_SUCCESS, response.toString()); // TODO: IPC might truncate this when the content is too long. Include this in a cache, or pass a Parcelable message
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, "volley error: " + error.toString());
+                        broadcastFailure(BROADCAST_GET_FEED_DETAIL, BROADCAST_GET_FEED_DETAIL_FAILED, error.toString());
+                    }
+                });
 
-                Intent broadcastIntent = new Intent(BROADCAST_GET_FEED_DETAIL);
-
-                broadcastIntent.putExtra(BROADCAST_GET_FEED_DETAIL_SUCCESS, content); // TODO: IPC might truncate this when the content is too long. Include this in a cache, or pass a Parcelable message
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
-            }
-        }, feedId, 0);
+        mRequestQueue.add(jsonObjectRequest);
     }
 }
