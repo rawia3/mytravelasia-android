@@ -3,10 +3,13 @@ package com.twormobile.mytravelasia.http;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.model.Poi;
 import com.twormobile.mytravelasia.util.Log;
+
+import java.util.HashMap;
 
 /**
  * Calls the get feed webservice and saves the response to the content provider.
@@ -62,52 +65,67 @@ public class FeedListIntentService extends BaseFeedIntentService {
         Log.d(TAG, "handling intent");
         final long page = intent.getLongExtra(EXTRAS_FEED_FETCH_PAGE, 1L);
 
-        FeedHttpClient.getFeeds(new AsyncHttpResponseHandler() {
-            @Override
-            public void onFailure(Throwable error, String content) {
-                Log.d(TAG, "response failed");
-                broadcastFailure(BROADCAST_GET_FEED_LIST, BROADCAST_GET_FEED_LIST_FAILED, content);
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put(HttpConstants.PARAM_COUNTRY_NAME, "Philippines");
+        params.put(HttpConstants.PARAM_PAGE, "1");
 
-                return;
-            }
+        String url = String.format(HttpConstants.BASE_URL + HttpConstants.FEED_RESOURCE + "?"
+                + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s&"
+                + HttpConstants.PARAM_PAGE + "=%2$s",
+                "Philippines", page);
 
-            @Override
-            public void onSuccess(String content) {
-                if (content == null) {
-                    broadcastFailure(BROADCAST_GET_FEED_LIST, BROADCAST_GET_FEED_LIST_FAILED, "loopj error: null content"); // TODO: Define error message protocol
+        Response.Listener<FeedResponse> successListener = getFeedResponseListener(page);
+        Response.ErrorListener errorListener = getErrorListener();
+
+        GsonRequest<FeedResponse> gsonRequest = new GsonRequest<FeedResponse>(
+                url, FeedResponse.class, null, params, successListener, errorListener);
+
+        mRequestQueue.add(gsonRequest);
+    }
+
+    private Response.Listener<FeedResponse> getFeedResponseListener(final long page) {
+        return new Response.Listener<FeedResponse>() {
+                @Override
+                public void onResponse(FeedResponse response) {
+                    for (Poi poi : response.getFeeds()) {
+                        Log.d(TAG, "poi name: " + poi.getName());
+                        ContentValues values = new ContentValues();
+
+                        values.put(Poi.RESOURCE_ID, poi.getResourceId());
+                        values.put(Poi.NAME, poi.getName());
+                        values.put(Poi.ADDRESS, poi.getAddress());
+                        values.put(Poi.CONTENT, poi.getContent());
+                        values.put(Poi.FB_USER_PROFILE_ID, poi.getFbUserProfileId());
+                        values.put(Poi.FB_USER_PROFILE_NAME, poi.getFbUserProfileName());
+                        values.put(Poi.CREATED_AT, poi.getCreatedAt());
+                        values.put(Poi.LONGITUDE, poi.getLongitude());
+                        values.put(Poi.LATITUDE, poi.getLatitude());
+                        values.put(Poi.FEED_TYPE, poi.getFeedType());
+                        values.put(Poi.POI_TYPE, poi.getPoiType());
+                        values.put(Poi.IMAGE_THUMB_URL, poi.getImageThumbUrl());
+                        values.put(Poi.ANNOTATION_TYPE, poi.getAnnotationType());
+                        values.put(Poi.TOTAL_COMMENTS, poi.getTotalComments());
+                        values.put(Poi.TOTAL_LIKES, poi.getTotalLikes());
+
+                        getContentResolver().insert(MtaPhProvider.POI_URI, values);
+                    }
+
+                    Intent broadcastIntent = new Intent(BROADCAST_GET_FEED_LIST);
+
+                    broadcastIntent.putExtra(BROADCAST_GET_FEED_LIST_SUCCESS,
+                            new long[]{page, response.getTotalPages()});
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
                 }
+            };
+    }
 
-                Log.d(TAG, "response is " + content);
-                FeedResponse feedResponse = FeedHttpClient.getFeedGsonParser().fromJson(content, FeedResponse.class);
-
-                Intent broadcastIntent = new Intent(BROADCAST_GET_FEED_LIST);
-
-                broadcastIntent.putExtra(BROADCAST_GET_FEED_LIST_SUCCESS, new long[]{page, feedResponse.getTotalPages()});
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
-
-                for (Poi poi : feedResponse.getFeeds()) {
-                    Log.d(TAG, "poi name: " + poi.getName());
-                    ContentValues values = new ContentValues();
-
-                    values.put(Poi.RESOURCE_ID, poi.getResourceId());
-                    values.put(Poi.NAME, poi.getName());
-                    values.put(Poi.ADDRESS, poi.getAddress());
-                    values.put(Poi.CONTENT, poi.getContent());
-                    values.put(Poi.FB_USER_PROFILE_ID, poi.getFbUserProfileId());
-                    values.put(Poi.FB_USER_PROFILE_NAME, poi.getFbUserProfileName());
-                    values.put(Poi.CREATED_AT, poi.getCreatedAt());
-                    values.put(Poi.LONGITUDE, poi.getLongitude());
-                    values.put(Poi.LATITUDE, poi.getLatitude());
-                    values.put(Poi.FEED_TYPE, poi.getFeedType());
-                    values.put(Poi.POI_TYPE, poi.getPoiType());
-                    values.put(Poi.IMAGE_THUMB_URL, poi.getImageThumbUrl());
-                    values.put(Poi.ANNOTATION_TYPE, poi.getAnnotationType());
-                    values.put(Poi.TOTAL_COMMENTS, poi.getTotalComments());
-                    values.put(Poi.TOTAL_LIKES, poi.getTotalLikes());
-
-                    getContentResolver().insert(MtaPhProvider.POI_URI, values);
-                }
+    private Response.ErrorListener getErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "volley error: " + error.toString());
+                broadcastFailure(BROADCAST_GET_FEED_LIST, BROADCAST_GET_FEED_LIST_FAILED, error.toString());
             }
-        }, page);
+        };
     }
 }

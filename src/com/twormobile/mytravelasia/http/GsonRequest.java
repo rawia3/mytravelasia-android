@@ -22,6 +22,7 @@ import java.util.Map;
 public class GsonRequest<T> extends Request<T> {
     private final Class<T> clazz;
     private final Map<String, String> headers;
+    private final Map<String, String> params;
     private final Listener<T> listener;
 
     private Gson gson;
@@ -33,11 +34,12 @@ public class GsonRequest<T> extends Request<T> {
      * @param clazz Relevant class object, for Gson's reflection
      * @param headers Map of request headers
      */
-    public GsonRequest(String url, Class<T> clazz, Map<String, String> headers, Listener<T> listener,
-                       ErrorListener errorListener) {
+    public GsonRequest(String url, Class<T> clazz, Map<String, String> headers, Map<String, String> params,
+                       Listener<T> listener, ErrorListener errorListener) {
         super(Method.GET, url, errorListener);
         this.clazz = clazz;
         this.headers = headers;
+        this.params = params;
         this.listener = listener;
         this.gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -47,6 +49,11 @@ public class GsonRequest<T> extends Request<T> {
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         return headers != null ? headers : super.getHeaders();
+    }
+
+    @Override
+    protected Map<String, String> getParams() throws AuthFailureError {
+        return params;
     }
 
     public Gson getGson() {
@@ -66,6 +73,7 @@ public class GsonRequest<T> extends Request<T> {
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         try {
             String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
             return Response.success(gson.fromJson(json, clazz), HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));

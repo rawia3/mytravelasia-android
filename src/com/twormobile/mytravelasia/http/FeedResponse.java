@@ -34,4 +34,16 @@ public class FeedResponse {
     public void setTotalPages(long totalPages) {
         this.totalPages = totalPages;
     }
+
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("FeedResponse: \n");
+        for (Poi poi : feeds) {
+            buffer.append(poi.getContent() + "\n");
+        }
+
+        return buffer.toString();
+    }
 }

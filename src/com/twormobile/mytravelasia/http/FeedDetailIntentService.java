@@ -73,7 +73,7 @@ public class FeedDetailIntentService extends BaseFeedIntentService {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
-                FeedHttpClient.BASE_URL + FeedHttpClient.POI_RESOURCE + feedId + ".json", null,
+                HttpConstants.BASE_URL + HttpConstants.POI_RESOURCE + feedId + ".json", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
