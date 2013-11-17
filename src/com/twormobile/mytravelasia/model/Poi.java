@@ -164,7 +164,7 @@ public class Poi implements BaseColumns {
     private String fbUserProfileName;
 
     /**
-     * The date when the POI was created in the remote resource. Creation date in the local db are not being recorded.
+     * The date when the POI was created in the remote resource. Creation date in the local db is not being recorded.
      */
     @Expose
     private String createdAt;
