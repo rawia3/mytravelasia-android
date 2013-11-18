@@ -88,7 +88,7 @@ public class FeedListIntentService extends BaseFeedIntentService {
                 @Override
                 public void onResponse(FeedResponse response) {
                     for (Poi poi : response.getFeeds()) {
-                        Log.d(TAG, "poi name: " + poi.getName());
+                        Log.d(TAG, "poi name: " + poi.getName() + " created_at " + poi.getCreatedAt());
                         ContentValues values = new ContentValues();
 
                         values.put(Poi.RESOURCE_ID, poi.getResourceId());
@@ -97,7 +97,7 @@ public class FeedListIntentService extends BaseFeedIntentService {
                         values.put(Poi.CONTENT, poi.getContent());
                         values.put(Poi.FB_USER_PROFILE_ID, poi.getFbUserProfileId());
                         values.put(Poi.FB_USER_PROFILE_NAME, poi.getFbUserProfileName());
-                        values.put(Poi.CREATED_AT, poi.getCreatedAt());
+                        values.put(Poi.CREATED_AT, poi.getCreatedAt().getTime());
                         values.put(Poi.LONGITUDE, poi.getLongitude());
                         values.put(Poi.LATITUDE, poi.getLatitude());
                         values.put(Poi.FEED_TYPE, poi.getFeedType());

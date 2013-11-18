@@ -43,6 +43,7 @@ public class GsonRequest<T> extends Request<T> {
         this.listener = listener;
         this.gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .setDateFormat("yyy-MM-dd'T'HH:mm:ss")
                 .excludeFieldsWithoutExposeAnnotation().create();
     }
 

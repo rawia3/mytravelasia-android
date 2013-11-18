@@ -4,6 +4,8 @@ import android.provider.BaseColumns;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * This class serves as a model that maps both to a db table and webservice data. Exposed members are used by GSON to
  * parse POI data from the webservice.
@@ -102,7 +104,7 @@ public class Poi implements BaseColumns {
             + CONTENT + " TEXT,"
             + FB_USER_PROFILE_ID + " TEXT,"
             + FB_USER_PROFILE_NAME + " TEXT,"
-            + CREATED_AT + " TEXT,"
+            + CREATED_AT + " INTEGER,"
             + FEED_TYPE + " TEXT,"
             + LATITUDE + " REAL,"
             + LONGITUDE + " REAL,"
@@ -167,7 +169,7 @@ public class Poi implements BaseColumns {
      * The date when the POI was created in the remote resource. Creation date in the local db is not being recorded.
      */
     @Expose
-    private String createdAt;
+    private Date createdAt;
 
     /**
      * Location of the POI in longitude.
@@ -274,11 +276,11 @@ public class Poi implements BaseColumns {
         this.fbUserProfileName = fbUserProfileName;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
