@@ -21,4 +21,9 @@ public class PoiDetailResponse {
     public void setPoiDetail(PoiDetail poiDetail) {
         this.poiDetail = poiDetail;
     }
+
+    @Override
+    public String toString() {
+        return poiDetail.getName();
+    }
 }

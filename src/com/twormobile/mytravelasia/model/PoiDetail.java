@@ -118,7 +118,7 @@ public class PoiDetail {
     private long totalRatings;
 
     @Expose
-    private long totalStars;
+    private double totalStars;
 
     @Expose
     private long totalViews;
@@ -390,11 +390,11 @@ public class PoiDetail {
         this.totalRatings = totalRatings;
     }
 
-    public long getTotalStars() {
+    public double getTotalStars() {
         return totalStars;
     }
 
-    public void setTotalStars(long totalStars) {
+    public void setTotalStars(double totalStars) {
         this.totalStars = totalStars;
     }
 

@@ -2,12 +2,9 @@ package com.twormobile.mytravelasia.http;
 
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.twormobile.mytravelasia.util.Log;
-import org.json.JSONObject;
 
 /**
  * Calls the get feed details webservice and saves the response to the content provider.
@@ -71,12 +68,12 @@ public class FeedDetailIntentService extends BaseFeedIntentService {
             return;
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                HttpConstants.BASE_URL + HttpConstants.POI_RESOURCE + feedId + ".json", null,
-                new Response.Listener<JSONObject>() {
+        GsonRequest<FeedDetailResponse> gsonRequest = new GsonRequest<FeedDetailResponse>(
+                HttpConstants.BASE_URL + HttpConstants.POI_RESOURCE + feedId + ".json", FeedDetailResponse.class,
+                null, null,
+                new Response.Listener<FeedDetailResponse>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(FeedDetailResponse response) {
                         Log.d(TAG, "the response is " + response.toString());
                         Intent broadcastIntent = new Intent(BROADCAST_GET_FEED_DETAIL);
 
@@ -92,6 +89,6 @@ public class FeedDetailIntentService extends BaseFeedIntentService {
                     }
                 });
 
-        mRequestQueue.add(jsonObjectRequest);
+        mRequestQueue.add(gsonRequest);
     }
 }

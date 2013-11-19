@@ -71,7 +71,8 @@ public class PoiListFragment extends ListFragment {
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             Log.d(TAG, "created loader");
-            return new CursorLoader(getActivity(), MtaPhProvider.POI_URI, projection, null, null, Poi.CREATED_AT + " DESC");
+            return new CursorLoader(getActivity(), MtaPhProvider.POI_URI, projection, null, null,
+                    Poi.CREATED_AT + " DESC");
         }
 
         @Override
@@ -118,7 +119,8 @@ public class PoiListFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ListView listView = getListView();
-        View listViewFooter = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.poi_list_footer, null, false);
+        View listViewFooter = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                .inflate(R.layout.poi_list_footer, null, false);
 
         setListShown(false);
         listView.addFooterView(listViewFooter);
@@ -130,9 +132,12 @@ public class PoiListFragment extends ListFragment {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastItemInScreen = firstVisibleItem + visibleItemCount;
 
-                Log.d(TAG, "last item " + lastItemInScreen + " first " + firstVisibleItem + " visible " + visibleItemCount + " total " + totalItemCount);
-                Log.d(TAG, "current page " + mCurrentPage + " total pages " + mTotalPages + " loading " + isLoadingNextPage);
-                Log.d(TAG, "" + (mCurrentPage < mTotalPages) + " " + (lastItemInScreen == totalItemCount) + " " + !isLoadingNextPage);
+                Log.d(TAG, "last item " + lastItemInScreen + " first " + firstVisibleItem
+                        + " visible " + visibleItemCount + " total " + totalItemCount);
+                Log.d(TAG, "current page " + mCurrentPage + " total pages " + mTotalPages
+                        + " loading " + isLoadingNextPage);
+                Log.d(TAG, "" + (mCurrentPage < mTotalPages) + " "
+                        + (lastItemInScreen == totalItemCount) + " " + !isLoadingNextPage);
                 if (mCurrentPage < mTotalPages && (lastItemInScreen == totalItemCount)) { // && !isLoadingNextPage) {
                     Log.d(TAG, "attempt to load the next page " + mCurrentPage + " " + mTotalPages);
                     isLoadingNextPage = true;

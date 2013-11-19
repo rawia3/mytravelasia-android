@@ -8,7 +8,7 @@ import com.twormobile.mytravelasia.model.PoiPicture;
 import java.util.List;
 
 /**
- * Parser for a feed detail resonse.
+ * Parser for a feed detail response.
  *
  * @author avendael
  */
@@ -18,6 +18,7 @@ public class FeedDetailResponse {
     private PoiDetailResponse poiDetail;
 
     @Expose
+    @SerializedName("pictures")
     private List<PoiPicture> poiPictures;
 
     public PoiDetail getPoiDetail() {
@@ -41,5 +42,23 @@ public class FeedDetailResponse {
 
     public void setPoiPictures(List<PoiPicture> poiPictures) {
         this.poiPictures = poiPictures;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        PoiDetail poiDetail = getPoiDetail();
+
+        buffer.append(poiDetail.getName());
+        buffer.append(": [");
+
+        for (PoiPicture picture : poiDetail.getPictures()) {
+            buffer.append(picture.getThumbnailUrl());
+            buffer.append(", ");
+        }
+
+        buffer.append("]");
+
+        return buffer.toString();
     }
 }
