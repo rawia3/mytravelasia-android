@@ -5,7 +5,6 @@
             android:layout_marginLeft="10dp"
             android:drawableLeft="@drawable/btn_like"
             android:drawablePadding="5dp"
-            android:text="0"
             style="@style/LayoutWrapWrap"/>
 
     <TextView
@@ -13,6 +12,5 @@
             android:layout_marginLeft="15dp"
             android:drawablePadding="5dp"
             android:drawableLeft="@drawable/btn_comment"
-            android:text="0"
             style="@style/LayoutWrapWrap"/>
 </merge>

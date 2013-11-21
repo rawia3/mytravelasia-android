@@ -6,4 +6,11 @@
         <item quantity="few">places</item>
         <item quantity="other">places</item>
     </plurals>
+
+    <plurals name="comments">
+        <item quantity="one">%d Comment</item>
+        <item quantity="many">%d Comments</item>
+        <item quantity="few">$d Comments</item>
+        <item quantity="other">%d Comments</item>
+    </plurals>
 </resources>

@@ -14,4 +14,7 @@
     <string name="lbl_asia">Asia</string>
     <string name="lbl_mytravel_ph">MyTravel PH</string>
     <string name="lbl_search">Search</string>
+    <string name="lbl_website">Website</string>
+    <string name="lbl_email">Email</string>
+    <string name="txt_empty">-</string>
 </resources>
