@@ -1,14 +1,28 @@
 package com.twormobile.mytravelasia.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Model class for a PoiDetail's picture.
+ * Model class for a PoiDetails' picture.
  *
  * @author avendael
  */
-public class PoiPicture {
+public class PoiPicture implements Parcelable {
+    public static final Creator<PoiPicture> CREATOR = new Creator<PoiPicture>() {
+        @Override
+        public PoiPicture createFromParcel(Parcel parcel) {
+            return new PoiPicture(parcel);
+        }
+
+        @Override
+        public PoiPicture[] newArray(int size) {
+            return new PoiPicture[size];
+        }
+    };
+
     @Expose
     @SerializedName("id")
     private long resourceId;
@@ -26,6 +40,28 @@ public class PoiPicture {
     @Expose
     @SerializedName("full")
     private String fullImageUrl;
+
+    public PoiPicture() {}
+
+    public PoiPicture(Parcel parcel) {
+        long[] longData = new long[2];
+        String[] stringData = new String[3];
+
+        parcel.readLongArray(longData);
+        parcel.readStringArray(stringData);
+
+        resourceId = longData[0];
+        poiId = longData[1];
+        caption = stringData[0];
+        thumbnailUrl = stringData[1];
+        fullImageUrl = stringData[2];
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLongArray(new long[] {resourceId, poiId});
+        parcel.writeStringArray(new String[] {caption, thumbnailUrl, fullImageUrl});
+    }
 
     public long getResourceId() {
         return resourceId;
@@ -65,5 +101,10 @@ public class PoiPicture {
 
     public void setFullImageUrl(String fullImageUrl) {
         this.fullImageUrl = fullImageUrl;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

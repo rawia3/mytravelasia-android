@@ -2,7 +2,7 @@ package com.twormobile.mytravelasia.http;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.twormobile.mytravelasia.model.PoiDetail;
+import com.twormobile.mytravelasia.model.PoiDetails;
 import com.twormobile.mytravelasia.model.PoiPicture;
 
 import java.util.List;
@@ -21,8 +21,8 @@ public class FeedDetailResponse {
     @SerializedName("pictures")
     private List<PoiPicture> poiPictures;
 
-    public PoiDetail getPoiDetail() {
-        PoiDetail detail = poiDetail.getPoiDetail();
+    public PoiDetails getPoiDetail() {
+        PoiDetails detail = poiDetail.getPoiDetails();
 
         if (detail != null
                 && (detail.getPictures() == null || detail.getPictures().size() == 0)) {
@@ -32,8 +32,8 @@ public class FeedDetailResponse {
         return detail;
     }
 
-    public void setPoiDetail(PoiDetail poiDetail) {
-        this.poiDetail.setPoiDetail(poiDetail);
+    public void setPoiDetail(PoiDetails poiDetails) {
+        this.poiDetail.setPoiDetails(poiDetails);
     }
 
     public List<PoiPicture> getPoiPictures() {
@@ -47,12 +47,12 @@ public class FeedDetailResponse {
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
-        PoiDetail poiDetail = getPoiDetail();
+        PoiDetails poiDetails = getPoiDetail();
 
-        buffer.append(poiDetail.getName());
+        buffer.append(poiDetails.getName());
         buffer.append(": [");
 
-        for (PoiPicture picture : poiDetail.getPictures()) {
+        for (PoiPicture picture : poiDetails.getPictures()) {
             buffer.append(picture.getThumbnailUrl());
             buffer.append(", ");
         }

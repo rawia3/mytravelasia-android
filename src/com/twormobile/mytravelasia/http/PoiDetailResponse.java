@@ -2,7 +2,7 @@ package com.twormobile.mytravelasia.http;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.twormobile.mytravelasia.model.PoiDetail;
+import com.twormobile.mytravelasia.model.PoiDetails;
 
 /**
  * Parser for a poi detail response.
@@ -12,18 +12,18 @@ import com.twormobile.mytravelasia.model.PoiDetail;
 public class PoiDetailResponse {
     @Expose
     @SerializedName("poi")
-    private PoiDetail poiDetail;
+    private PoiDetails poiDetails;
 
-    public PoiDetail getPoiDetail() {
-        return poiDetail;
+    public PoiDetails getPoiDetails() {
+        return poiDetails;
     }
 
-    public void setPoiDetail(PoiDetail poiDetail) {
-        this.poiDetail = poiDetail;
+    public void setPoiDetails(PoiDetails poiDetails) {
+        this.poiDetails = poiDetails;
     }
 
     @Override
     public String toString() {
-        return poiDetail.getName();
+        return poiDetails.getName();
     }
 }

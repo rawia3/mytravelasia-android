@@ -1,5 +1,7 @@
 package com.twormobile.mytravelasia.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,7 +13,19 @@ import java.util.List;
  *
  * @author avendael
  */
-public class PoiDetail {
+public class PoiDetails implements Parcelable {
+    public static final Creator<PoiDetails> CREATOR = new Creator<PoiDetails>() {
+        @Override
+        public PoiDetails createFromParcel(Parcel parcel) {
+            return new PoiDetails(parcel);
+        }
+
+        @Override
+        public PoiDetails[] newArray(int size) {
+            return new PoiDetails[size];
+        }
+    };
+
     /**
      * ID of the poi detail from the remote resource. This is different from the row id stored in the local database.
      */
@@ -133,6 +147,74 @@ public class PoiDetail {
     private String webUrl;
 
     private List<PoiPicture> pictures;
+
+    public PoiDetails() {}
+
+    public PoiDetails(Parcel parcel) {
+        long[] longData = new long[10];
+        String[] stringData = new String[15];
+        double[] doubleData = new double[4];
+        boolean[] booleanData = new boolean[5];
+
+        parcel.readLongArray(longData);
+        parcel.readStringArray(stringData);
+        parcel.readDoubleArray(doubleData);
+        parcel.readBooleanArray(booleanData);
+
+        resourceId = longData[0];
+        countryId = longData[1];
+        destinationId = longData[2];
+        totalComments = longData[3];
+        totalLikes = longData[4];
+        totalPictures = longData[5];
+        totalRatings = longData[6];
+        totalViews = longData[7];
+        updatedAt = new Date(longData[8]);
+        viewedAt = new Date(longData[9]);
+
+        name = stringData[0];
+        address = stringData[1];
+        bookingEmailProviders = stringData[2];
+        countryName = stringData[3];
+        currencyCode = stringData[4];
+        currentStatus = stringData[5];
+        description = stringData[6];
+        destinationName = stringData[7];
+        email = stringData[8];
+        fullAddress = stringData[9];
+        pictureFullPath = stringData[10];
+        pictureThumbPath = stringData[11];
+        poiTypeName = stringData[12];
+        telNo = stringData[13];
+        webUrl = stringData[14];
+
+        latitude = doubleData[0];
+        longitude = doubleData[1];
+        minRate = doubleData[2];
+        totalStars = doubleData[3];
+
+        isApproved = booleanData[0];
+        isBookable = booleanData[1];
+        isExclusive = booleanData[2];
+        isFeatured = booleanData[3];
+        isLiked = booleanData[4];
+
+        poiTypeId = parcel.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLongArray(new long[] {resourceId, countryId, destinationId, totalComments, totalLikes,
+                totalPictures, totalRatings, totalViews,
+                updatedAt != null ? updatedAt.getTime() : 0,
+                viewedAt != null ? viewedAt.getTime() : 0});
+        parcel.writeStringArray(new String[]{name, address, bookingEmailProviders, countryName, currencyCode,
+                currentStatus, description, destinationName, email, fullAddress, pictureFullPath, pictureThumbPath,
+                poiTypeName, telNo, webUrl});
+        parcel.writeDoubleArray(new double[]{latitude, longitude, minRate, totalStars});
+        parcel.writeBooleanArray(new boolean[] {isApproved, isBookable, isExclusive, isFeatured, isLiked});
+        parcel.writeInt(poiTypeId);
+    }
 
     public long getResourceId() {
         return resourceId;
@@ -436,5 +518,10 @@ public class PoiDetail {
 
     public void setPictures(List<PoiPicture> pictures) {
         this.pictures = pictures;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }
