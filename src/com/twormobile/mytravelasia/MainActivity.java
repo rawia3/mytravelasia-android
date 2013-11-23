@@ -8,6 +8,9 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
+import com.twormobile.mytravelasia.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.feed.PoiListFragment;
 import com.twormobile.mytravelasia.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.http.FeedListIntentService;
@@ -34,7 +38,8 @@ import com.twormobile.mytravelasia.util.Log;
  */
 public class MainActivity extends BaseMtaFragmentActivity implements PoiListFragment.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String TAG_FEED_LIST = "com.twormobile.mytravelasia.feed.PoiListFragment";
+    private static final String TAG_FEED_LIST_FRAGMENT = "com.twormobile.mytravelasia.feed.PoiListFragment";
+    private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.feed.PoiDetailsFragment";
 
     private boolean mIsDualPane;
     private String[] mNavItems;
@@ -42,6 +47,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
     private ListView mLvNav;
     private ActionBarDrawerToggle mDrawerToggle;
     private BroadcastReceiver mFeedListBroadcastReceiver;
+    private BroadcastReceiver mFeedDetailBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +64,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fl_list_container, new PoiListFragment(), TAG_FEED_LIST)
+                .replace(R.id.fl_list_container, new PoiListFragment(), TAG_FEED_LIST_FRAGMENT)
                 .commit();
     }
 
@@ -67,6 +73,8 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mFeedListBroadcastReceiver,
                 new IntentFilter(FeedListIntentService.BROADCAST_GET_FEED_LIST));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mFeedDetailBroadcastReceiver,
+                new IntentFilter(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL));
     }
 
     @Override
@@ -79,6 +87,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mFeedListBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mFeedDetailBroadcastReceiver);
         super.onPause();
     }
 
@@ -121,6 +130,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
     @Override
     public void onPoiSelected(long feedId) {
         Intent getDetailsIntent = new Intent(MainActivity.this, FeedDetailIntentService.class);
+
         getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID, feedId);
         startService(getDetailsIntent);
     }
@@ -136,7 +146,10 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
         mFeedListBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_FAILED)) {
+                Log.d(TAG, "received broadcast");
+
+                if (intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_FAILED)
+                        || intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_FAILED)) {
                     Toast.makeText(MainActivity.this, "Failed to retrieve feeds", Toast.LENGTH_LONG).show();
                 } else if (intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_SUCCESS)) {
                     Log.d(TAG, "successfully retrieved feeds");
@@ -144,12 +157,36 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                     long currentPage = pageData[0];
                     long totalPages = pageData[1];
                     PoiListFragment poiListFragment = (PoiListFragment) getSupportFragmentManager()
-                            .findFragmentByTag(TAG_FEED_LIST);
+                            .findFragmentByTag(TAG_FEED_LIST_FRAGMENT);
 
                     poiListFragment.setCurrentPage(currentPage);
                     poiListFragment.setTotalPages(totalPages);
 
                     if (currentPage < totalPages && currentPage < 5) onNextPage(currentPage + 1L);
+                }
+            }
+        };
+
+        mFeedDetailBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_FAILED)
+                        || intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_FAILED)) {
+                    Toast.makeText(MainActivity.this, "Failed to retrieve details", Toast.LENGTH_LONG).show();
+                } else if (intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS)) {
+                    Log.d(TAG, "displaying detail fragment");
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    Fragment poiDetailsFragment = new PoiDetailsFragment();
+                    Bundle args = new Bundle();
+
+                    Log.d(TAG, "poi detail name " + intent.getParcelableExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS));
+                    args.putParcelable(PoiDetailsFragment.ARG_POI_DETAILS,
+                            intent.getParcelableExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS));
+                    poiDetailsFragment.setArguments(args);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.replace(R.id.fl_list_container, poiDetailsFragment, TAG_DETAILS_FRAGMENT)
+                            .commit();
                 }
             }
         };

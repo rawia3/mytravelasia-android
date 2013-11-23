@@ -77,7 +77,7 @@ public class FeedDetailIntentService extends BaseFeedIntentService {
                         Log.d(TAG, "the response is " + response.toString());
                         Intent broadcastIntent = new Intent(BROADCAST_GET_FEED_DETAIL);
 
-                        broadcastIntent.putExtra(BROADCAST_GET_FEED_DETAIL_SUCCESS, response.toString()); // TODO: IPC might truncate this when the content is too long. Include this in a cache, or pass a Parcelable message
+                        broadcastIntent.putExtra(BROADCAST_GET_FEED_DETAIL_SUCCESS, response.getPoiDetail());
                         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
                     }
                 },
