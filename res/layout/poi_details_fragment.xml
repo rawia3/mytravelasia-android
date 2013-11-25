@@ -5,6 +5,12 @@
             style="@style/LayoutMatchMatch">
     <LinearLayout android:orientation="vertical"
                   style="@style/LayoutMatchWrap">
+        <android.support.v4.view.ViewPager
+                android:id="@+id/vp_carousel"
+                android:background="@android:color/black"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"/>
+
         <LinearLayout android:orientation="vertical"
                       android:background="@color/blue"
                       android:paddingLeft="@dimen/side_padding"
@@ -13,11 +19,9 @@
             <TextView android:id="@+id/tv_poi_name"
                       style="@style/LayoutMatchWrap"
                       android:textSize="23sp"
-                      android:textStyle="bold"
-                      android:text="Rizal Park"/>
+                      android:textStyle="bold"/>
             <TextView android:id="@+id/tv_poi_address"
-                      style="@style/LayoutMatchWrap"
-                      android:text="123 Manila City"/>
+                      style="@style/LayoutMatchWrap"/>
         </LinearLayout>
 
         <RelativeLayout android:background="@color/gray"
@@ -26,7 +30,6 @@
                         style="@style/LayoutMatchWrap">
             <TextView android:id="@+id/tv_comments"
                       android:layout_alignParentLeft="true"
-                      android:text="1 Comment"
                       android:drawableLeft="@drawable/btn_comment"
                       android:textColor="@android:color/black"
                       style="@style/LayoutWrapWrap"/>
@@ -34,7 +37,6 @@
                       android:layout_alignParentRight="true"
                       android:drawableLeft="@drawable/btn_like"
                       android:textColor="@android:color/black"
-                      android:text="1 Like"
                       style="@style/LayoutWrapWrap"/>
         </RelativeLayout>
 
@@ -86,7 +88,6 @@
         <TextView android:id="@+id/tv_description"
                   android:paddingLeft="@dimen/side_padding"
                   android:paddingRight="@dimen/side_padding"
-                  android:text="The quick brown fox jumps over the lazy dog"
                   android:textColor="@android:color/black"
                   style="@style/LayoutMatchWrap"/>
     </LinearLayout>

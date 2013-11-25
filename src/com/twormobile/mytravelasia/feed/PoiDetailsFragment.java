@@ -1,13 +1,20 @@
 package com.twormobile.mytravelasia.feed;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.twormobile.mytravelasia.R;
 import com.twormobile.mytravelasia.model.PoiDetails;
+import com.twormobile.mytravelasia.ui.CarouselPhotoFragment;
+import com.twormobile.mytravelasia.ui.FragmentListPagerAdapter;
+import com.twormobile.mytravelasia.ui.ZoomOutPageTransformer;
+
+import java.util.ArrayList;
 
 /**
  * A fragment which displays a Poi's details.
@@ -19,6 +26,8 @@ public class PoiDetailsFragment extends Fragment {
     public static final String ARG_POI_DETAILS = "com.twormobile.mytravelasia.arg_poi_details";
 
     private PoiDetails mPoiDetails;
+    private ViewPager mViewPager;
+    private FragmentListPagerAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,6 +41,23 @@ public class PoiDetailsFragment extends Fragment {
         TextView tvWebsite = (TextView) view.findViewById(R.id.tv_website);
         TextView tvEmail = (TextView) view.findViewById(R.id.tv_email);
         TextView tvDescription = (TextView) view.findViewById(R.id.tv_description);
+        mViewPager = (ViewPager) view.findViewById(R.id.vp_carousel);
+
+        ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+        mAdapter = new FragmentListPagerAdapter(getActivity().getSupportFragmentManager(), fragments);
+
+        fragments.add(new CarouselPhotoFragment());
+        fragments.add(new CarouselPhotoFragment());
+        fragments.add(new CarouselPhotoFragment());
+        fragments.add(new CarouselPhotoFragment());
+        fragments.add(new CarouselPhotoFragment());
+
+        mAdapter.notifyDataSetChanged();
+        mViewPager.setAdapter(mAdapter);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            mViewPager.setPageTransformer(false, new ZoomOutPageTransformer());
+        }
 
         if (args != null) {
             mPoiDetails = args.getParcelable(ARG_POI_DETAILS);

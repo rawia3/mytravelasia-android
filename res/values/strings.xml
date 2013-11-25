@@ -17,4 +17,5 @@
     <string name="lbl_website">Website</string>
     <string name="lbl_email">Email</string>
     <string name="txt_empty">-</string>
+    <string name="desc_poi_photo">POI Photo</string>
 </resources>
