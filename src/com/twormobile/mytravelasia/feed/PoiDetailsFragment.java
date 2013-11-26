@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -42,6 +43,15 @@ public class PoiDetailsFragment extends Fragment {
         TextView tvEmail = (TextView) view.findViewById(R.id.tv_email);
         TextView tvDescription = (TextView) view.findViewById(R.id.tv_description);
         mViewPager = (ViewPager) view.findViewById(R.id.vp_carousel);
+
+        // Prevent the ScrollView from intercepting a ViewPager flip
+        mViewPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mViewPager.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
         ArrayList<Fragment> fragments = new ArrayList<Fragment>();
         mAdapter = new FragmentListPagerAdapter(getActivity().getSupportFragmentManager(), fragments);
