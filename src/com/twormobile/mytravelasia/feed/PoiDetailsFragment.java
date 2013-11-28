@@ -14,6 +14,7 @@ import com.twormobile.mytravelasia.model.PoiDetails;
 import com.twormobile.mytravelasia.ui.CarouselPhotoFragment;
 import com.twormobile.mytravelasia.ui.FragmentListPagerAdapter;
 import com.twormobile.mytravelasia.ui.ZoomOutPageTransformer;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,7 @@ public class PoiDetailsFragment extends Fragment {
         TextView tvEmail = (TextView) view.findViewById(R.id.tv_email);
         TextView tvDescription = (TextView) view.findViewById(R.id.tv_description);
         mViewPager = (ViewPager) view.findViewById(R.id.vp_carousel);
+        CirclePageIndicator circlePageIndicator = (CirclePageIndicator) view.findViewById(R.id.vi_indicator);
 
         // Prevent the ScrollView from intercepting a ViewPager flip
         mViewPager.setOnTouchListener(new View.OnTouchListener() {
@@ -64,6 +66,7 @@ public class PoiDetailsFragment extends Fragment {
 
         mAdapter.notifyDataSetChanged();
         mViewPager.setAdapter(mAdapter);
+        circlePageIndicator.setViewPager(mViewPager);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             mViewPager.setPageTransformer(false, new ZoomOutPageTransformer());
