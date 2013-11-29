@@ -11,12 +11,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.twormobile.mytravelasia.R;
 import com.twormobile.mytravelasia.model.PoiDetails;
+import com.twormobile.mytravelasia.model.PoiPicture;
 import com.twormobile.mytravelasia.ui.CarouselPhotoFragment;
 import com.twormobile.mytravelasia.ui.FragmentListPagerAdapter;
 import com.twormobile.mytravelasia.ui.ZoomOutPageTransformer;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment which displays a Poi's details.
@@ -43,34 +45,6 @@ public class PoiDetailsFragment extends Fragment {
         TextView tvWebsite = (TextView) view.findViewById(R.id.tv_website);
         TextView tvEmail = (TextView) view.findViewById(R.id.tv_email);
         TextView tvDescription = (TextView) view.findViewById(R.id.tv_description);
-        mViewPager = (ViewPager) view.findViewById(R.id.vp_carousel);
-        CirclePageIndicator circlePageIndicator = (CirclePageIndicator) view.findViewById(R.id.vi_indicator);
-
-        // Prevent the ScrollView from intercepting a ViewPager flip
-        mViewPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mViewPager.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
-
-        ArrayList<Fragment> fragments = new ArrayList<Fragment>();
-        mAdapter = new FragmentListPagerAdapter(getActivity().getSupportFragmentManager(), fragments);
-
-        fragments.add(new CarouselPhotoFragment());
-        fragments.add(new CarouselPhotoFragment());
-        fragments.add(new CarouselPhotoFragment());
-        fragments.add(new CarouselPhotoFragment());
-        fragments.add(new CarouselPhotoFragment());
-
-        mAdapter.notifyDataSetChanged();
-        mViewPager.setAdapter(mAdapter);
-        circlePageIndicator.setViewPager(mViewPager);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            mViewPager.setPageTransformer(false, new ZoomOutPageTransformer());
-        }
 
         if (args != null) {
             mPoiDetails = args.getParcelable(ARG_POI_DETAILS);
@@ -87,6 +61,55 @@ public class PoiDetailsFragment extends Fragment {
             mPoiDetails = new PoiDetails();
         }
 
+        List<PoiPicture> pictures = mPoiDetails.getPictures();
+
+        if (pictures != null && pictures.size() > 0) {
+            view.findViewById(R.id.fl_photo_container).setVisibility(View.VISIBLE);
+            initCarousel(view);
+        }
+
         return view;
+    }
+
+    private void initCarousel(View view) {
+        mViewPager = (ViewPager) view.findViewById(R.id.vp_carousel);
+        CirclePageIndicator circlePageIndicator = (CirclePageIndicator) view.findViewById(R.id.vi_indicator);
+
+        // Prevent the ScrollView from intercepting a ViewPager flip
+        mViewPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mViewPager.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
+        ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+        mAdapter = new FragmentListPagerAdapter(getActivity().getSupportFragmentManager(), fragments);
+
+        List<PoiPicture> pictures = mPoiDetails.getPictures();
+
+        for (PoiPicture picture : pictures) {
+            CarouselPhotoFragment carouselPhotoFragment = new CarouselPhotoFragment();
+            Bundle args = new Bundle();
+
+            args.putString(CarouselPhotoFragment.ARG_PHOTO_URL, picture.getFullImageUrl());
+            carouselPhotoFragment.setArguments(args);
+
+            fragments.add(carouselPhotoFragment);
+        }
+
+        mAdapter.notifyDataSetChanged();
+        mViewPager.setAdapter(mAdapter);
+
+        if (pictures.size() <= 1) {
+            circlePageIndicator.setVisibility(View.GONE);
+        } else {
+            circlePageIndicator.setViewPager(mViewPager);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            mViewPager.setPageTransformer(false, new ZoomOutPageTransformer());
+        }
     }
 }
