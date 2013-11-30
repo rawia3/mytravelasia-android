@@ -15,6 +15,7 @@ import com.twormobile.mytravelasia.model.PoiPicture;
 import com.twormobile.mytravelasia.ui.CarouselPhotoFragment;
 import com.twormobile.mytravelasia.ui.FragmentListPagerAdapter;
 import com.twormobile.mytravelasia.ui.ZoomOutPageTransformer;
+import com.twormobile.mytravelasia.util.AppConstants;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class PoiDetailsFragment extends Fragment {
             CarouselPhotoFragment carouselPhotoFragment = new CarouselPhotoFragment();
             Bundle args = new Bundle();
 
-            args.putString(CarouselPhotoFragment.ARG_PHOTO_URL, picture.getFullImageUrl());
+            args.putString(AppConstants.ARG_PHOTO_URL, picture.getFullImageUrl());
             carouselPhotoFragment.setArguments(args);
 
             fragments.add(carouselPhotoFragment);

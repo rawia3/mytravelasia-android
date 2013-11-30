@@ -23,4 +23,6 @@ public class AppConstants {
      * The usual density dpi of the smallest tablet.
      */
     public static final int TABLET_MIN_SW = 530;
+
+    public static final String ARG_PHOTO_URL = "com.twormobile.mytravelasia.ui.photo_url";
 }

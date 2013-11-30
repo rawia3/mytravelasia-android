@@ -25,8 +25,11 @@ import android.widget.SearchView;
 import android.widget.Toast;
 import com.twormobile.mytravelasia.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.feed.PoiListFragment;
+import com.twormobile.mytravelasia.feed.PoiPhotoActivity;
 import com.twormobile.mytravelasia.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.http.FeedListIntentService;
+import com.twormobile.mytravelasia.ui.CarouselPhotoFragment;
+import com.twormobile.mytravelasia.util.AppConstants;
 import com.twormobile.mytravelasia.util.Log;
 
 /**
@@ -36,7 +39,8 @@ import com.twormobile.mytravelasia.util.Log;
  *
  * @author avendael
  */
-public class MainActivity extends BaseMtaFragmentActivity implements PoiListFragment.Callbacks {
+public class MainActivity extends BaseMtaFragmentActivity
+        implements PoiListFragment.Callbacks, CarouselPhotoFragment.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_FEED_LIST_FRAGMENT = "com.twormobile.mytravelasia.feed.PoiListFragment";
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.feed.PoiDetailsFragment";
@@ -140,6 +144,14 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
         Intent getFeedIntent = new Intent(MainActivity.this, FeedListIntentService.class);
         getFeedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_FETCH_PAGE, page);
         startService(getFeedIntent);
+    }
+
+    @Override
+    public void onPhotoClicked(String url) {
+        Intent intent = new Intent(MainActivity.this, PoiPhotoActivity.class);
+
+        intent.putExtra(AppConstants.ARG_PHOTO_URL, url);
+        startActivity(intent);
     }
 
     private void initBroadcastReceivers() {

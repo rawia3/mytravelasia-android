@@ -5,11 +5,9 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
     <com.loopj.android.image.SmartImageView
-            android:id="@+id/iv_carousel_photo"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
+            android:id="@+id/iv_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:clickable="true"
             android:contentDescription="@string/desc_poi_photo"/>
 </LinearLayout>
