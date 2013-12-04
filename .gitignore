@@ -8,3 +8,4 @@ gen
 out/
 test_servers/
 tests/screenshot*.png
+res/values/api_keys.xml
