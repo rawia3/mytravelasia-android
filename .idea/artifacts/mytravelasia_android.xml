@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="apk" name="mytravelasia-android">
+    <output-path>$PROJECT_DIR$/out/artifacts/mytravelasia_android</output-path>
+    <properties id="android-properties">
+      <options>
+        <option name="keyAlias" value="mtadebug" />
+        <option name="keyPassword" value="cnVwM3J0" />
+        <option name="keyStorePassword" value="cnVwM3J0" />
+        <option name="keyStoreUrl" value="file://$PROJECT_DIR$/keystores/mta-debug-key.keystore" />
+        <option name="proGuardCfgFiles">
+          <list>
+            <option value="file://%MODULE_SDK_HOME%/tools/proguard/proguard-android.txt" />
+          </list>
+        </option>
+        <option name="signingMode" value="DEBUG_WITH_CUSTOM_CERTIFICATE" />
+      </options>
+    </properties>
+    <root id="archive" name="mytravelasia-android.apk">
+      <element id="android-final-package" facet="mytravelasia-android/android/Android" />
+    </root>
+  </artifact>
+</component>
