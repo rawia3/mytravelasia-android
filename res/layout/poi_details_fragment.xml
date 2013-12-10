@@ -99,5 +99,10 @@
                   android:paddingRight="@dimen/side_padding"
                   android:textColor="@android:color/black"
                   style="@style/LayoutMatchWrap"/>
+
+        <fragment android:id="@+id/map"
+                  android:layout_width="match_parent"
+                  android:layout_height="450dp"
+                  android:name="com.google.android.gms.maps.SupportMapFragment"/>
     </LinearLayout>
 </ScrollView>

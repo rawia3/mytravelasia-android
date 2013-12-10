@@ -5,6 +5,8 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.twormobile.mytravelasia.util.AppConstants;
 import com.twormobile.mytravelasia.util.Log;
 
@@ -17,6 +19,7 @@ public class SplashActivity extends BaseMtaActivity {
 
     private boolean isActive = true;
     private boolean isExit = false;
+    private Thread mTimerThread;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +28,7 @@ public class SplashActivity extends BaseMtaActivity {
 
         if (AppConstants.DEBUG) showScreenMetrics();
 
-        Thread timerThread = new Thread() {
+        mTimerThread = new Thread() {
             @Override
             public void run() {
                 try {
@@ -48,7 +51,21 @@ public class SplashActivity extends BaseMtaActivity {
                 }
             }
         };
-        timerThread.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int result = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+
+        switch (result) {
+            case ConnectionResult.SERVICE_MISSING:
+            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+            case ConnectionResult.SERVICE_DISABLED:
+                GooglePlayServicesUtil.getErrorDialog(result, this, 0);
+            default:
+                mTimerThread.start();
+        }
     }
 
     @Override
