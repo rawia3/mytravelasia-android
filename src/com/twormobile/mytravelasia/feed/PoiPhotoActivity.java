@@ -7,6 +7,8 @@ import com.twormobile.mytravelasia.R;
 import com.twormobile.mytravelasia.util.AppConstants;
 
 /**
+ * An activity which shows a POI photo in full screen.
+ *
  * @author avendael
  */
 public class PoiPhotoActivity extends Activity {

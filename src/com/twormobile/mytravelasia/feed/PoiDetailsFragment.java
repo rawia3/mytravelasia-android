@@ -1,20 +1,18 @@
 package com.twormobile.mytravelasia.feed;
 
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.twormobile.mytravelasia.R;
 import com.twormobile.mytravelasia.model.PoiDetails;
 import com.twormobile.mytravelasia.model.PoiPicture;
@@ -35,13 +33,26 @@ import java.util.List;
 public class PoiDetailsFragment extends Fragment {
     public static final String TAG = PoiDetailsFragment.class.getSimpleName();
     public static final String ARG_POI_DETAILS = "com.twormobile.mytravelasia.arg_poi_details";
-    public static final int CAMERA_ZOOM = 15;
-    public static final int CAMERA_ZOOM_DURATION_MS = 10;
 
+    private Callbacks mCallbacks;
     private PoiDetails mPoiDetails;
     private ViewPager mViewPager;
     private FragmentListPagerAdapter mAdapter;
-    private GoogleMap mMap;
+
+    public interface Callbacks {
+        public void onViewMap(double latitude, double longitude, String name);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        if (!(activity instanceof Callbacks)) {
+            throw new IllegalStateException(AppConstants.EXC_ACTIVITY_CALLBACK);
+        }
+
+        mCallbacks = (Callbacks) activity;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,15 +78,6 @@ public class PoiDetailsFragment extends Fragment {
             tvWebsite.setText(mPoiDetails.getWebUrl());
             tvEmail.setText(mPoiDetails.getEmail());
             tvDescription.setText(mPoiDetails.getDescription());
-            mMap = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-
-            LatLng location = new LatLng(mPoiDetails.getLatitude(), mPoiDetails.getLongitude());
-
-            if (mMap != null) {
-                mMap.addMarker(new MarkerOptions().position(location).title(mPoiDetails.getName()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, CAMERA_ZOOM));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(10), CAMERA_ZOOM_DURATION_MS, null);
-            }
         } else {
             mPoiDetails = new PoiDetails();
         }
@@ -87,18 +89,27 @@ public class PoiDetailsFragment extends Fragment {
             initCarousel(view);
         }
 
+        setHasOptionsMenu(true);
+
         return view;
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
 
-        // We need to do this. Otherwise, MainActivity will crash because of a dupe SupportMapFragment id.
-        Fragment fragment = (getFragmentManager().findFragmentById(R.id.map));
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.remove(fragment);
-        fragmentTransaction.commit();
+        inflater.inflate(R.menu.poi_details_menu_options, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.map:
+                mCallbacks.onViewMap(mPoiDetails.getLatitude(), mPoiDetails.getLongitude(), mPoiDetails.getName());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initCarousel(View view) {

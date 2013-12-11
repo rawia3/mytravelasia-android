@@ -18,4 +18,5 @@
     <string name="lbl_email">Email</string>
     <string name="txt_empty">-</string>
     <string name="desc_poi_photo">POI Photo</string>
+    <string name="lbl_map">Map</string>
 </resources>

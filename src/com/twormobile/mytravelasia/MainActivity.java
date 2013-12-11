@@ -1,5 +1,6 @@
 package com.twormobile.mytravelasia;
 
+import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.widget.SearchView;
 import android.widget.Toast;
 import com.twormobile.mytravelasia.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.feed.PoiListFragment;
+import com.twormobile.mytravelasia.feed.PoiMapFragment;
 import com.twormobile.mytravelasia.feed.PoiPhotoActivity;
 import com.twormobile.mytravelasia.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.http.FeedListIntentService;
@@ -40,10 +42,11 @@ import com.twormobile.mytravelasia.util.Log;
  * @author avendael
  */
 public class MainActivity extends BaseMtaFragmentActivity
-        implements PoiListFragment.Callbacks, CarouselPhotoFragment.Callbacks {
+        implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_FEED_LIST_FRAGMENT = "com.twormobile.mytravelasia.feed.PoiListFragment";
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.feed.PoiDetailsFragment";
+    private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.feed.PoiMapFragment";
 
     private boolean mIsDualPane;
     private String[] mNavItems;
@@ -63,8 +66,12 @@ public class MainActivity extends BaseMtaFragmentActivity
         initSideNav();
         initBroadcastReceivers();
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        ActionBar actionBar = getActionBar();
+
+        if (null != actionBar) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -118,9 +125,12 @@ public class MainActivity extends BaseMtaFragmentActivity
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.action_bar_menu_options, menu);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        if (null != menu) {
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        }
 
         return true;
     }
@@ -128,7 +138,6 @@ public class MainActivity extends BaseMtaFragmentActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-
     }
 
     @Override
@@ -152,6 +161,22 @@ public class MainActivity extends BaseMtaFragmentActivity
 
         intent.putExtra(AppConstants.ARG_PHOTO_URL, url);
         startActivity(intent);
+    }
+
+    @Override
+    public void onViewMap(double latitude, double longitude, String name) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        PoiMapFragment poiMapFragment = new PoiMapFragment();
+        Bundle args = new Bundle();
+
+        args.putDouble(PoiMapFragment.ARGS_LAT, latitude);
+        args.putDouble(PoiMapFragment.ARGS_LNG, longitude);
+        args.putString(PoiMapFragment.ARGS_NAME, name);
+
+        poiMapFragment.setArguments(args);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.fl_list_container, poiMapFragment, TAG_DETAILS_FRAGMENT)
+                .commit();
     }
 
     private void initBroadcastReceivers() {
