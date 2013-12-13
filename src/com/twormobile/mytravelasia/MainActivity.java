@@ -151,6 +151,11 @@ public class MainActivity extends BaseMtaFragmentActivity
     @Override
     public void onNextPage(long page) {
         Intent getFeedIntent = new Intent(MainActivity.this, FeedListIntentService.class);
+        PoiListFragment poiListFragment = (PoiListFragment) getSupportFragmentManager()
+                .findFragmentByTag(TAG_FEED_LIST_FRAGMENT);
+
+        if (poiListFragment != null) poiListFragment.showFooter();
+
         getFeedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_FETCH_PAGE, page);
         startService(getFeedIntent);
     }
@@ -191,6 +196,9 @@ public class MainActivity extends BaseMtaFragmentActivity
                 } else if (intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_SUCCESS)) {
                     Log.d(TAG, "successfully retrieved feeds");
                     long[] pageData = intent.getLongArrayExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_SUCCESS);
+
+                    if (null == pageData) return;
+
                     long currentPage = pageData[0];
                     long totalPages = pageData[1];
                     PoiListFragment poiListFragment = (PoiListFragment) getSupportFragmentManager()
@@ -198,6 +206,7 @@ public class MainActivity extends BaseMtaFragmentActivity
 
                     poiListFragment.setCurrentPage(currentPage);
                     poiListFragment.setTotalPages(totalPages);
+                    poiListFragment.hideFooter();
 
                     if (currentPage < totalPages && currentPage < 5) onNextPage(currentPage + 1L);
                 }

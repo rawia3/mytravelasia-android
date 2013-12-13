@@ -1,8 +1,6 @@
 package com.twormobile.mytravelasia.feed;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +9,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.twormobile.mytravelasia.R;
 import com.twormobile.mytravelasia.util.Log;
 
 /**
@@ -19,7 +16,7 @@ import com.twormobile.mytravelasia.util.Log;
  *
  * @author avendael
  */
-public class PoiMapFragment extends Fragment {
+public class PoiMapFragment extends SupportMapFragment {
     private static final String TAG = PoiMapFragment.class.getSimpleName();
     private static final int CAMERA_ZOOM = 15;
     private static final int CAMERA_ZOOM_DURATION_MS = 10;
@@ -30,7 +27,7 @@ public class PoiMapFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.poi_map_fragment, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
         Bundle args = getArguments();
 
         if (null == args) {
@@ -40,7 +37,7 @@ public class PoiMapFragment extends Fragment {
         double lat = args.getDouble(ARGS_LAT);
         double lng = args.getDouble(ARGS_LNG);
         LatLng latLng = new LatLng(lat, lng);
-        GoogleMap map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        GoogleMap map = getMap();
 
         Log.d(TAG, "lat lng" + lat + " " + lng);
         if (null != map) {
@@ -50,16 +47,5 @@ public class PoiMapFragment extends Fragment {
         }
 
         return view;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        // We need to do this. Otherwise, MainActivity will crash because of a dupe SupportMapFragment id.
-        Fragment fragment = (getFragmentManager().findFragmentById(R.id.map));
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.remove(fragment);
-        fragmentTransaction.commit();
     }
 }

@@ -44,6 +44,8 @@ public class PoiListFragment extends ListFragment {
         public void onNextPage(long page) {
         }
     };
+    private ListView mListView;
+    private View mListViewFooter;
 
 
     public interface Callbacks {
@@ -118,34 +120,15 @@ public class PoiListFragment extends ListFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ListView listView = getListView();
-        View listViewFooter = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+        mListView = getListView();
+        mListViewFooter = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.poi_list_footer, null, false);
+        AbsListView.OnScrollListener onScrollListener = initOnScrollListener();
 
         setListShown(false);
-        listView.addFooterView(listViewFooter);
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {}
+        mListView.addFooterView(mListViewFooter);
+        mListView.setOnScrollListener(onScrollListener);
 
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                int lastItemInScreen = firstVisibleItem + visibleItemCount;
-
-                Log.d(TAG, "last item " + lastItemInScreen + " first " + firstVisibleItem
-                        + " visible " + visibleItemCount + " total " + totalItemCount);
-                Log.d(TAG, "current page " + mCurrentPage + " total pages " + mTotalPages
-                        + " loading " + isLoadingNextPage);
-                Log.d(TAG, "" + (mCurrentPage < mTotalPages) + " "
-                        + (lastItemInScreen == totalItemCount) + " " + !isLoadingNextPage);
-                if (mCurrentPage < mTotalPages && (lastItemInScreen == totalItemCount)) { // && !isLoadingNextPage) {
-                    Log.d(TAG, "attempt to load the next page " + mCurrentPage + " " + mTotalPages);
-                    isLoadingNextPage = true;
-
-                    mCallbacks.onNextPage(mCurrentPage + 1L);
-                }
-            }
-        });
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, mLoader);
     }
@@ -155,6 +138,14 @@ public class PoiListFragment extends ListFragment {
         super.onListItemClick(listView, view, position, id);
 
         mCallbacks.onPoiSelected(mAdapter.getItemId(position));
+    }
+
+    public void hideFooter() {
+        mListView.removeFooterView(mListViewFooter);
+    }
+
+    public void showFooter() {
+        if (mListView.getFooterViewsCount() == 0) mListView.addFooterView(mListViewFooter);
     }
 
     public long getCurrentPage() {
@@ -174,5 +165,31 @@ public class PoiListFragment extends ListFragment {
 
     public void setTotalPages(long totalPages) {
         mTotalPages = totalPages;
+    }
+
+    private AbsListView.OnScrollListener initOnScrollListener() {
+        return new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int lastItemInScreen = firstVisibleItem + visibleItemCount;
+
+                Log.d(TAG, "last item " + lastItemInScreen + " first " + firstVisibleItem
+                        + " visible " + visibleItemCount + " total " + totalItemCount);
+                Log.d(TAG, "current page " + mCurrentPage + " total pages " + mTotalPages
+                        + " loading " + isLoadingNextPage);
+                Log.d(TAG, "" + (mCurrentPage < mTotalPages) + " "
+                        + (lastItemInScreen == totalItemCount) + " " + !isLoadingNextPage);
+                if (!isLoadingNextPage && mCurrentPage < mTotalPages && (lastItemInScreen == totalItemCount)) { // && !isLoadingNextPage) {
+                    Log.d(TAG, "attempt to load the next page " + mCurrentPage + " " + mTotalPages);
+                    isLoadingNextPage = true;
+
+                    mCallbacks.onNextPage(mCurrentPage + 1L);
+                }
+            }
+        };
     }
 }
