@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
+import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.feed.PoiListFragment;
 import com.twormobile.mytravelasia.feed.PoiMapFragment;
@@ -33,6 +35,8 @@ import com.twormobile.mytravelasia.http.FeedListIntentService;
 import com.twormobile.mytravelasia.ui.CarouselPhotoFragment;
 import com.twormobile.mytravelasia.util.AppConstants;
 import com.twormobile.mytravelasia.util.Log;
+
+import java.io.File;
 
 /**
  * An activity that manages the feed and map fragments. If the device has a smallest width of >= 530dp, it will show
@@ -49,6 +53,7 @@ public class MainActivity extends BaseMtaFragmentActivity
     private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.feed.PoiMapFragment";
 
     private boolean mIsDualPane;
+    private boolean mIsRefreshing;
     private String[] mNavItems;
     private DrawerLayout mDlContainer;
     private ListView mLvNav;
@@ -161,6 +166,25 @@ public class MainActivity extends BaseMtaFragmentActivity
     }
 
     @Override
+    public void onPullToRefresh() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                getContentResolver().delete(MtaPhProvider.POI_URI, null, null);
+//                clearApplicationData();
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                mIsRefreshing = true;
+                onNextPage(0);
+            }
+        }.execute();
+    }
+
+    @Override
     public void onPhotoClicked(String url) {
         Intent intent = new Intent(MainActivity.this, PoiPhotoActivity.class);
 
@@ -180,7 +204,7 @@ public class MainActivity extends BaseMtaFragmentActivity
 
         poiMapFragment.setArguments(args);
         fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.replace(R.id.fl_list_container, poiMapFragment, TAG_DETAILS_FRAGMENT)
+        fragmentTransaction.replace(R.id.fl_list_container, poiMapFragment, TAG_MAP_FRAGMENT)
                 .commit();
     }
 
@@ -190,8 +214,10 @@ public class MainActivity extends BaseMtaFragmentActivity
             public void onReceive(Context context, Intent intent) {
                 Log.d(TAG, "received broadcast");
 
-                if (intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_FAILED)
-                        || intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_FAILED)) {
+                boolean isFailed = intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_FAILED)
+                        || intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_FAILED);
+
+                if (!mIsRefreshing && isFailed) {
                     Toast.makeText(MainActivity.this, "Failed to retrieve feeds", Toast.LENGTH_LONG).show();
                 } else if (intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_SUCCESS)) {
                     Log.d(TAG, "successfully retrieved feeds");
@@ -262,5 +288,38 @@ public class MainActivity extends BaseMtaFragmentActivity
         });
         mDlContainer.setDrawerListener(mDrawerToggle);
         mDlContainer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+    }
+
+    private void clearApplicationData() {
+        File cache = getCacheDir();
+        File appDir = new File(cache != null ? cache.getParent() : null);
+
+        if (appDir.exists()) {
+            String[] children = appDir.list();
+
+            for (String s : children) {
+                if (!s.equals("lib")) {
+                    deleteDir(new File(appDir, s));
+                }
+            }
+        }
+    }
+
+    private static boolean deleteDir(File dir) {
+        if (dir != null) {
+            if (dir.isDirectory()) {
+                String[] children = dir.list();
+
+                for (String aChildren : children) {
+                    boolean success = deleteDir(new File(dir, aChildren));
+
+                    if (!success) return false;
+                }
+            }
+
+            return dir.delete();
+        }
+
+        return false;
     }
 }

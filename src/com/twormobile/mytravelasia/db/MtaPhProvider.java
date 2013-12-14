@@ -95,6 +95,9 @@ public class MtaPhProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
             case POI_TABLE:
                 count = db.delete(Poi.TABLE_NAME, selection, selectionArgs);
+
+                getContext().getContentResolver().notifyChange(POI_URI, null);
+
                 break;
         }
 

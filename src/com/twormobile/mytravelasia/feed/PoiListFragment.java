@@ -19,16 +19,20 @@ import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.model.Poi;
 import com.twormobile.mytravelasia.util.AppConstants;
 import com.twormobile.mytravelasia.util.Log;
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 /**
  * A fragment which shows a list of POIs (points of interest).
  *
  * @author avendael
  */
-public class PoiListFragment extends ListFragment {
+public class PoiListFragment extends ListFragment implements OnRefreshListener {
     private static final String TAG = PoiListFragment.class.getSimpleName();
 
     private PoiCursorAdapter mAdapter;
+    private PullToRefreshLayout mPullToRefreshLayout;
     private LoaderCallbacks<Cursor> mLoader;
     private long mCurrentPage;
     private long mTotalPages;
@@ -43,10 +47,13 @@ public class PoiListFragment extends ListFragment {
         @Override
         public void onNextPage(long page) {
         }
+
+        @Override
+        public void onPullToRefresh() {
+        }
     };
     private ListView mListView;
     private View mListViewFooter;
-
 
     public interface Callbacks {
         /**
@@ -59,6 +66,11 @@ public class PoiListFragment extends ListFragment {
          * The action that the activity should perform when the list has reached the last item of the current page.
          */
         public void onNextPage(long page);
+
+        /**
+         * The action that the activity should perform after pull to refresh.
+         */
+        public void onPullToRefresh();
     }
 
     /**
@@ -121,14 +133,13 @@ public class PoiListFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mListView = getListView();
-        mListViewFooter = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                .inflate(R.layout.poi_list_footer, null, false);
+
+        initListFooter();
+
         AbsListView.OnScrollListener onScrollListener = initOnScrollListener();
 
-        setListShown(false);
-        mListView.addFooterView(mListViewFooter);
         mListView.setOnScrollListener(onScrollListener);
-
+        initPullToRefresh((ViewGroup) view);
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, mLoader);
     }
@@ -138,6 +149,13 @@ public class PoiListFragment extends ListFragment {
         super.onListItemClick(listView, view, position, id);
 
         mCallbacks.onPoiSelected(mAdapter.getItemId(position));
+    }
+
+    @Override
+    public void onRefreshStarted(View view) {
+        mCurrentPage = 0;
+        isLoadingNextPage = false;
+        mCallbacks.onPullToRefresh();
     }
 
     public void hideFooter() {
@@ -157,6 +175,7 @@ public class PoiListFragment extends ListFragment {
         if (currentPage == mCurrentPage + 1) isLoadingNextPage = false;
 
         mCurrentPage = currentPage;
+        mPullToRefreshLayout.setRefreshComplete();
     }
 
     public long getTotalPages() {
@@ -192,4 +211,24 @@ public class PoiListFragment extends ListFragment {
             }
         };
     }
+
+    private void initPullToRefresh(ViewGroup viewGroup) {
+        // We need to create a PullToRefreshLayout manually
+        mPullToRefreshLayout = new PullToRefreshLayout(viewGroup.getContext());
+
+        ActionBarPullToRefresh.from(getActivity())
+                .insertLayoutInto(viewGroup)
+                .theseChildrenArePullable(getListView(), getListView().getEmptyView())
+                .listener(this)
+                .setup(mPullToRefreshLayout);
+    }
+
+    private void initListFooter() {
+        mListViewFooter = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                .inflate(R.layout.poi_list_footer, null, false);
+
+        setListShown(false);
+        mListView.addFooterView(mListViewFooter);
+    }
+
 }
