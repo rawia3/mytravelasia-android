@@ -20,11 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.Toast;
+import android.widget.*;
 import com.twormobile.mytravelasia.db.MtaPhProvider;
 import com.twormobile.mytravelasia.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.feed.PoiListFragment;
@@ -54,6 +50,7 @@ public class MainActivity extends BaseMtaFragmentActivity
 
     private boolean mIsDualPane;
     private boolean mIsRefreshing;
+    private double[] mCoords;
     private String[] mNavItems;
     private DrawerLayout mDlContainer;
     private ListView mLvNav;
@@ -67,6 +64,7 @@ public class MainActivity extends BaseMtaFragmentActivity
         setContentView(R.layout.main_activity);
         setOrientationLock();
         mIsDualPane = findViewById(R.id.fl_map_container) != null;
+        mCoords = getIntent().getDoubleArrayExtra(AppConstants.ARG_CURRENT_LOCATION);
 
         initSideNav();
         initBroadcastReceivers();

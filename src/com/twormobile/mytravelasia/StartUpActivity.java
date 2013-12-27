@@ -8,6 +8,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import com.twormobile.mytravelasia.util.AppConstants;
 
 /**
  * An activity which serves as the startup entry point of the app. It shows an overview about Philippines, and some ads at
@@ -19,6 +20,7 @@ public class StartUpActivity extends BaseMtaActivity {
     private static final String TAG = StartUpActivity.class.getSimpleName();
     private static final String ADS_URL = "http://www.mytravel-asia.com/mobile/adsense";
 
+    private double[] mCoords;
     private WebView mWvAds;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,7 @@ public class StartUpActivity extends BaseMtaActivity {
         setOrientationLock();
 
         mWvAds = (WebView) findViewById(R.id.wv_ads);
+        mCoords = getIntent().getDoubleArrayExtra(AppConstants.ARG_CURRENT_LOCATION);
         Button enterButton = (Button) findViewById(R.id.btn_enter);
 
         enterButton.setOnClickListener(new View.OnClickListener() {
@@ -34,6 +37,7 @@ public class StartUpActivity extends BaseMtaActivity {
             public void onClick(View v) {
                 Intent mainIntent = new Intent(StartUpActivity.this, MainActivity.class);
 
+                mainIntent.putExtra(AppConstants.ARG_CURRENT_LOCATION, mCoords);
                 startActivity(mainIntent);
             }
         });

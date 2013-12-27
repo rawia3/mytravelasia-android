@@ -1,7 +1,10 @@
 package com.twormobile.mytravelasia;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -9,6 +12,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.twormobile.mytravelasia.util.AppConstants;
 import com.twormobile.mytravelasia.util.Log;
+
+import java.util.List;
 
 /**
  * An activity which displays a splash screen.
@@ -19,6 +24,7 @@ public class SplashActivity extends BaseMtaActivity {
 
     private boolean isActive = true;
     private boolean isExit = false;
+    private double[] mCoords;
     private Thread mTimerThread;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,7 @@ public class SplashActivity extends BaseMtaActivity {
                     if (!isExit) {
                         Intent startUpIntent = new Intent(SplashActivity.this, StartUpActivity.class);
 
+                        startUpIntent.putExtra(AppConstants.ARG_CURRENT_LOCATION, mCoords);
                         startActivity(startUpIntent);
                     }
                     finish();
@@ -64,6 +71,7 @@ public class SplashActivity extends BaseMtaActivity {
             case ConnectionResult.SERVICE_DISABLED:
                 GooglePlayServicesUtil.getErrorDialog(result, this, 0);
             default:
+                mCoords = getlocation();
                 mTimerThread.start();
         }
     }
@@ -94,5 +102,26 @@ public class SplashActivity extends BaseMtaActivity {
         Log.d(TAG, "::showScreenMetrics() -- dpWidth " + dpWidth);
         Log.d(TAG, "::showScreenMetrics() -- xPpi " + metrics.xdpi);
         Log.d(TAG, "::showScreenMetrics() -- yPpi " + metrics.ydpi);
+    }
+
+    public double[] getlocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = locationManager.getProviders(true);
+        Location location = null;
+
+        for (String provider : providers) {
+            location = locationManager.getLastKnownLocation(provider);
+
+            if (location != null) break;
+        }
+
+        double[] gps = new double[2];
+
+        if (location != null) {
+            gps[0] = location.getLatitude();
+            gps[1] = location.getLongitude();
+        }
+
+        return gps;
     }
 }

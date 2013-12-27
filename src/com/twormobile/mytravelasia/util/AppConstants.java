@@ -24,5 +24,13 @@ public class AppConstants {
      */
     public static final int TABLET_MIN_SW = 530;
 
+    /**
+     * Extras key for the user's current location.
+     */
+    public static final String ARG_CURRENT_LOCATION = "com.twormobile.mytravelasia.location.current";
+
+    /**
+     * Extras key for a POI's photo URL.
+     */
     public static final String ARG_PHOTO_URL = "com.twormobile.mytravelasia.ui.photo_url";
 }
