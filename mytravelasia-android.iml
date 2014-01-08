@@ -21,6 +21,7 @@
     <orderEntry type="module" module-name="volley" />
     <orderEntry type="module" module-name="viewpagerindicator" />
     <orderEntry type="module" module-name="pull-to-refresh" />
+    <orderEntry type="module" module-name="facebook" />
   </component>
 </module>
 

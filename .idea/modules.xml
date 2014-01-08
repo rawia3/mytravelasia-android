@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/modules/android-smart-image-view/android-smart-image-view.iml" filepath="$PROJECT_DIR$/modules/android-smart-image-view/android-smart-image-view.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/facebook/facebook.iml" filepath="$PROJECT_DIR$/modules/facebook/facebook.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/google-play-services_lib/google-play-services_lib.iml" filepath="$PROJECT_DIR$/modules/google-play-services_lib/google-play-services_lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/mytravelasia-android.iml" filepath="$PROJECT_DIR$/mytravelasia-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/pull-to-refresh/pull-to-refresh.iml" filepath="$PROJECT_DIR$/modules/pull-to-refresh/pull-to-refresh.iml" />
