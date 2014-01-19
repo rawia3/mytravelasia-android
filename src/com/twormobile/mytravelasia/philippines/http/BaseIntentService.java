@@ -9,7 +9,7 @@ import com.android.volley.toolbox.Volley;
 /**
  * @author avendael
  */
-public abstract class BaseFeedIntentService extends IntentService {
+public abstract class BaseIntentService extends IntentService {
     protected RequestQueue mRequestQueue;
 
     /**
@@ -17,7 +17,7 @@ public abstract class BaseFeedIntentService extends IntentService {
      *
      * @param name Used to name the worker thread, important only for debugging.
      */
-    public BaseFeedIntentService(String name) {
+    public BaseIntentService(String name) {
         super(name);
     }
 

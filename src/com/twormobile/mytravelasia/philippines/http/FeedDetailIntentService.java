@@ -11,7 +11,7 @@ import com.twormobile.mytravelasia.philippines.util.Log;
  *
  * @author avendael
  */
-public class FeedDetailIntentService extends BaseFeedIntentService {
+public class FeedDetailIntentService extends BaseIntentService {
     private static final String TAG = FeedDetailIntentService.class.getSimpleName();
 
     /**

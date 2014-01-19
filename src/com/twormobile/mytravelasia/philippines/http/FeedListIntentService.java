@@ -16,7 +16,7 @@ import java.util.HashMap;
  *
  * @author avendael
  */
-public class FeedListIntentService extends BaseFeedIntentService {
+public class FeedListIntentService extends BaseIntentService {
     private static final String TAG = FeedListIntentService.class.getSimpleName();
 
     /**
@@ -64,14 +64,14 @@ public class FeedListIntentService extends BaseFeedIntentService {
     protected void onHandleIntent(final Intent intent) {
         Log.d(TAG, "handling intent");
         final long page = intent.getLongExtra(EXTRAS_FEED_FETCH_PAGE, 1L);
-
         HashMap<String, String> params = new HashMap<String, String>();
+
         params.put(HttpConstants.PARAM_COUNTRY_NAME, "Philippines");
         params.put(HttpConstants.PARAM_PAGE, "1");
 
-        String url = String.format(HttpConstants.BASE_URL + HttpConstants.FEED_RESOURCE + "?"
-                + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s&"
-                + HttpConstants.PARAM_PAGE + "=%2$s",
+        String url = String.format(HttpConstants.BASE_URL + HttpConstants.FEED_RESOURCE
+                + "?" + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s"
+                + "&" + HttpConstants.PARAM_PAGE + "=%2$s",
                 "Philippines", page);
 
         Response.Listener<FeedResponse> successListener = getFeedResponseListener(page);
@@ -90,7 +90,7 @@ public class FeedListIntentService extends BaseFeedIntentService {
                     if (null == response) return;
 
                     for (Poi poi : response.getFeeds()) {
-                        Log.d(TAG, "poi name: " + poi.getName() + " created_at " + poi.getCreatedAt());
+                        Log.d(TAG, "poi name: " + poi.getName() + " poi id: " + poi.getResourceId() + " created_at " + poi.getCreatedAt());
                         ContentValues values = new ContentValues();
 
                         values.put(Poi.RESOURCE_ID, poi.getResourceId());

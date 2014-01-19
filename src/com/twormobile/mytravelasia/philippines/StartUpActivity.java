@@ -8,9 +8,14 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import com.facebook.LoggingBehavior;
+import com.facebook.Request;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.facebook.Settings;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
 
@@ -39,13 +44,14 @@ public class StartUpActivity extends BaseMtaActivity {
         setContentView(R.layout.startup_activity);
         setOrientationLock();
 
+        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+
         mWvAds = (WebView) findViewById(R.id.wv_ads);
         mCoords = getIntent().getDoubleArrayExtra(AppConstants.ARG_CURRENT_LOCATION);
         mUiLifecycleHelper = new UiLifecycleHelper(this, mSessionCallback);
         Button enterButton = (Button) findViewById(R.id.btn_enter);
 
         mUiLifecycleHelper.onCreate(savedInstanceState);
-
         enterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,8 +118,20 @@ public class StartUpActivity extends BaseMtaActivity {
         settings.setJavaScriptEnabled(true);
     }
 
-    private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-        if (state.isOpened()) Log.d(TAG, "facebook logged in");
-        else Log.d(TAG, "facebook logged out");
+    private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
+        if (state.isOpened()) {
+            Log.d(TAG, "facebook logged in");
+            Request.newMeRequest(session, new Request.GraphUserCallback() {
+                @Override
+                public void onCompleted(GraphUser user, Response response) {
+                    Log.d(TAG, "graph user " + user.getFirstName());
+                    Log.d(TAG, "graph user " + user.getLastName());
+                    Log.d(TAG, "graph user " + user.getId());
+                    Log.d(TAG, "graph user session " + session.getAccessToken());
+                }
+            }).executeAsync();
+        } else {
+            Log.d(TAG, "facebook logged out");
+        }
     }
 }
