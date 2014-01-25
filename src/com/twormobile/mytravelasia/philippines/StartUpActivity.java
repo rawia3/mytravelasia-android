@@ -1,13 +1,18 @@
 package com.twormobile.mytravelasia.philippines;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.Toast;
 import com.facebook.LoggingBehavior;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -16,6 +21,7 @@ import com.facebook.SessionState;
 import com.facebook.Settings;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
+import com.twormobile.mytravelasia.philippines.http.RegisterIntentService;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
 
@@ -32,6 +38,7 @@ public class StartUpActivity extends BaseMtaActivity {
     private double[] mCoords;
     private WebView mWvAds;
     private UiLifecycleHelper mUiLifecycleHelper;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     private Session.StatusCallback mSessionCallback = new Session.StatusCallback() {
         @Override
         public void call(Session session, SessionState state, Exception exception) {
@@ -62,6 +69,7 @@ public class StartUpActivity extends BaseMtaActivity {
             }
         });
 
+        initBroadcastReceivers();
         initAds();
     }
 
@@ -76,6 +84,9 @@ public class StartUpActivity extends BaseMtaActivity {
         }
 
         mUiLifecycleHelper.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(RegisterIntentService.BROADCAST_REGISTER_MTA));
+
         mWvAds.loadUrl(ADS_URL);
     }
 
@@ -83,6 +94,7 @@ public class StartUpActivity extends BaseMtaActivity {
     protected void onPause() {
         super.onPause();
         mUiLifecycleHelper.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
     @Override
@@ -118,16 +130,64 @@ public class StartUpActivity extends BaseMtaActivity {
         settings.setJavaScriptEnabled(true);
     }
 
+    private void initBroadcastReceivers() {
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "received broadcast");
+
+                boolean isFailed = intent.hasExtra(RegisterIntentService.BROADCAST_REGISTER_FAILED);
+                Toast loginFailMessage = Toast.makeText(
+                        StartUpActivity.this, "Failed to login. Please try again", Toast.LENGTH_LONG);
+
+                if (isFailed) {
+                    loginFailMessage.show();
+                } else if (intent.hasExtra(RegisterIntentService.BROADCAST_REGISTER_SUCCESS)) {
+                    String profileId = intent.getStringExtra(RegisterIntentService.BROADCAST_REGISTER_SUCCESS);
+
+                    if (null == profileId) {
+                        loginFailMessage.show();
+
+                        return;
+                    }
+
+                    Log.d(TAG, "successfully registered");
+                    Log.d(TAG, "profile id " + profileId);
+
+                    Intent mainIntent = new Intent(StartUpActivity.this, MainActivity.class);
+
+                    mainIntent.putExtra(AppConstants.ARG_CURRENT_LOCATION, mCoords);
+                    mainIntent.putExtra(AppConstants.ARG_FB_PROFILE_ID, profileId);
+                    startActivity(mainIntent);
+                }
+            }
+        };
+    }
+
     private void onSessionStateChange(final Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.d(TAG, "facebook logged in");
             Request.newMeRequest(session, new Request.GraphUserCallback() {
                 @Override
                 public void onCompleted(GraphUser user, Response response) {
-                    Log.d(TAG, "graph user " + user.getFirstName());
-                    Log.d(TAG, "graph user " + user.getLastName());
-                    Log.d(TAG, "graph user " + user.getId());
-                    Log.d(TAG, "graph user session " + session.getAccessToken());
+                    String profileId = user.getId();
+                    String firstName = user.getFirstName();
+                    String lastName = user.getLastName();
+                    String accessToken = session.getAccessToken();
+                    Intent registerIntent = new Intent(StartUpActivity.this, RegisterIntentService.class);
+
+                    Log.d(TAG, "graph user first name " + firstName);
+                    Log.d(TAG, "graph user last name " + lastName);
+                    Log.d(TAG, "graph user profile id " + profileId);
+                    Log.d(TAG, "graph user session " + accessToken);
+
+                    registerIntent.putExtra(RegisterIntentService.EXTRAS_PROFILE_ID, profileId);
+                    registerIntent.putExtra(RegisterIntentService.EXTRAS_FIRST_NAME, firstName);
+                    registerIntent.putExtra(RegisterIntentService.EXTRAS_LAST_NAME, lastName);
+                    registerIntent.putExtra(RegisterIntentService.EXTRAS_TOKEN, accessToken);
+
+                    Log.d(TAG, "attempt to call intent service");
+                    startService(registerIntent);
                 }
             }).executeAsync();
         } else {

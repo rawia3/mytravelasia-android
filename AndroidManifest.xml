@@ -58,6 +58,8 @@
                  android:label="FeedListIntentService"/>
         <service android:name=".http.FeedDetailIntentService"
                  android:label="FeedDetailIntentService"/>
+        <service android:name=".http.RegisterIntentService"
+                 android:label="RegisterIntentService"/>
 
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
                    android:value="@string/google_maps_key"/>

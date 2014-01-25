@@ -33,4 +33,9 @@ public class AppConstants {
      * Extras key for a POI's photo URL.
      */
     public static final String ARG_PHOTO_URL = "com.twormobile.mytravelasia.philippines.ui.photo_url";
+
+    /**
+     * Extras key for a user's Facebook profile ID.
+     */
+    public static final String ARG_FB_PROFILE_ID = "com.twormobile.mytravelasia.philippines.extras.profile_id";
 }

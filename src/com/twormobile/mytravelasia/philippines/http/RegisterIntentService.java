@@ -1,6 +1,7 @@
 package com.twormobile.mytravelasia.philippines.http;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -46,9 +47,9 @@ public class RegisterIntentService extends BaseIntentService {
     public static final String EXTRAS_PROFILE_ID = "com.twormobile.mytravelasia.extras.profile_id";
 
     /**
-     * Key to use for the intent extra to tell {@link RegisterIntentService} the user's email.
+     * Key to use for the intent extra to tell {@link RegisterIntentService} the user's access token.
      */
-    public static final String EXTRAS_EMAIL = "com.twormobile.mytravelasia.extras.email";
+    public static final String EXTRAS_TOKEN = "com.twormobile.extras.token";
 
     public RegisterIntentService() {
         super(TAG);
@@ -69,22 +70,25 @@ public class RegisterIntentService extends BaseIntentService {
         final String firstName = intent.getStringExtra(EXTRAS_FIRST_NAME);
         final String lastName = intent.getStringExtra(EXTRAS_LAST_NAME);
         final String profileId = intent.getStringExtra(EXTRAS_PROFILE_ID);
-        final String email = intent.getStringExtra(EXTRAS_EMAIL);
+        final String token = "aaaaaaa";
         HashMap<String, String> params = new HashMap<String, String>();
 
         params.put(HttpConstants.PARAM_FIRST_NAME, firstName);
         params.put(HttpConstants.PARAM_LAST_NAME, lastName);
         params.put(HttpConstants.PARAM_PROFILE_ID, profileId);
-        params.put(HttpConstants.PARAM_EMAIL, email);
-        params.put(HttpConstants.PARAM_TOKEN, "aaaaaaaa"); // Not sure what the token is for
+        params.put(HttpConstants.PARAM_TOKEN, token);
 
         String url = String.format(HttpConstants.BASE_URL + HttpConstants.REGISTER_RESOURCE
                 + "?" + HttpConstants.PARAM_FIRST_NAME + "=%1$s"
                 + "&" + HttpConstants.PARAM_LAST_NAME + "=%2$s"
-                + "&" + HttpConstants.PARAM_PROFILE_ID + "=%3s"
-                + "&" + HttpConstants.PARAM_EMAIL + "=%4s"
-                + "&" + HttpConstants.PARAM_TOKEN + "=%5s");
+                + "&" + HttpConstants.PARAM_PROFILE_ID + "=%3$s"
+                + "&" + HttpConstants.PARAM_TOKEN + "=%4$s",
+                Uri.encode(firstName),
+                Uri.encode(lastName),
+                profileId,
+                token);
 
+        Log.d(TAG, "registration url " + url);
         Response.Listener<RegisterResponse> successListener = getRegisterResponseListener(profileId);
         Response.ErrorListener errorListener = getErrorListener();
 
