@@ -51,6 +51,7 @@ public class MainActivity extends BaseMtaFragmentActivity
     private boolean mIsDualPane;
     private boolean mIsRefreshing;
     private double[] mCoords;
+    private String mProfileId;
     private String[] mNavItems;
     private DrawerLayout mDlContainer;
     private ListView mLvNav;
@@ -64,7 +65,13 @@ public class MainActivity extends BaseMtaFragmentActivity
         setContentView(R.layout.main_activity);
         setOrientationLock();
         mIsDualPane = findViewById(R.id.fl_map_container) != null;
-        mCoords = getIntent().getDoubleArrayExtra(AppConstants.ARG_CURRENT_LOCATION);
+        Intent intent = getIntent();
+        mCoords = intent.getDoubleArrayExtra(AppConstants.ARG_CURRENT_LOCATION);
+        mProfileId = null != savedInstanceState
+                ? savedInstanceState.getString(AppConstants.ARG_FB_PROFILE_ID)
+                : intent.getStringExtra(AppConstants.ARG_FB_PROFILE_ID);
+
+        Log.d(TAG, "profile id " + mProfileId);
 
         initSideNav();
         initBroadcastReceivers();
@@ -136,6 +143,12 @@ public class MainActivity extends BaseMtaFragmentActivity
         }
 
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(AppConstants.ARG_FB_PROFILE_ID, mProfileId);
     }
 
     @Override

@@ -13,13 +13,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
-import com.facebook.LoggingBehavior;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.Settings;
-import com.facebook.UiLifecycleHelper;
+import com.facebook.*;
 import com.facebook.model.GraphUser;
 import com.twormobile.mytravelasia.philippines.http.RegisterIntentService;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
@@ -36,6 +30,7 @@ public class StartUpActivity extends BaseMtaActivity {
     private static final String ADS_URL = "http://www.mytravel-asia.com/mobile/adsense";
 
     private double[] mCoords;
+    private String mProfileId;
     private WebView mWvAds;
     private UiLifecycleHelper mUiLifecycleHelper;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -68,6 +63,10 @@ public class StartUpActivity extends BaseMtaActivity {
                 startActivity(mainIntent);
             }
         });
+
+        if (null != savedInstanceState) {
+            mProfileId = savedInstanceState.getString(AppConstants.ARG_FB_PROFILE_ID);
+        }
 
         initBroadcastReceivers();
         initAds();
@@ -113,6 +112,7 @@ public class StartUpActivity extends BaseMtaActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mUiLifecycleHelper.onSaveInstanceState(outState);
+        outState.putString(AppConstants.ARG_FB_PROFILE_ID, mProfileId);
     }
 
     private void initAds() {
@@ -138,7 +138,7 @@ public class StartUpActivity extends BaseMtaActivity {
 
                 boolean isFailed = intent.hasExtra(RegisterIntentService.BROADCAST_REGISTER_FAILED);
                 Toast loginFailMessage = Toast.makeText(
-                        StartUpActivity.this, "Failed to login. Please try again", Toast.LENGTH_LONG);
+                        StartUpActivity.this, R.string.msg_register_failed, Toast.LENGTH_LONG);
 
                 if (isFailed) {
                     loginFailMessage.show();
@@ -151,6 +151,7 @@ public class StartUpActivity extends BaseMtaActivity {
                         return;
                     }
 
+                    mProfileId = profileId;
                     Log.d(TAG, "successfully registered");
                     Log.d(TAG, "profile id " + profileId);
 
@@ -170,6 +171,11 @@ public class StartUpActivity extends BaseMtaActivity {
             Request.newMeRequest(session, new Request.GraphUserCallback() {
                 @Override
                 public void onCompleted(GraphUser user, Response response) {
+                    if (null != mProfileId) {
+                        Log.d(TAG, "current profile id " + mProfileId);
+                        return;
+                    }
+
                     String profileId = user.getId();
                     String firstName = user.getFirstName();
                     String lastName = user.getLastName();
@@ -192,6 +198,7 @@ public class StartUpActivity extends BaseMtaActivity {
             }).executeAsync();
         } else {
             Log.d(TAG, "facebook logged out");
+            mProfileId = null;
         }
     }
 }

@@ -10,6 +10,8 @@ import com.twormobile.mytravelasia.philippines.util.Log;
 import java.util.HashMap;
 
 /**
+ * Calls the register webservice and passes on the profile ID as a local broadcast.
+ *
  * @author avendael
  */
 public class RegisterIntentService extends BaseIntentService {
