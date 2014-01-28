@@ -74,6 +74,8 @@ public class RegisterIntentService extends BaseIntentService {
         final String profileId = intent.getStringExtra(EXTRAS_PROFILE_ID);
         final String token = "aaaaaaa";
         HashMap<String, String> params = new HashMap<String, String>();
+        Response.Listener<RegisterResponse> successListener = getRegisterResponseListener(profileId);
+        Response.ErrorListener errorListener = getErrorListener();
 
         params.put(HttpConstants.PARAM_FIRST_NAME, firstName);
         params.put(HttpConstants.PARAM_LAST_NAME, lastName);
@@ -91,8 +93,6 @@ public class RegisterIntentService extends BaseIntentService {
                 token);
 
         Log.d(TAG, "registration url " + url);
-        Response.Listener<RegisterResponse> successListener = getRegisterResponseListener(profileId);
-        Response.ErrorListener errorListener = getErrorListener();
 
         GsonRequest<RegisterResponse> gsonRequest = new GsonRequest<RegisterResponse>(
                 url, RegisterResponse.class, null, params, successListener, errorListener);
@@ -106,14 +106,16 @@ public class RegisterIntentService extends BaseIntentService {
             public void onResponse(RegisterResponse response) {
                 Log.d(TAG, "response is " + response);
 
-                if (null != response && null != response.getMessage())
+                if (null != response && null != response.getMessage()) {
                     broadcastFailure(BROADCAST_REGISTER_MTA, BROADCAST_REGISTER_FAILED, response.getMessage());
+
+                    return;
+                }
 
                 Intent broadcastIntent = new Intent(BROADCAST_REGISTER_MTA);
 
                 broadcastIntent.putExtra(BROADCAST_REGISTER_SUCCESS, profileId);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
-
             }
         };
     }

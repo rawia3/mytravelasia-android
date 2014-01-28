@@ -1,7 +1,9 @@
 package com.twormobile.mytravelasia.philippines.http;
 
-import android.app.IntentService;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.twormobile.mytravelasia.philippines.util.Log;
 
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import java.util.HashMap;
  *
  * @author avendael
  */
-public class LikeIntentService extends IntentService {
+public class LikeIntentService extends BaseIntentService {
     private static final String TAG = LikeIntentService.class.getSimpleName();
 
     /**
@@ -59,6 +61,8 @@ public class LikeIntentService extends IntentService {
         final String poiId = intent.getStringExtra(EXTRAS_POI_ID);
         final boolean isLike = intent.getBooleanExtra(EXTRAS_IS_LIKE, true);
         HashMap<String, String> params = new HashMap<String, String>();
+        Response.Listener<LikeResponse> successListener = getLikeResponseListener();
+        Response.ErrorListener errorListener = getErrorListener();
         String url = String.format(HttpConstants.BASE_URL + HttpConstants.POI_RESOURCE
                 + poiId
                 + (isLike ? "/like" : "/unlike")
@@ -68,5 +72,39 @@ public class LikeIntentService extends IntentService {
         params.put(HttpConstants.PARAM_PROFILE_ID, profileId);
 
         Log.d(TAG, "like url " + url);
+        GsonRequest<LikeResponse> gsonRequest = new GsonRequest<LikeResponse>(url, LikeResponse.class, null, params,
+                successListener, errorListener);
+
+        mRequestQueue.add(gsonRequest);
+    }
+
+    private Response.Listener<LikeResponse> getLikeResponseListener() {
+        return new Response.Listener<LikeResponse>() {
+            @Override
+            public void onResponse(LikeResponse response) {
+                Log.d(TAG, "response is " + response);
+
+                if (null == response) {
+                    broadcastFailure(BROADCAST_LIKE_POI, BROADCAST_LIKE_FAILED, "No response");
+
+                    return;
+                }
+
+                Intent broadcastIntent = new Intent(BROADCAST_LIKE_POI);
+
+                broadcastIntent.putExtra(BROADCAST_LIKE_POI, response.isLiked());
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
+            }
+        };
+    }
+
+    private Response.ErrorListener getErrorListener() {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "volley error: " + error.toString());
+                broadcastFailure(BROADCAST_LIKE_POI, BROADCAST_LIKE_FAILED, error.toString());
+            }
+        };
     }
 }

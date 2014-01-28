@@ -22,10 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.twormobile.mytravelasia.philippines.db.MtaPhProvider;
-import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
-import com.twormobile.mytravelasia.philippines.feed.PoiListFragment;
-import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
-import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
+import com.twormobile.mytravelasia.philippines.feed.*;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedListIntentService;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
@@ -42,7 +39,8 @@ import java.io.File;
  * @author avendael
  */
 public class MainActivity extends BaseMtaFragmentActivity
-        implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks {
+        implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks,
+                   PoiCursorAdapter.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_FEED_LIST_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiListFragment";
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
@@ -217,6 +215,11 @@ public class MainActivity extends BaseMtaFragmentActivity
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.fl_list_container, poiMapFragment, TAG_MAP_FRAGMENT)
                 .commit();
+    }
+
+    @Override
+    public void onLikeClicked() {
+        Toast.makeText(this, "liked", Toast.LENGTH_LONG).show();
     }
 
     private void initBroadcastReceivers() {
