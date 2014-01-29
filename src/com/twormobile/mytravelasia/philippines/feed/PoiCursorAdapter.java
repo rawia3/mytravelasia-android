@@ -37,7 +37,7 @@ public class PoiCursorAdapter extends CursorAdapter {
     }
 
     public interface Callbacks {
-        public void onLikeClicked();
+        public void onLikeClicked(String poiId);
     }
 
     public PoiCursorAdapter(Context context, Cursor c, int flags) {
@@ -50,10 +50,11 @@ public class PoiCursorAdapter extends CursorAdapter {
     }
 
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+    public View newView(Context context, final Cursor cursor, ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.poi_list_item, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder();
+        final String poiId = cursor.getString(cursor.getColumnIndex(Poi.RESOURCE_ID));
 
         viewHolder.ivThumbnail = (SmartImageView) view.findViewById(R.id.iv_poi_thumbnail);
         viewHolder.tvTitle = (TextView) view.findViewById(R.id.tv_poi_title);
@@ -66,7 +67,7 @@ public class PoiCursorAdapter extends CursorAdapter {
         viewHolder.tvLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCallbacks.onLikeClicked();
+                mCallbacks.onLikeClicked(poiId);
             }
         });
         view.setTag(viewHolder);

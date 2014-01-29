@@ -25,6 +25,7 @@ import com.twormobile.mytravelasia.philippines.db.MtaPhProvider;
 import com.twormobile.mytravelasia.philippines.feed.*;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedListIntentService;
+import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
@@ -218,8 +219,12 @@ public class MainActivity extends BaseMtaFragmentActivity
     }
 
     @Override
-    public void onLikeClicked() {
-        Toast.makeText(this, "liked", Toast.LENGTH_LONG).show();
+    public void onLikeClicked(String poiId) {
+        Toast.makeText(this, "liked " + poiId, Toast.LENGTH_LONG).show();
+        Intent likeIntent = new Intent(MainActivity.this, LikeIntentService.class);
+
+        likeIntent.putExtra(LikeIntentService.EXTRAS_PROFILE_ID, poiId);
+        startService(likeIntent);
     }
 
     private void initBroadcastReceivers() {
