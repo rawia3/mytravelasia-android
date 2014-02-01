@@ -14,6 +14,7 @@ import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
 import com.twormobile.mytravelasia.philippines.ui.FragmentListPagerAdapter;
 import com.twormobile.mytravelasia.philippines.ui.ZoomOutPageTransformer;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
+import com.twormobile.mytravelasia.philippines.util.Log;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -32,9 +33,26 @@ public class PoiDetailsFragment extends Fragment {
     private PoiDetails mPoiDetails;
     private ViewPager mViewPager;
     private FragmentListPagerAdapter mAdapter;
+    private TextView mTvLikes;
+    private TextView mTvComments;
 
     public interface Callbacks {
+        /**
+         * The action to take when the map action of a POI is clicked.
+         *
+         * @param latitude The POI's latitude.
+         * @param longitude The POI's longitude.
+         * @param name The POI's name.
+         */
         public void onViewMap(double latitude, double longitude, String name);
+
+        /**
+         * The action to take when the like button of a POI is clicked.
+         *
+         * @param poiId Resource ID of the POI.
+         * @param isLiked Whether the POI is already liked by the same user.
+         */
+        public void onLikeClicked(long poiId, boolean isLiked);
     }
 
     @Override
@@ -54,20 +72,28 @@ public class PoiDetailsFragment extends Fragment {
         Bundle args = savedInstanceState != null ? savedInstanceState : getArguments();
         TextView tvPoiName = (TextView) view.findViewById(R.id.tv_poi_name);
         TextView tvPoiAddress = (TextView) view.findViewById(R.id.tv_poi_address);
-        TextView tvComments = (TextView) view.findViewById(R.id.tv_comments);
-        TextView tvLikes = (TextView) view.findViewById(R.id.tv_likes);
         TextView tvTelephone = (TextView) view.findViewById(R.id.tv_telephone);
         TextView tvWebsite = (TextView) view.findViewById(R.id.tv_website);
         TextView tvEmail = (TextView) view.findViewById(R.id.tv_email);
         TextView tvDescription = (TextView) view.findViewById(R.id.tv_description);
+        mTvComments = (TextView) view.findViewById(R.id.tv_comments);
+        mTvLikes = (TextView) view.findViewById(R.id.tv_likes);
+
+        mTvLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "poi id liked " + mPoiDetails.getResourceId());
+                mCallbacks.onLikeClicked(mPoiDetails.getResourceId(), mPoiDetails.isLiked());
+            }
+        });
 
         if (args != null) {
             mPoiDetails = args.getParcelable(ARG_POI_DETAILS);
 
             tvPoiName.setText(mPoiDetails.getName());
             tvPoiAddress.setText(mPoiDetails.getAddress());
-            tvComments.setText(Long.toString(mPoiDetails.getTotalComments()));
-            tvLikes.setText(Long.toString(mPoiDetails.getTotalLikes()));
+            mTvComments.setText(Long.toString(mPoiDetails.getTotalComments()));
+            mTvLikes.setText(Long.toString(mPoiDetails.getTotalLikes()));
             tvTelephone.setText(mPoiDetails.getTelNo());
             tvWebsite.setText(mPoiDetails.getWebUrl());
             tvEmail.setText(mPoiDetails.getEmail());
@@ -78,6 +104,7 @@ public class PoiDetailsFragment extends Fragment {
 
         List<PoiPicture> pictures = mPoiDetails.getPictures();
 
+        Log.d(TAG, "TOTAL LIKES " + mPoiDetails.getTotalLikes());
         if (pictures != null && pictures.size() > 0) {
             view.findViewById(R.id.fl_photo_container).setVisibility(View.VISIBLE);
             initCarousel(view);
@@ -104,6 +131,20 @@ public class PoiDetailsFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * This must be called after a successful like event to notify this fragment that the fragment is already liked (or
+     * not).
+     *
+     * @param isLiked Boolean response from the server.
+     */
+    public void likePoi(boolean isLiked) {
+        long likes = isLiked ? mPoiDetails.getTotalLikes() + 1 : mPoiDetails.getTotalLikes() - 1;
+
+        mPoiDetails.setLiked(isLiked);
+        mPoiDetails.setTotalLikes(likes);
+        mTvLikes.setText(Long.toString(likes));
     }
 
     private void initCarousel(View view) {

@@ -19,8 +19,6 @@ import com.twormobile.mytravelasia.philippines.model.Poi;
 public class PoiCursorAdapter extends CursorAdapter {
     private static final String TAG = PoiCursorAdapter.class.getSimpleName();
 
-    private Callbacks mCallbacks;
-
     /**
      * Instances of this class are used by Android's Adapter component to cache views as they go in and out of the
      * viewable area. For more info, see Romain Guy's 2009 Google IO talk at
@@ -36,17 +34,8 @@ public class PoiCursorAdapter extends CursorAdapter {
         TextView tvDistance;
     }
 
-    public interface Callbacks {
-        public void onLikeClicked(String poiId);
-    }
-
     public PoiCursorAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
-
-        if (!(context instanceof Callbacks))
-            throw new IllegalArgumentException("Context must be an instance of Callbacks");
-
-        mCallbacks = (Callbacks) context;
     }
 
     @Override
@@ -64,12 +53,6 @@ public class PoiCursorAdapter extends CursorAdapter {
         viewHolder.tvPrice = (TextView) view.findViewById(R.id.tv_price);
         viewHolder.tvDistance = (TextView) view.findViewById(R.id.tv_distance);
 
-        viewHolder.tvLikes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallbacks.onLikeClicked(poiId);
-            }
-        });
         view.setTag(viewHolder);
 
         return view;

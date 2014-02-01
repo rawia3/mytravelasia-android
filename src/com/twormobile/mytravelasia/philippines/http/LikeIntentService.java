@@ -58,15 +58,15 @@ public class LikeIntentService extends BaseIntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "handling register intent");
         final String profileId = intent.getStringExtra(EXTRAS_PROFILE_ID);
-        final String poiId = intent.getStringExtra(EXTRAS_POI_ID);
+        final long poiId = intent.getLongExtra(EXTRAS_POI_ID, 0);
         final boolean isLike = intent.getBooleanExtra(EXTRAS_IS_LIKE, true);
         HashMap<String, String> params = new HashMap<String, String>();
         Response.Listener<LikeResponse> successListener = getLikeResponseListener();
         Response.ErrorListener errorListener = getErrorListener();
         String url = String.format(HttpConstants.BASE_URL + HttpConstants.POI_RESOURCE
                 + poiId
-                + (isLike ? "/like" : "/unlike")
-                + "?" + HttpConstants.PARAM_PROFILE_ID + "=%1$s",
+                + (isLike ? "/unlike" : "/like")
+                + "?format=json&" + HttpConstants.PARAM_PROFILE_ID + "=%1$s",
                 profileId);
 
         params.put(HttpConstants.PARAM_PROFILE_ID, profileId);
@@ -92,7 +92,7 @@ public class LikeIntentService extends BaseIntentService {
 
                 Intent broadcastIntent = new Intent(BROADCAST_LIKE_POI);
 
-                broadcastIntent.putExtra(BROADCAST_LIKE_POI, response.isLiked());
+                broadcastIntent.putExtra(BROADCAST_LIKE_SUCCESS, response.isLiked());
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
             }
         };

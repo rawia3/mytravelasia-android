@@ -22,7 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.twormobile.mytravelasia.philippines.db.MtaPhProvider;
-import com.twormobile.mytravelasia.philippines.feed.*;
+import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
+import com.twormobile.mytravelasia.philippines.feed.PoiListFragment;
+import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
+import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedListIntentService;
 import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
@@ -40,8 +43,7 @@ import java.io.File;
  * @author avendael
  */
 public class MainActivity extends BaseMtaFragmentActivity
-        implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks,
-                   PoiCursorAdapter.Callbacks {
+        implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_FEED_LIST_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiListFragment";
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
@@ -57,6 +59,7 @@ public class MainActivity extends BaseMtaFragmentActivity
     private ActionBarDrawerToggle mDrawerToggle;
     private BroadcastReceiver mFeedListBroadcastReceiver;
     private BroadcastReceiver mFeedDetailBroadcastReceiver;
+    private BroadcastReceiver mLikeBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,8 @@ public class MainActivity extends BaseMtaFragmentActivity
                 new IntentFilter(FeedListIntentService.BROADCAST_GET_FEED_LIST));
         LocalBroadcastManager.getInstance(this).registerReceiver(mFeedDetailBroadcastReceiver,
                 new IntentFilter(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mLikeBroadcastReceiver,
+                new IntentFilter(LikeIntentService.BROADCAST_LIKE_POI));
     }
 
     @Override
@@ -108,6 +113,7 @@ public class MainActivity extends BaseMtaFragmentActivity
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mFeedListBroadcastReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mFeedDetailBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLikeBroadcastReceiver);
         super.onPause();
     }
 
@@ -219,11 +225,13 @@ public class MainActivity extends BaseMtaFragmentActivity
     }
 
     @Override
-    public void onLikeClicked(String poiId) {
+    public void onLikeClicked(long poiId, boolean isLiked) {
         Toast.makeText(this, "liked " + poiId, Toast.LENGTH_LONG).show();
         Intent likeIntent = new Intent(MainActivity.this, LikeIntentService.class);
 
-        likeIntent.putExtra(LikeIntentService.EXTRAS_PROFILE_ID, poiId);
+        likeIntent.putExtra(LikeIntentService.EXTRAS_POI_ID, poiId);
+        likeIntent.putExtra(LikeIntentService.EXTRAS_PROFILE_ID, mProfileId);
+        likeIntent.putExtra(LikeIntentService.EXTRAS_IS_LIKE, isLiked);
         startService(likeIntent);
     }
 
@@ -278,6 +286,21 @@ public class MainActivity extends BaseMtaFragmentActivity
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.replace(R.id.fl_list_container, poiDetailsFragment, TAG_DETAILS_FRAGMENT)
                             .commit();
+                }
+            }
+        };
+
+        mLikeBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra(LikeIntentService.BROADCAST_LIKE_FAILED)) {
+                    Toast.makeText(MainActivity.this, "Failed to like POI. Please try again.", Toast.LENGTH_LONG)
+                            .show();
+                } else if (intent.hasExtra(LikeIntentService.BROADCAST_LIKE_SUCCESS)) {
+                    PoiDetailsFragment poiDetailsFragment = (PoiDetailsFragment) getSupportFragmentManager()
+                            .findFragmentByTag(TAG_DETAILS_FRAGMENT);
+
+                    poiDetailsFragment.likePoi(intent.getBooleanExtra(LikeIntentService.BROADCAST_LIKE_SUCCESS, false));
                 }
             }
         };
