@@ -43,6 +43,27 @@ public class GsonRequest<T> extends Request<T> {
                 .excludeFieldsWithoutExposeAnnotation().create();
     }
 
+    /**
+     * Make a request with the specified HTTP method and return a parsed object from JSON.
+     *
+     * {@link com.android.volley.Request.Method}
+     * @param url URL of the request to make
+     * @param clazz Relevant class object, for Gson's reflection
+     * @param headers Map of request headers
+     */
+    public GsonRequest(String url, Class<T> clazz, Map<String, String> headers, Map<String, String> params,
+                       Listener<T> listener, ErrorListener errorListener, int method) {
+        super(method, url, errorListener);
+        this.clazz = clazz;
+        this.headers = headers;
+        this.params = params;
+        this.listener = listener;
+        this.gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .setDateFormat("yyy-MM-dd'T'HH:mm:ss")
+                .excludeFieldsWithoutExposeAnnotation().create();
+    }
+
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         return headers != null ? headers : super.getHeaders();

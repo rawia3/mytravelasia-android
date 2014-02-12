@@ -56,7 +56,7 @@ public class LikeIntentService extends BaseIntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "handling register intent");
+        Log.d(TAG, "handling like intent");
         final String profileId = intent.getStringExtra(EXTRAS_PROFILE_ID);
         final long poiId = intent.getLongExtra(EXTRAS_POI_ID, 0);
         final boolean isLike = intent.getBooleanExtra(EXTRAS_IS_LIKE, true);
@@ -102,7 +102,7 @@ public class LikeIntentService extends BaseIntentService {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "volley error: " + error.toString());
+                Log.e(TAG, "volley error: " + error.toString());
                 broadcastFailure(BROADCAST_LIKE_POI, BROADCAST_LIKE_FAILED, error.toString());
             }
         };
