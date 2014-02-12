@@ -6,6 +6,8 @@ package com.twormobile.mytravelasia.philippines.http;
  * @author avendael
  */
 public class HttpConstants {
+    public static final int TIMEOUT = 20000; // 20 seconds
+
     public static final String BASE_URL = "http://www.mytravel-asia.com/";
 
     public static final String PARAM_COUNTRY_NAME = "country_name";

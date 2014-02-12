@@ -232,13 +232,22 @@ public class MainActivity extends BaseMtaFragmentActivity
 
     @Override
     public void onLikeClicked(long poiId, boolean isLiked) {
-        Toast.makeText(this, "liked " + poiId, Toast.LENGTH_LONG).show();
         Intent likeIntent = new Intent(MainActivity.this, LikeIntentService.class);
 
         likeIntent.putExtra(LikeIntentService.EXTRAS_POI_ID, poiId);
         likeIntent.putExtra(LikeIntentService.EXTRAS_PROFILE_ID, mProfileId);
         likeIntent.putExtra(LikeIntentService.EXTRAS_IS_LIKE, isLiked);
         startService(likeIntent);
+    }
+
+    @Override
+    public void onCommentClicked(long poiId) {
+        Intent commentIntent = new Intent(MainActivity.this, CreateCommentIntentService.class);
+
+        commentIntent.putExtra(CreateCommentIntentService.EXTRAS_POI_ID, poiId);
+        commentIntent.putExtra(CreateCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
+        commentIntent.putExtra(CreateCommentIntentService.EXTRAS_COMMENT_CONTENT, "Very nice place"); // TODO hardcoded
+        startService(commentIntent);
     }
 
     private void initBroadcastReceivers() {

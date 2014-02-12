@@ -53,6 +53,13 @@ public class PoiDetailsFragment extends Fragment {
          * @param isLiked Whether the POI is already liked by the same user.
          */
         public void onLikeClicked(long poiId, boolean isLiked);
+
+        /**
+         * The action to take when the comment button of a POI is clicked.
+         *
+         * @param poiId Resource ID of the POI.
+         */
+        public void onCommentClicked(long poiId);
     }
 
     @Override
@@ -84,6 +91,13 @@ public class PoiDetailsFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "poi id liked " + mPoiDetails.getResourceId());
                 mCallbacks.onLikeClicked(mPoiDetails.getResourceId(), mPoiDetails.isLiked());
+            }
+        });
+        mTvComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "poi id comment " + mPoiDetails.getResourceId());
+                mCallbacks.onCommentClicked(mPoiDetails.getResourceId());
             }
         });
 

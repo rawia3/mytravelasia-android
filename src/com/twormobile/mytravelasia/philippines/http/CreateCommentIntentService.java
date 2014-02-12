@@ -2,6 +2,8 @@ package com.twormobile.mytravelasia.philippines.http;
 
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.twormobile.mytravelasia.philippines.util.Log;
@@ -73,7 +75,13 @@ public class CreateCommentIntentService extends BaseIntentService {
 
         Log.d(TAG, "comment url " + url);
         GsonRequest<CreateCommentResponse> gsonRequest = new GsonRequest<CreateCommentResponse>(url,
-                CreateCommentResponse.class, null, params, successListener, errorListener);
+                CreateCommentResponse.class, null, params, successListener, errorListener, Request.Method.POST);
+
+        gsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+                HttpConstants.TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
 
         mRequestQueue.add(gsonRequest);
     }
@@ -90,6 +98,7 @@ public class CreateCommentIntentService extends BaseIntentService {
 
                     return;
                 }
+                Log.d(TAG, "message is " + response.getMessage());
 
                 Intent broadcastIntent = new Intent(BROADCAST_CREATE_COMMENT);
 
