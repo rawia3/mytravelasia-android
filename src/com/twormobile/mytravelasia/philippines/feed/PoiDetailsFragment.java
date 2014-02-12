@@ -147,6 +147,17 @@ public class PoiDetailsFragment extends Fragment {
         mTvLikes.setText(Long.toString(likes));
     }
 
+    /**
+     * This must be called after a succesful comment event to update the total number of comments in the POI.
+     *
+     * @param totalComments The new total number of comments.
+     */
+    public void updateTotalComments(int totalComments) {
+        mPoiDetails.setTotalComments(totalComments);
+
+        mTvComments.setText(Integer.toString(totalComments));
+    }
+
     private void initCarousel(View view) {
         mViewPager = (ViewPager) view.findViewById(R.id.vp_carousel);
         CirclePageIndicator circlePageIndicator = (CirclePageIndicator) view.findViewById(R.id.vi_indicator);

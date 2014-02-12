@@ -26,6 +26,7 @@ import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiListFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
+import com.twormobile.mytravelasia.philippines.http.CreateCommentIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedListIntentService;
 import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
@@ -60,6 +61,7 @@ public class MainActivity extends BaseMtaFragmentActivity
     private BroadcastReceiver mFeedListBroadcastReceiver;
     private BroadcastReceiver mFeedDetailBroadcastReceiver;
     private BroadcastReceiver mLikeBroadcastReceiver;
+    private BroadcastReceiver mCreateCommentBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +102,8 @@ public class MainActivity extends BaseMtaFragmentActivity
                 new IntentFilter(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL));
         LocalBroadcastManager.getInstance(this).registerReceiver(mLikeBroadcastReceiver,
                 new IntentFilter(LikeIntentService.BROADCAST_LIKE_POI));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mCreateCommentBroadcastReceiver,
+                new IntentFilter(CreateCommentIntentService.BROADCAST_CREATE_COMMENT));
     }
 
     @Override
@@ -114,6 +118,8 @@ public class MainActivity extends BaseMtaFragmentActivity
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mFeedListBroadcastReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mFeedDetailBroadcastReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mLikeBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mCreateCommentBroadcastReceiver);
+
         super.onPause();
     }
 
@@ -301,6 +307,22 @@ public class MainActivity extends BaseMtaFragmentActivity
                             .findFragmentByTag(TAG_DETAILS_FRAGMENT);
 
                     poiDetailsFragment.likePoi(intent.getBooleanExtra(LikeIntentService.BROADCAST_LIKE_SUCCESS, false));
+                }
+            }
+        };
+
+        mCreateCommentBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_FAILED)) {
+                    String message = intent.getStringExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_FAILED);
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                } else if (intent.hasExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_SUCCESS)) {
+                    PoiDetailsFragment poiDetailsFragment = (PoiDetailsFragment) getSupportFragmentManager()
+                            .findFragmentByTag(TAG_DETAILS_FRAGMENT);
+
+                    poiDetailsFragment.updateTotalComments(
+                            intent.getIntExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_SUCCESS, 0));
                 }
             }
         };
