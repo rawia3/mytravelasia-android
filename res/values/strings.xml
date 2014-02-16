@@ -21,4 +21,6 @@
     <string name="desc_poi_photo">POI Photo</string>
     <string name="lbl_map">Map</string>
     <string name="msg_register_failed">Failed to login. Please try again</string>
+    <string name="txt_post">Post</string>
+    <string name="hint_comment">Write a comment</string>
 </resources>

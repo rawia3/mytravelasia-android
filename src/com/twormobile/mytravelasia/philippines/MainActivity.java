@@ -20,8 +20,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.Toast;
 import com.twormobile.mytravelasia.philippines.db.MtaPhProvider;
+import com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiListFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
@@ -47,6 +52,7 @@ public class MainActivity extends BaseMtaFragmentActivity
         implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_FEED_LIST_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiListFragment";
+    private static final String TAG_COMMENTS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment";
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
     private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiMapFragment";
 
@@ -242,12 +248,16 @@ public class MainActivity extends BaseMtaFragmentActivity
 
     @Override
     public void onCommentClicked(long poiId) {
-        Intent commentIntent = new Intent(MainActivity.this, CreateCommentIntentService.class);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        PoiCommentsFragment poiCommentsFragment = new PoiCommentsFragment();
+        Bundle args = new Bundle();
 
-        commentIntent.putExtra(CreateCommentIntentService.EXTRAS_POI_ID, poiId);
-        commentIntent.putExtra(CreateCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
-        commentIntent.putExtra(CreateCommentIntentService.EXTRAS_COMMENT_CONTENT, "Very nice place"); // TODO hardcoded
-        startService(commentIntent);
+        args.putLong(PoiCommentsFragment.ARGS_POI_ID, poiId);
+
+        poiCommentsFragment.setArguments(args);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.fl_list_container, poiCommentsFragment, TAG_COMMENTS_FRAGMENT)
+                .commit();
     }
 
     private void initBroadcastReceivers() {
