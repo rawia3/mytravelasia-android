@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,11 +36,14 @@ import com.twormobile.mytravelasia.philippines.http.CreateCommentIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedListIntentService;
 import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
+import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An activity that manages the feed and map fragments. If the device has a smallest width of >= 530dp, it will show
@@ -247,12 +251,14 @@ public class MainActivity extends BaseMtaFragmentActivity
     }
 
     @Override
-    public void onCommentClicked(long poiId) {
+    public void onCommentClicked(long poiId, List<CommentEntry> commentEntries) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         PoiCommentsFragment poiCommentsFragment = new PoiCommentsFragment();
         Bundle args = new Bundle();
 
         args.putLong(PoiCommentsFragment.ARGS_POI_ID, poiId);
+        args.putParcelableArrayList(PoiCommentsFragment.ARGS_POI_COMMENTS,
+                (ArrayList<? extends Parcelable>) commentEntries);
 
         poiCommentsFragment.setArguments(args);
         fragmentTransaction.addToBackStack(null);

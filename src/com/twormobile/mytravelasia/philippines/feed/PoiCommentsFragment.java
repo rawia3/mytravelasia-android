@@ -7,9 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.twormobile.mytravelasia.philippines.R;
+import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 
 import java.util.ArrayList;
@@ -23,22 +23,21 @@ public class PoiCommentsFragment extends Fragment {
     private static final String TAG = PoiCommentsFragment.class.getSimpleName();
 
     public static final String ARGS_POI_ID = "com.twormobile.mytravelasia.poi_id";
+    public static final String ARGS_POI_COMMENTS = "com.twormobile.mytravelasia.poi_comments";
 
     private PullToRefreshLayout mPullToRefreshLayout;
+    private CommentsArrayAdapter mAdapter;
     private LoaderManager.LoaderCallbacks<Cursor> mLoader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.poi_comments_fragment, container, false);
         ListView listView = (ListView) view.findViewById(R.id.lv_comments_list);
-        ArrayList<String> items = new ArrayList<String>();
+        Bundle args = savedInstanceState != null ? savedInstanceState : getArguments();
+        ArrayList<CommentEntry> comments = args.getParcelableArrayList(ARGS_POI_COMMENTS);
+        mAdapter = new CommentsArrayAdapter(getActivity(), R.layout.comment_list_item, comments);
 
-        for (int i = 0; i < 20; i++) {
-            items.add("item " + i);
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(adapter);
+        listView.setAdapter(mAdapter);
 
         return view;
     }

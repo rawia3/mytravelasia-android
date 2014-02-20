@@ -1,5 +1,7 @@
 package com.twormobile.mytravelasia.philippines.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,11 +12,43 @@ import java.util.Date;
  *
  * @author avendael
  */
-public class CommentEntry {
+public class CommentEntry implements Parcelable {
+    public CommentEntry(Parcel parcel) {
+        fbUserProfileId = parcel.readLong();
+        resourceId = parcel.readLong();
+        fbUserProfileName = parcel.readString();
+        content = parcel.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(fbUserProfileId);
+        parcel.writeLong(resourceId);
+        parcel.writeString(fbUserProfileName);
+        parcel.writeString(content);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CommentEntry> CREATOR = new Creator<CommentEntry>() {
+        @Override
+        public CommentEntry createFromParcel(Parcel parcel) {
+            return new CommentEntry(parcel);
+        }
+
+        @Override
+        public CommentEntry[] newArray(int i) {
+            return new CommentEntry[i];
+        }
+    };
     /**
      * ID of the comment entry from the remote resource. This is different from the row id stored in the local database.
      */
     @Expose
+
     @SerializedName("comment_id")
     private long resourceId;
 

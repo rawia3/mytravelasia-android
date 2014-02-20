@@ -5,9 +5,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import com.twormobile.mytravelasia.philippines.R;
+import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.model.PoiDetails;
 import com.twormobile.mytravelasia.philippines.model.PoiPicture;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
@@ -59,7 +66,7 @@ public class PoiDetailsFragment extends Fragment {
          *
          * @param poiId Resource ID of the POI.
          */
-        public void onCommentClicked(long poiId);
+        public void onCommentClicked(long poiId, List<CommentEntry> commentEntries);
     }
 
     @Override
@@ -97,7 +104,7 @@ public class PoiDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "poi id comment " + mPoiDetails.getResourceId());
-                mCallbacks.onCommentClicked(mPoiDetails.getResourceId());
+                mCallbacks.onCommentClicked(mPoiDetails.getResourceId(), mPoiDetails.getCommentEntries());
             }
         });
 
@@ -118,7 +125,6 @@ public class PoiDetailsFragment extends Fragment {
 
         List<PoiPicture> pictures = mPoiDetails.getPictures();
 
-        Log.d(TAG, "TOTAL LIKES " + mPoiDetails.getTotalLikes());
         if (pictures != null && pictures.size() > 0) {
             view.findViewById(R.id.fl_photo_container).setVisibility(View.VISIBLE);
             initCarousel(view);
