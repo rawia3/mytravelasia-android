@@ -3,6 +3,7 @@ package com.twormobile.mytravelasia.philippines.http;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.twormobile.mytravelasia.philippines.util.Log;
@@ -96,6 +97,12 @@ public class RegisterIntentService extends BaseIntentService {
 
         GsonRequest<RegisterResponse> gsonRequest = new GsonRequest<RegisterResponse>(
                 url, RegisterResponse.class, null, params, successListener, errorListener);
+
+        gsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+                HttpConstants.TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
 
         mRequestQueue.add(gsonRequest);
     }

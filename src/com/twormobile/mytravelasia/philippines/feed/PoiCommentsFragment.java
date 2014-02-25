@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.twormobile.mytravelasia.philippines.R;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
+import com.twormobile.mytravelasia.philippines.util.Log;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,7 @@ public class PoiCommentsFragment extends Fragment {
     private CommentsArrayAdapter mAdapter;
     private ArrayList<CommentEntry> mComments;
     private EditText mEtComment;
+    private ListView mListView;
 
     public interface Callbacks {
         /**
@@ -57,7 +59,7 @@ public class PoiCommentsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.poi_comments_fragment, container, false);
-        ListView listView = (ListView) view.findViewById(R.id.lv_comments_list);
+        mListView = (ListView) view.findViewById(R.id.lv_comments_list);
         Bundle args = savedInstanceState != null ? savedInstanceState : getArguments();
         Button btnPost = (Button) view.findViewById(R.id.btn_post);
         mEtComment = (EditText) view.findViewById(R.id.et_comment);
@@ -76,7 +78,7 @@ public class PoiCommentsFragment extends Fragment {
             }
         });
 
-        listView.setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
 
         return view;
     }
@@ -87,8 +89,11 @@ public class PoiCommentsFragment extends Fragment {
      * @param commentEntries The new set of comments.
      */
     public void updateCommentList(ArrayList<CommentEntry> commentEntries) {
+        Log.d(TAG, "updating comment list");
         mComments = commentEntries;
 
-        mAdapter.notifyDataSetChanged();
+        mAdapter = new CommentsArrayAdapter(getActivity(), R.layout.comment_list_item, mComments);
+
+        mListView.setAdapter(mAdapter);
     }
 }
