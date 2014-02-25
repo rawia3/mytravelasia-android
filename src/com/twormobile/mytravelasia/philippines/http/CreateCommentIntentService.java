@@ -24,7 +24,7 @@ public class CreateCommentIntentService extends BaseIntentService {
     public static final String BROADCAST_CREATE_COMMENT = "create_comment";
 
     /**
-     * Name of the broadcast message sent after a successful comment. This message contains the total comments so far.
+     * Name of the broadcast message sent after a successful comment. This message contains the poi id of the subject.
      */
     public static final String BROADCAST_CREATE_COMMENT_SUCCESS = "create_comment_success";
 
@@ -65,7 +65,7 @@ public class CreateCommentIntentService extends BaseIntentService {
         final String profileId = intent.getStringExtra(EXTRAS_PROFILE_ID);
         final String comment = intent.getStringExtra(EXTRAS_COMMENT_CONTENT);
         HashMap<String, String> params = new HashMap<String, String>();
-        Response.Listener<CreateCommentResponse> successListener = getCommentResponseListener();
+        Response.Listener<CreateCommentResponse> successListener = getCommentResponseListener(poiId);
         Response.ErrorListener errorListener = getErrorListener();
         String url = HttpConstants.BASE_URL + HttpConstants.COMMENTS_RESOURCE + ".json";
 
@@ -86,7 +86,7 @@ public class CreateCommentIntentService extends BaseIntentService {
         mRequestQueue.add(gsonRequest);
     }
 
-    private Response.Listener<CreateCommentResponse> getCommentResponseListener() {
+    private Response.Listener<CreateCommentResponse> getCommentResponseListener(final long poiId) {
         return new Response.Listener<CreateCommentResponse>() {
             @Override
             public void onResponse(CreateCommentResponse response) {
@@ -102,7 +102,7 @@ public class CreateCommentIntentService extends BaseIntentService {
 
                 Intent broadcastIntent = new Intent(BROADCAST_CREATE_COMMENT);
 
-                broadcastIntent.putExtra(BROADCAST_CREATE_COMMENT_SUCCESS, response.getTotalComments());
+                broadcastIntent.putExtra(BROADCAST_CREATE_COMMENT_SUCCESS, poiId);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
             }
         };

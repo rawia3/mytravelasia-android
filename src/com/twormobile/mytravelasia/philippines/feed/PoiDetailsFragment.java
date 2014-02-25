@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * A fragment which displays a Poi's details.
  *
-* @author avendael
+ * @author avendael
  */
 public class PoiDetailsFragment extends Fragment {
     public static final String TAG = PoiDetailsFragment.class.getSimpleName();
@@ -168,7 +168,7 @@ public class PoiDetailsFragment extends Fragment {
     }
 
     /**
-     * This must be called after a succesful comment event to update the total number of comments in the POI.
+     * This must be called after a successful comment event to update the total number of comments in the POI.
      *
      * @param totalComments The new total number of comments.
      */

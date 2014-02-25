@@ -37,6 +37,7 @@ import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedListIntentService;
 import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
+import com.twormobile.mytravelasia.philippines.model.PoiDetails;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
@@ -53,7 +54,8 @@ import java.util.List;
  * @author avendael
  */
 public class MainActivity extends BaseMtaFragmentActivity
-        implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks {
+        implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks,
+                   PoiCommentsFragment.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_FEED_LIST_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiListFragment";
     private static final String TAG_COMMENTS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment";
@@ -266,6 +268,17 @@ public class MainActivity extends BaseMtaFragmentActivity
                 .commit();
     }
 
+    @Override
+    public void onPostClicked(long poiId, String comment) {
+        Intent createCommentIntent = new Intent(MainActivity.this, CreateCommentIntentService.class);
+
+        createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_POI_ID, poiId);
+        createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_COMMENT_CONTENT, comment);
+        createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
+
+        startService(createCommentIntent);
+    }
+
     private void initBroadcastReceivers() {
         mFeedListBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -304,19 +317,30 @@ public class MainActivity extends BaseMtaFragmentActivity
                         || intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_FAILED)) {
                     Toast.makeText(MainActivity.this, "Failed to retrieve details", Toast.LENGTH_LONG).show();
                 } else if (intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS)) {
-                    Log.d(TAG, "displaying detail fragment");
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    Fragment poiDetailsFragment = new PoiDetailsFragment();
-                    Bundle args = new Bundle();
+                    PoiCommentsFragment poiCommentsFragment = (PoiCommentsFragment) getSupportFragmentManager()
+                            .findFragmentByTag(TAG_COMMENTS_FRAGMENT);
+                    PoiDetails poiDetails = intent.getParcelableExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS);
 
-                    Log.d(TAG, "poi detail name " + intent.getParcelableExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS));
-                    args.putParcelable(PoiDetailsFragment.ARG_POI_DETAILS,
-                            intent.getParcelableExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS));
-                    poiDetailsFragment.setArguments(args);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.replace(R.id.fl_list_container, poiDetailsFragment, TAG_DETAILS_FRAGMENT)
-                            .commit();
+                    if (null == poiDetails) return;
+
+                    // If the active fragment is the comments fragment, update the comment list.
+                    if (null != poiCommentsFragment) {
+                        poiCommentsFragment.updateCommentList((ArrayList<CommentEntry>) poiDetails.getCommentEntries());
+                    } else { // Otherwise, show the detail fragment
+                        Log.d(TAG, "displaying detail fragment");
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        Fragment poiDetailsFragment = new PoiDetailsFragment();
+                        Bundle args = new Bundle();
+
+                        Log.d(TAG, "poi detail name " + poiDetails);
+                        args.putParcelable(PoiDetailsFragment.ARG_POI_DETAILS,
+                                poiDetails);
+                        poiDetailsFragment.setArguments(args);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.replace(R.id.fl_list_container, poiDetailsFragment, TAG_DETAILS_FRAGMENT)
+                                .commit();
+                    }
                 }
             }
         };
@@ -343,11 +367,11 @@ public class MainActivity extends BaseMtaFragmentActivity
                     String message = intent.getStringExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_FAILED);
                     Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
                 } else if (intent.hasExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_SUCCESS)) {
-                    PoiDetailsFragment poiDetailsFragment = (PoiDetailsFragment) getSupportFragmentManager()
-                            .findFragmentByTag(TAG_DETAILS_FRAGMENT);
+                    Intent getDetailsIntent = new Intent(MainActivity.this, FeedDetailIntentService.class);
 
-                    poiDetailsFragment.updateTotalComments(
-                            intent.getIntExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_SUCCESS, 0));
+                    getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID,
+                            intent.getLongExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_SUCCESS, 0));
+                    startService(getDetailsIntent);
                 }
             }
         };
