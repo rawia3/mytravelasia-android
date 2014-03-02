@@ -3,10 +3,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               style="@style/LayoutMatchWrap">
-    <ImageView android:id="@+id/iv_profile_pic"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:src="@drawable/ic_launcher"/>
+    <com.loopj.android.image.SmartImageView
+            android:id="@+id/iv_profile_pic"
+            android:layout_width="61dp"
+            android:layout_height="61dp"
+            android:background="@android:color/darker_gray"/>
     <TextView android:id="@+id/tv_content"
               android:layout_width="0dp"
               android:layout_height="wrap_content"
