@@ -44,7 +44,6 @@ public class CommentsArrayAdapter extends ArrayAdapter<CommentEntry> {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-
         CommentEntry commentEntry = getItem(position);
         String content = commentEntry.getContent();
         String photoUrl = "http://graph.facebook.com/" + commentEntry.getFbUserProfileId() + "/picture";

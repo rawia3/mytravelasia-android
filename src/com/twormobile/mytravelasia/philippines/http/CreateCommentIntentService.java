@@ -29,7 +29,7 @@ public class CreateCommentIntentService extends BaseIntentService {
     public static final String BROADCAST_CREATE_COMMENT_SUCCESS = "create_comment_success";
 
     /**
-     * Name of the broadcast message after a failed create comment.
+     * Name of the broadcast message sent after a failed create comment.
      */
     public static final String BROADCAST_CREATE_COMMENT_FAILED = "create_comment_failed";
 

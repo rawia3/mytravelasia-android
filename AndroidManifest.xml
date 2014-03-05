@@ -64,6 +64,7 @@
                  android:label="LikeIntentService"/>
         <service android:name=".http.CreateCommentIntentService"
                  android:label="CreateCommentIntentService"/>
+        <service android:name=".http.DeleteCommentIntentService"/>
 
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
                    android:value="@string/google_maps_key"/>
