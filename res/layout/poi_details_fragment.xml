@@ -37,6 +37,8 @@
         <RelativeLayout android:background="@color/gray"
                         android:paddingLeft="@dimen/side_padding"
                         android:paddingRight="@dimen/side_padding"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         style="@style/LayoutMatchWrap">
             <TextView android:id="@+id/tv_comments"
                       android:layout_alignParentLeft="true"
