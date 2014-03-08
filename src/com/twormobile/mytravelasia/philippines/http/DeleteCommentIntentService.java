@@ -24,7 +24,7 @@ public class DeleteCommentIntentService extends BaseIntentService {
     public static final String BROADCAST_DELETE_COMMENT = "delete_comment";
 
     /**
-     * Name of the broadcast message sent after a successful delete.
+     * Name of the broadcast message sent after a successful delete. This will contain the comment's poi id.
      */
     public static final String BROADCAST_DELETE_COMMENT_SUCCESS = "delete_comment_success";
 
@@ -70,7 +70,7 @@ public class DeleteCommentIntentService extends BaseIntentService {
         final long commentId = intent.getLongExtra(EXTRAS_COMMENT_ID, 0);
         final String profileId = intent.getStringExtra(EXTRAS_PROFILE_ID);
         HashMap<String, String> params = new HashMap<String, String>();
-        Response.Listener<DeleteCommentResponse> successListener = getDeleteCommentResponseListener();
+        Response.Listener<DeleteCommentResponse> successListener = getDeleteCommentResponseListener(poiId);
         Response.ErrorListener errorListener = getErrorListener();
         String url = HttpConstants.BASE_URL + HttpConstants.COMMENTS_RESOURCE + "/" + commentId + ".json";
 
@@ -78,11 +78,6 @@ public class DeleteCommentIntentService extends BaseIntentService {
         params.put(HttpConstants.PARAM_POI_ID, Long.toString(poiId));
         params.put(HttpConstants.PARAM_COMMENT_ID, Long.toString(commentId));
 
-        Log.d(TAG, "delete url " + url);
-        /*
-        curl -X POST "www.mytravel-asia.com/comments/126.json" -d "comment_id=125&profile_id=1031354874&poi_id=102421"
-    {"valid":true,"message":"Your comment was deleted.","total":1}
-         */
         GsonRequest<DeleteCommentResponse> gsonRequest = new GsonRequest<DeleteCommentResponse>(
                 url, DeleteCommentResponse.class, null, params, successListener, errorListener, Request.Method.POST);
 
@@ -95,7 +90,7 @@ public class DeleteCommentIntentService extends BaseIntentService {
         mRequestQueue.add(gsonRequest);
     }
 
-    private Response.Listener<DeleteCommentResponse> getDeleteCommentResponseListener() {
+    private Response.Listener<DeleteCommentResponse> getDeleteCommentResponseListener(final long poiId) {
         return new Response.Listener<DeleteCommentResponse>() {
             @Override
             public void onResponse(DeleteCommentResponse response) {
@@ -111,7 +106,7 @@ public class DeleteCommentIntentService extends BaseIntentService {
 
                 Intent broadcastIntent = new Intent(BROADCAST_DELETE_COMMENT);
 
-                broadcastIntent.putExtra(BROADCAST_DELETE_COMMENT_SUCCESS, response.getTotal());
+                broadcastIntent.putExtra(BROADCAST_DELETE_COMMENT_SUCCESS, poiId);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
             }
         };

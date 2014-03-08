@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.twormobile.mytravelasia.philippines.R;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
@@ -26,9 +31,11 @@ public class PoiCommentsFragment extends Fragment {
     private static final String TAG = PoiCommentsFragment.class.getSimpleName();
 
     public static final String ARGS_POI_ID = "com.twormobile.mytravelasia.poi_id";
+    public static final String ARGS_PROFILE_ID = "com.twormobile.mytravelasia.profile_id";
     public static final String ARGS_POI_COMMENTS = "com.twormobile.mytravelasia.poi_comments";
 
     private long mPoiId;
+    private String mProfileId;
     private Callbacks mCallbacks;
     private CommentsArrayAdapter mAdapter;
     private ArrayList<CommentEntry> mComments;
@@ -43,6 +50,14 @@ public class PoiCommentsFragment extends Fragment {
          * @param poiId The poi id.
          */
         public void onPostClicked(long poiId, String comment);
+
+        /**
+         * The action to take when the user selects delete on the comment's context menu.
+         *
+         * @param poiId The poi id where the comment belongs.
+         * @param commentId The comment's id.
+         */
+        public void onPostDelete(long poiId, long commentId);
     }
 
     @Override
@@ -64,6 +79,7 @@ public class PoiCommentsFragment extends Fragment {
         Button btnPost = (Button) view.findViewById(R.id.btn_post);
         mEtComment = (EditText) view.findViewById(R.id.et_comment);
         mPoiId = args.getLong(ARGS_POI_ID);
+        mProfileId = args.getString(ARGS_PROFILE_ID);
         mComments = args.getParcelableArrayList(ARGS_POI_COMMENTS);
         mAdapter = new CommentsArrayAdapter(getActivity(), R.layout.comment_list_item, mComments);
 
@@ -79,12 +95,56 @@ public class PoiCommentsFragment extends Fragment {
         });
 
         mListView.setAdapter(mAdapter);
+        registerForContextMenu(mListView);
 
         return view;
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
+        switch (view.getId()) {
+            case R.id.lv_comments_list:
+                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+                CommentEntry commentEntry = (CommentEntry) mListView.getItemAtPosition(info.position);
+
+                Log.d(TAG, "comment profile id " + commentEntry.getFbUserProfileId());
+                Log.d(TAG, "user profile id " + mProfileId);
+
+                if (null != mProfileId && mProfileId.equals(Long.toString(commentEntry.getFbUserProfileId()))) {
+                    menu.add(Menu.NONE, 0, 0, "Edit");
+                    menu.add(Menu.NONE, 1, 1, "Delete");
+                }
+
+                break;
+            default:
+                super.onCreateContextMenu(menu, view, menuInfo);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int index = item.getItemId();
+        CommentEntry commentEntry = (CommentEntry) mListView.getItemAtPosition(info.position);
+
+        if (null == commentEntry) return false;
+
+        switch (index) {
+            case 0:
+                Toast.makeText(getActivity(), "Not yet implemented", Toast.LENGTH_LONG).show();
+
+                return true;
+            case 1:
+                mCallbacks.onPostDelete(mPoiId, commentEntry.getResourceId());
+
+                return true;
+            default:
+                return false;
+        }
+    }
+
     /**
-     * This must be called after a successful comment event to update the comments list.
+     * This must be called after a successful create or delete comment event to update the comments list.
      *
      * @param commentEntries The new set of comments.
      */

@@ -33,6 +33,7 @@ import com.twormobile.mytravelasia.philippines.feed.PoiListFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
 import com.twormobile.mytravelasia.philippines.http.CreateCommentIntentService;
+import com.twormobile.mytravelasia.philippines.http.DeleteCommentIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedListIntentService;
 import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
@@ -74,6 +75,7 @@ public class MainActivity extends BaseMtaFragmentActivity
     private BroadcastReceiver mFeedDetailBroadcastReceiver;
     private BroadcastReceiver mLikeBroadcastReceiver;
     private BroadcastReceiver mCreateCommentBroadcastReceiver;
+    private BroadcastReceiver mDeleteCommentBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,14 +110,18 @@ public class MainActivity extends BaseMtaFragmentActivity
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mFeedListBroadcastReceiver,
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+
+        localBroadcastManager.registerReceiver(mFeedListBroadcastReceiver,
                 new IntentFilter(FeedListIntentService.BROADCAST_GET_FEED_LIST));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mFeedDetailBroadcastReceiver,
+        localBroadcastManager.registerReceiver(mFeedDetailBroadcastReceiver,
                 new IntentFilter(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mLikeBroadcastReceiver,
+        localBroadcastManager.registerReceiver(mLikeBroadcastReceiver,
                 new IntentFilter(LikeIntentService.BROADCAST_LIKE_POI));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mCreateCommentBroadcastReceiver,
+        localBroadcastManager.registerReceiver(mCreateCommentBroadcastReceiver,
                 new IntentFilter(CreateCommentIntentService.BROADCAST_CREATE_COMMENT));
+        localBroadcastManager.registerReceiver(mDeleteCommentBroadcastReceiver,
+                new IntentFilter(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT));
     }
 
     @Override
@@ -127,10 +133,13 @@ public class MainActivity extends BaseMtaFragmentActivity
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mFeedListBroadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mFeedDetailBroadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLikeBroadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mCreateCommentBroadcastReceiver);
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+
+        localBroadcastManager.unregisterReceiver(mFeedListBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mFeedDetailBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mLikeBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mCreateCommentBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mDeleteCommentBroadcastReceiver);
 
         super.onPause();
     }
@@ -261,6 +270,7 @@ public class MainActivity extends BaseMtaFragmentActivity
         args.putLong(PoiCommentsFragment.ARGS_POI_ID, poiId);
         args.putParcelableArrayList(PoiCommentsFragment.ARGS_POI_COMMENTS,
                 (ArrayList<? extends Parcelable>) commentEntries);
+        args.putString(PoiCommentsFragment.ARGS_PROFILE_ID, mProfileId);
 
         poiCommentsFragment.setArguments(args);
         fragmentTransaction.addToBackStack(null);
@@ -277,6 +287,17 @@ public class MainActivity extends BaseMtaFragmentActivity
         createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
 
         startService(createCommentIntent);
+    }
+
+    @Override
+    public void onPostDelete(long poiId, long commentId) {
+        Intent deleteCommentIntent = new Intent(MainActivity.this, DeleteCommentIntentService.class);
+
+        deleteCommentIntent.putExtra(DeleteCommentIntentService.EXTRAS_POI_ID, poiId);
+        deleteCommentIntent.putExtra(DeleteCommentIntentService.EXTRAS_COMMENT_ID, commentId);
+        deleteCommentIntent.putExtra(DeleteCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
+
+        startService(deleteCommentIntent);
     }
 
     private void initBroadcastReceivers() {
@@ -365,12 +386,30 @@ public class MainActivity extends BaseMtaFragmentActivity
             public void onReceive(Context context, Intent intent) {
                 if (intent.hasExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_FAILED)) {
                     String message = intent.getStringExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_FAILED);
+
                     Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
                 } else if (intent.hasExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_SUCCESS)) {
                     Intent getDetailsIntent = new Intent(MainActivity.this, FeedDetailIntentService.class);
 
                     getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID,
                             intent.getLongExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_SUCCESS, 0));
+                    startService(getDetailsIntent);
+                }
+            }
+        };
+
+        mDeleteCommentBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT_FAILED)) {
+                    String message = intent.getStringExtra(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT_FAILED);
+
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                } else if (intent.hasExtra(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT_SUCCESS)) {
+                    Intent getDetailsIntent = new Intent(MainActivity.this, FeedDetailIntentService.class);
+
+                    getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID,
+                            intent.getLongExtra(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT_SUCCESS, 0));
                     startService(getDetailsIntent);
                 }
             }
