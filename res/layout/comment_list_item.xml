@@ -8,9 +8,19 @@
             android:layout_width="61dp"
             android:layout_height="61dp"
             android:background="@android:color/darker_gray"/>
-    <TextView android:id="@+id/tv_content"
-              android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:textColor="@android:color/white"/>
+    <LinearLayout android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:paddingLeft="5dp"
+                  android:layout_weight="1">
+        <TextView android:id="@+id/tv_profile_name"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textStyle="bold"/>
+        <TextView android:id="@+id/tv_content"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="12sp"
+                  android:textColor="@android:color/white"/>
+    </LinearLayout>
 </LinearLayout>

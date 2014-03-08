@@ -21,6 +21,7 @@ import java.util.List;
 public class CommentsArrayAdapter extends ArrayAdapter<CommentEntry> {
     static class ViewHolder {
         TextView tvContent;
+        TextView tvProfileName;
         SmartImageView ivProfilePic;
     }
 
@@ -37,6 +38,7 @@ public class CommentsArrayAdapter extends ArrayAdapter<CommentEntry> {
             LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
             view = inflater.inflate(R.layout.comment_list_item, parent, false);
             viewHolder.tvContent = (TextView) view.findViewById(R.id.tv_content);
+            viewHolder.tvProfileName = (TextView) view.findViewById(R.id.tv_profile_name);
             viewHolder.ivProfilePic = (SmartImageView) view.findViewById(R.id.iv_profile_pic);
 
             view.setTag(viewHolder);
@@ -46,9 +48,11 @@ public class CommentsArrayAdapter extends ArrayAdapter<CommentEntry> {
 
         CommentEntry commentEntry = getItem(position);
         String content = commentEntry.getContent();
+        String profileName = commentEntry.getFbUserProfileName();
         String photoUrl = "http://graph.facebook.com/" + commentEntry.getFbUserProfileId() + "/picture";
 
         viewHolder.tvContent.setText(content);
+        viewHolder.tvProfileName.setText(profileName);
         viewHolder.ivProfilePic.setImageUrl(photoUrl);
 
         return view;
