@@ -12,11 +12,12 @@
                     android:id="@+id/vp_carousel"
                     android:background="@android:color/black"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"/>
+                    android:layout_height="250dp"/>
             <com.viewpagerindicator.CirclePageIndicator
                     android:id="@+id/vi_indicator"
                     android:layout_marginBottom="5dp"
                     android:layout_gravity="bottom"
+                    android:padding="5dp"
                     style="@style/LayoutMatchWrap" />
         </FrameLayout>
 
