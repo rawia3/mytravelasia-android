@@ -65,7 +65,7 @@ public class CreateCommentIntentService extends BaseIntentService {
         final String profileId = intent.getStringExtra(EXTRAS_PROFILE_ID);
         final String comment = intent.getStringExtra(EXTRAS_COMMENT_CONTENT);
         HashMap<String, String> params = new HashMap<String, String>();
-        Response.Listener<CreateCommentResponse> successListener = getCommentResponseListener(poiId);
+        Response.Listener<CommentResponse> successListener = getCommentResponseListener(poiId);
         Response.ErrorListener errorListener = getErrorListener();
         String url = HttpConstants.BASE_URL + HttpConstants.COMMENTS_RESOURCE + ".json";
 
@@ -74,8 +74,8 @@ public class CreateCommentIntentService extends BaseIntentService {
         params.put(HttpConstants.PARAM_CONTENT, comment);
 
         Log.d(TAG, "comment url " + url);
-        GsonRequest<CreateCommentResponse> gsonRequest = new GsonRequest<CreateCommentResponse>(url,
-                CreateCommentResponse.class, null, params, successListener, errorListener, Request.Method.POST);
+        GsonRequest<CommentResponse> gsonRequest = new GsonRequest<CommentResponse>(url,
+                CommentResponse.class, null, params, successListener, errorListener, Request.Method.POST);
 
         gsonRequest.setRetryPolicy(new DefaultRetryPolicy(
                 HttpConstants.TIMEOUT,
@@ -86,10 +86,10 @@ public class CreateCommentIntentService extends BaseIntentService {
         mRequestQueue.add(gsonRequest);
     }
 
-    private Response.Listener<CreateCommentResponse> getCommentResponseListener(final long poiId) {
-        return new Response.Listener<CreateCommentResponse>() {
+    private Response.Listener<CommentResponse> getCommentResponseListener(final long poiId) {
+        return new Response.Listener<CommentResponse>() {
             @Override
-            public void onResponse(CreateCommentResponse response) {
+            public void onResponse(CommentResponse response) {
                 Log.d(TAG, "response is " + response);
 
                 if (null == response || !response.isValid()) {

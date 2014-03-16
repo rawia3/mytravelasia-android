@@ -34,6 +34,7 @@ import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
 import com.twormobile.mytravelasia.philippines.http.CreateCommentIntentService;
 import com.twormobile.mytravelasia.philippines.http.DeleteCommentIntentService;
+import com.twormobile.mytravelasia.philippines.http.EditCommentIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedListIntentService;
 import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
@@ -76,6 +77,7 @@ public class MainActivity extends BaseMtaFragmentActivity
     private BroadcastReceiver mLikeBroadcastReceiver;
     private BroadcastReceiver mCreateCommentBroadcastReceiver;
     private BroadcastReceiver mDeleteCommentBroadcastReceiver;
+    private BroadcastReceiver mEditCommentBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,6 +124,8 @@ public class MainActivity extends BaseMtaFragmentActivity
                 new IntentFilter(CreateCommentIntentService.BROADCAST_CREATE_COMMENT));
         localBroadcastManager.registerReceiver(mDeleteCommentBroadcastReceiver,
                 new IntentFilter(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT));
+        localBroadcastManager.registerReceiver(mEditCommentBroadcastReceiver,
+                new IntentFilter(EditCommentIntentService.BROADCAST_EDIT_COMMENT));
     }
 
     @Override
@@ -140,6 +144,7 @@ public class MainActivity extends BaseMtaFragmentActivity
         localBroadcastManager.unregisterReceiver(mLikeBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(mCreateCommentBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(mDeleteCommentBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mEditCommentBroadcastReceiver);
 
         super.onPause();
     }
@@ -290,6 +295,18 @@ public class MainActivity extends BaseMtaFragmentActivity
     }
 
     @Override
+    public void onPostEdit(long poiId, long commentId) {
+        Intent editCommentIntent = new Intent(MainActivity.this, EditCommentIntentService.class);
+
+        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_POI_ID, poiId);
+        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_COMMENT_ID, commentId);
+        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
+        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_COMMENT_CONTENT, "Nice place!");
+
+        startService(editCommentIntent);
+    }
+
+    @Override
     public void onPostDelete(long poiId, long commentId) {
         Intent deleteCommentIntent = new Intent(MainActivity.this, DeleteCommentIntentService.class);
 
@@ -410,6 +427,23 @@ public class MainActivity extends BaseMtaFragmentActivity
 
                     getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID,
                             intent.getLongExtra(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT_SUCCESS, 0));
+                    startService(getDetailsIntent);
+                }
+            }
+        };
+
+        mEditCommentBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra(EditCommentIntentService.BROADCAST_EDIT_COMMENT_FAILED)) {
+                    String message = intent.getStringExtra(EditCommentIntentService.BROADCAST_EDIT_COMMENT_FAILED);
+
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                } else if (intent.hasExtra(EditCommentIntentService.BROADCAST_EDIT_COMMENT_SUCCESS)) {
+                    Intent getDetailsIntent = new Intent(MainActivity.this, FeedDetailIntentService.class);
+
+                    getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID,
+                            intent.getLongExtra(EditCommentIntentService.BROADCAST_EDIT_COMMENT_SUCCESS, 0));
                     startService(getDetailsIntent);
                 }
             }

@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.twormobile.mytravelasia.philippines.R;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
@@ -34,6 +33,9 @@ public class PoiCommentsFragment extends Fragment {
     public static final String ARGS_PROFILE_ID = "com.twormobile.mytravelasia.profile_id";
     public static final String ARGS_POI_COMMENTS = "com.twormobile.mytravelasia.poi_comments";
 
+    private static final int MENU_DELETE = 0;
+    private static final int MENU_EDIT = 1;
+
     private long mPoiId;
     private String mProfileId;
     private Callbacks mCallbacks;
@@ -50,6 +52,14 @@ public class PoiCommentsFragment extends Fragment {
          * @param poiId The poi id.
          */
         public void onPostClicked(long poiId, String comment);
+
+        /**
+         * The action to take when the user selects edit on the comment's context menu.
+         *
+         * @param poiId The poi id where the comment belongs.
+         * @param commentId The comment's id.
+         */
+        public void onPostEdit(long poiId, long commentId);
 
         /**
          * The action to take when the user selects delete on the comment's context menu.
@@ -111,8 +121,8 @@ public class PoiCommentsFragment extends Fragment {
                 Log.d(TAG, "user profile id " + mProfileId);
 
                 if (null != mProfileId && mProfileId.equals(Long.toString(commentEntry.getFbUserProfileId()))) {
-                    menu.add(Menu.NONE, 0, 0, "Edit");
-                    menu.add(Menu.NONE, 1, 1, "Delete");
+                    menu.add(Menu.NONE, MENU_EDIT, 0, "Edit");
+                    menu.add(Menu.NONE, MENU_DELETE, 1, "Delete");
                 }
 
                 break;
@@ -129,13 +139,15 @@ public class PoiCommentsFragment extends Fragment {
 
         if (null == commentEntry) return false;
 
+        long commentId = commentEntry.getResourceId();
+
         switch (index) {
-            case 0:
-                Toast.makeText(getActivity(), "Not yet implemented", Toast.LENGTH_LONG).show();
+            case MENU_EDIT:
+                mCallbacks.onPostEdit(mPoiId, commentId);
 
                 return true;
-            case 1:
-                mCallbacks.onPostDelete(mPoiId, commentEntry.getResourceId());
+            case MENU_DELETE:
+                mCallbacks.onPostDelete(mPoiId, commentId);
 
                 return true;
             default:

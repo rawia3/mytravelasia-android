@@ -4,11 +4,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Parser for delete comment response.
+ * Parser for comment response.
  *
  * @author avendael
  */
-public class DeleteCommentResponse {
+public class CommentResponse {
     @Expose
     @SerializedName("valid")
     private boolean isValid;
@@ -17,7 +17,8 @@ public class DeleteCommentResponse {
     private String message;
 
     @Expose
-    private int total;
+    @SerializedName("total")
+    private int totalComments;
 
     public boolean isValid() {
         return isValid;
@@ -35,11 +36,11 @@ public class DeleteCommentResponse {
         this.message = message;
     }
 
-    public int getTotal() {
-        return total;
+    public int getTotalComments() {
+        return totalComments;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setTotalComments(int totalComments) {
+        this.totalComments = totalComments;
     }
 }
