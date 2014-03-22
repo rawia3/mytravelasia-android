@@ -287,6 +287,11 @@ public class MainActivity extends BaseMtaFragmentActivity
 
     @Override
     public void onPostClicked(long poiId, String comment) {
+        if (null == mProfileId || "".equals(mProfileId)) {
+            Toast.makeText(MainActivity.this, R.string.msg_must_login, Toast.LENGTH_LONG).show();
+
+            return;
+        }
         Intent createCommentIntent = new Intent(MainActivity.this, CreateCommentIntentService.class);
 
         createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_POI_ID, poiId);

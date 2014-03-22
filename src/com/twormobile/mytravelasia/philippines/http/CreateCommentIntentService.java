@@ -64,6 +64,11 @@ public class CreateCommentIntentService extends BaseIntentService {
         final long poiId = intent.getLongExtra(EXTRAS_POI_ID, 0);
         final String profileId = intent.getStringExtra(EXTRAS_PROFILE_ID);
         final String comment = intent.getStringExtra(EXTRAS_COMMENT_CONTENT);
+
+        if (null == profileId || "".equals(profileId)) {
+            broadcastFailure(BROADCAST_CREATE_COMMENT, BROADCAST_CREATE_COMMENT_FAILED, "Invalid profile ID");
+        }
+
         HashMap<String, String> params = new HashMap<String, String>();
         Response.Listener<CommentResponse> successListener = getCommentResponseListener(poiId);
         Response.ErrorListener errorListener = getErrorListener();

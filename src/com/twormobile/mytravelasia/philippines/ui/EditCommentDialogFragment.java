@@ -61,7 +61,7 @@ public class EditCommentDialogFragment extends DialogFragment implements TextVie
         mPoiId = args.getLong(EXTRAS_POI_ID);
         mCommentId = args.getLong(EXTRAS_COMMENT_ID);
 
-        getDialog().setTitle("Edit Comment");
+        getDialog().setTitle(R.string.hdr_edit_comment);
         mCommentContent.setText(args.getString(EXTRAS_COMMENT_CONTENT));
         mCommentContent.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);

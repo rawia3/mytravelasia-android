@@ -8,6 +8,7 @@
     <string name="btn_climate">Climate</string>
 
     <string name="hdr_website">mytravel-asia.com</string>
+    <string name="hdr_edit_comment">Edit Comment</string>
     <string name="hint_search">Search Places</string>
 
     <string name="lbl_my_travel">My Travel</string>
@@ -17,10 +18,11 @@
     <string name="lbl_search">Search</string>
     <string name="lbl_website">Website</string>
     <string name="lbl_email">Email</string>
-    <string name="txt_empty">-</string>
-    <string name="desc_poi_photo">POI Photo</string>
     <string name="lbl_map">Map</string>
+    <string name="desc_poi_photo">POI Photo</string>
     <string name="msg_register_failed">Failed to login. Please try again</string>
+    <string name="msg_must_login">You must be logged in to perform this action.</string>
     <string name="txt_post">Post</string>
+    <string name="txt_empty">-</string>
     <string name="hint_comment">Write a comment</string>
 </resources>
