@@ -58,8 +58,9 @@ public class PoiCommentsFragment extends Fragment {
          *
          * @param poiId The poi id where the comment belongs.
          * @param commentId The comment's id.
+         * @param content The comment's original content.
          */
-        public void onPostEdit(long poiId, long commentId);
+        public void onPostEdit(long poiId, long commentId, String content);
 
         /**
          * The action to take when the user selects delete on the comment's context menu.
@@ -143,7 +144,7 @@ public class PoiCommentsFragment extends Fragment {
 
         switch (index) {
             case MENU_EDIT:
-                mCallbacks.onPostEdit(mPoiId, commentId);
+                mCallbacks.onPostEdit(mPoiId, commentId, commentEntry.getContent());
 
                 return true;
             case MENU_DELETE:

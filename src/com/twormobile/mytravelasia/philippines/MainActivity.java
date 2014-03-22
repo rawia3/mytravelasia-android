@@ -41,6 +41,7 @@ import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.model.PoiDetails;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
+import com.twormobile.mytravelasia.philippines.ui.EditCommentDialogFragment;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
 
@@ -57,12 +58,13 @@ import java.util.List;
  */
 public class MainActivity extends BaseMtaFragmentActivity
         implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks,
-                   PoiCommentsFragment.Callbacks {
+                   PoiCommentsFragment.Callbacks, EditCommentDialogFragment.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_FEED_LIST_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiListFragment";
     private static final String TAG_COMMENTS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment";
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
     private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiMapFragment";
+    private static final String TAG_EDIT_COMMENT = "com.twormobile.mytravelasia.philippines.comment.EditCommentDialogFragment";
 
     private boolean mIsDualPane;
     private boolean mIsRefreshing;
@@ -295,13 +297,26 @@ public class MainActivity extends BaseMtaFragmentActivity
     }
 
     @Override
-    public void onPostEdit(long poiId, long commentId) {
+    public void onPostEdit(long poiId, long commentId, String content) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        EditCommentDialogFragment editCommentDialogFragment = new EditCommentDialogFragment();
+        Bundle args = new Bundle();
+
+        args.putLong(EditCommentDialogFragment.EXTRAS_POI_ID, poiId);
+        args.putLong(EditCommentDialogFragment.EXTRAS_COMMENT_ID, commentId);
+        args.putString(EditCommentDialogFragment.EXTRAS_COMMENT_CONTENT, content);
+        editCommentDialogFragment.setArguments(args);
+        editCommentDialogFragment.show(fragmentManager, TAG_EDIT_COMMENT);
+    }
+
+    @Override
+    public void onPostEdited(long poiId, long commentId, String content) {
         Intent editCommentIntent = new Intent(MainActivity.this, EditCommentIntentService.class);
 
         editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_POI_ID, poiId);
         editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_COMMENT_ID, commentId);
         editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
-        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_COMMENT_CONTENT, "Nice place!");
+        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_COMMENT_CONTENT, content);
 
         startService(editCommentIntent);
     }
