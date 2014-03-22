@@ -1,7 +1,6 @@
 package com.twormobile.mytravelasia.philippines;
 
 import android.app.ActionBar;
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +23,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.Toast;
 import com.twormobile.mytravelasia.philippines.db.MtaPhProvider;
 import com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment;
@@ -174,12 +172,12 @@ public class MainActivity extends BaseMtaFragmentActivity
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.action_bar_menu_options, menu);
 
-        if (null != menu) {
-            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        }
+//        if (null != menu) {
+//            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//            SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+//
+//            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        }
 
         return true;
     }
