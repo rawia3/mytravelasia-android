@@ -134,12 +134,12 @@ public class FeedListIntentService extends BaseIntentService {
 
                     ContentResolver contentResolver = getContentResolver();
 
-                    if (0 == page) {
+                    if (1L == page) {
                         contentResolver.delete(MtaPhProvider.POI_URI, null, null);
                     }
 
                     for (Poi poi : response.getFeeds()) {
-                        Log.d(TAG, "poi name: " + poi.getName() + " poi id: " + poi.getResourceId() + " created_at " + poi.getCreatedAt());
+//                        Log.d(TAG, "poi name: " + poi.getName() + " poi id: " + poi.getResourceId() + " created_at " + poi.getCreatedAt());
                         ContentValues values = new ContentValues();
 
                         values.put(Poi.RESOURCE_ID, poi.getResourceId());
@@ -148,7 +148,6 @@ public class FeedListIntentService extends BaseIntentService {
                         values.put(Poi.CONTENT, poi.getContent());
                         values.put(Poi.FB_USER_PROFILE_ID, poi.getFbUserProfileId());
                         values.put(Poi.FB_USER_PROFILE_NAME, poi.getFbUserProfileName());
-                        values.put(Poi.CREATED_AT, poi.getCreatedAt().getTime());
                         values.put(Poi.LONGITUDE, poi.getLongitude());
                         values.put(Poi.LATITUDE, poi.getLatitude());
                         values.put(Poi.FEED_TYPE, poi.getFeedType());
@@ -157,6 +156,12 @@ public class FeedListIntentService extends BaseIntentService {
                         values.put(Poi.ANNOTATION_TYPE, poi.getAnnotationType());
                         values.put(Poi.TOTAL_COMMENTS, poi.getTotalComments());
                         values.put(Poi.TOTAL_LIKES, poi.getTotalLikes());
+
+                        if (null != poi.getCreatedAt()) {
+                            values.put(Poi.CREATED_AT, poi.getCreatedAt().getTime());
+                        } else {
+                            values.put(Poi.CREATED_AT, System.currentTimeMillis());
+                        }
 
                         contentResolver.insert(MtaPhProvider.POI_URI, values);
                     }

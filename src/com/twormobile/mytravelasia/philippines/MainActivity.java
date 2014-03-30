@@ -66,6 +66,7 @@ public class MainActivity extends BaseMtaFragmentActivity
 
     private boolean mIsDualPane;
     private boolean mIsRefreshing;
+    private int mFeedType;
     private double[] mCoords;
     private String mProfileId;
     private String[] mNavItems;
@@ -203,14 +204,15 @@ public class MainActivity extends BaseMtaFragmentActivity
 
     @Override
     public void onNextPage(long page) {
-        Intent getFeedIntent = new Intent(MainActivity.this, FeedListIntentService.class);
+        Intent feedIntent = new Intent(MainActivity.this, FeedListIntentService.class);
         PoiListFragment poiListFragment = (PoiListFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_FEED_LIST_FRAGMENT);
 
         if (poiListFragment != null) poiListFragment.showFooter();
 
-        getFeedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_FETCH_PAGE, page);
-        startService(getFeedIntent);
+        feedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_FETCH_PAGE, page);
+        feedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_TYPE, mFeedType);
+        startService(feedIntent);
     }
 
     @Override
@@ -486,10 +488,37 @@ public class MainActivity extends BaseMtaFragmentActivity
                         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(homeIntent);
                         finish();
+
+                        break;
+                    case 1: // News
+                        mFeedType = FeedListIntentService.FEED_TYPE_NEWS;
+                        onNextPage(1L);
+                        mDlContainer.closeDrawers();
+
+                        break;
+                    case 2: // Featured
+                        mFeedType = FeedListIntentService.FEED_TYPE_FEATURED;
+                        onNextPage(1L);
+                        mDlContainer.closeDrawers();
+
+                        break;
+
+                    case 3: // Most Viewed
+                        mFeedType = FeedListIntentService.FEED_TYPE_MOST_VIEWED;
+                        onNextPage(1L);
+                        mDlContainer.closeDrawers();
+
+                        break;
+                    case 4: // Recent
+                        mFeedType = FeedListIntentService.FEED_TYPE_RECENT;
+                        onNextPage(1L);
+                        mDlContainer.closeDrawers();
+
                         break;
                 }
             }
         });
+
         mDlContainer.setDrawerListener(mDrawerToggle);
         mDlContainer.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
     }
