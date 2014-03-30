@@ -1,5 +1,6 @@
 package com.twormobile.mytravelasia.philippines.http;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
@@ -42,10 +43,34 @@ public class FeedListIntentService extends BaseIntentService {
     public static final String BROADCAST_GET_FEED_LIST_FAILED = "get_feed_list_failed";
 
     /**
-     * Key to use for the intent extra to tell {@link FeedListIntentService} which page to
-     * fetch.
+     * Key to use for the intent extra to tell {@link FeedListIntentService} which page to fetch.
      */
     public static final String EXTRAS_FEED_FETCH_PAGE = "com.twormobile.mytravelasia.extras.fetch_page";
+
+    /**
+     * Key to use for the intent extra to tell {@link FeedListIntentService} which list of POIs to fetch.
+     */
+    public static final String EXTRAS_FEED_TYPE = "com.twormobile.mytravelasia.extras.fetch_type";
+
+    /**
+     * Tell {@link FeedListIntentService} to fetch news.
+     */
+    public static final int FEED_TYPE_NEWS = 0;
+
+    /**
+     * Tell {@link FeedListIntentService} to fetch recents.
+     */
+    public static final int FEED_TYPE_RECENT = 1;
+
+    /**
+     * Tell {@link FeedListIntentService} to fetch most viewed POIs.
+     */
+    public static final int FEED_TYPE_MOST_VIEWED = 2;
+
+    /**
+     * Tell {@link FeedListIntentService} to fetch featured POIs.
+     */
+    public static final int FEED_TYPE_FEATURED = 3;
 
     public FeedListIntentService() {
         super(TAG);
@@ -64,19 +89,37 @@ public class FeedListIntentService extends BaseIntentService {
     protected void onHandleIntent(final Intent intent) {
         Log.d(TAG, "handling intent");
         final long page = intent.getLongExtra(EXTRAS_FEED_FETCH_PAGE, 1L);
+        final int feed = intent.getIntExtra(EXTRAS_FEED_TYPE, FEED_TYPE_NEWS);
         HashMap<String, String> params = new HashMap<String, String>();
-
-        params.put(HttpConstants.PARAM_COUNTRY_NAME, "Philippines");
-        params.put(HttpConstants.PARAM_PAGE, "1");
-
-        String url = String.format(HttpConstants.BASE_URL + HttpConstants.FEED_RESOURCE
-                + "?" + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s"
-                + "&" + HttpConstants.PARAM_PAGE + "=%2$s",
-                "Philippines", page);
-
         Response.Listener<FeedResponse> successListener = getFeedResponseListener(page);
         Response.ErrorListener errorListener = getErrorListener();
+        String resource;
 
+        params.put(HttpConstants.PARAM_COUNTRY_NAME, "Philippines");
+        params.put(HttpConstants.PARAM_PAGE, Long.toString(page));
+
+        switch (feed) {
+            case FEED_TYPE_FEATURED:
+                resource = HttpConstants.FEATURED_FEED_RESOURCE;
+
+                break;
+            case FEED_TYPE_MOST_VIEWED:
+                resource = HttpConstants.MOST_VIEWED_FEED_RESOURCE;
+
+                break;
+            case FEED_TYPE_RECENT:
+                resource = HttpConstants.RECENT_FEED_RESOURCE;
+
+                break;
+            case FEED_TYPE_NEWS:
+            default:
+                resource = HttpConstants.NEWS_FEED_RESOURCE;
+        }
+
+        String url = String.format(HttpConstants.BASE_URL + resource
+                + "&" + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s"
+                + "&" + HttpConstants.PARAM_PAGE + "=%2$s",
+                "Philippines", page);
         GsonRequest<FeedResponse> gsonRequest = new GsonRequest<FeedResponse>(
                 url, FeedResponse.class, null, params, successListener, errorListener);
 
@@ -88,6 +131,12 @@ public class FeedListIntentService extends BaseIntentService {
                 @Override
                 public void onResponse(FeedResponse response) {
                     if (null == response) return;
+
+                    ContentResolver contentResolver = getContentResolver();
+
+                    if (0 == page) {
+                        contentResolver.delete(MtaPhProvider.POI_URI, null, null);
+                    }
 
                     for (Poi poi : response.getFeeds()) {
                         Log.d(TAG, "poi name: " + poi.getName() + " poi id: " + poi.getResourceId() + " created_at " + poi.getCreatedAt());
@@ -109,7 +158,7 @@ public class FeedListIntentService extends BaseIntentService {
                         values.put(Poi.TOTAL_COMMENTS, poi.getTotalComments());
                         values.put(Poi.TOTAL_LIKES, poi.getTotalLikes());
 
-                        getContentResolver().insert(MtaPhProvider.POI_URI, values);
+                        contentResolver.insert(MtaPhProvider.POI_URI, values);
                     }
 
                     Intent broadcastIntent = new Intent(BROADCAST_GET_FEED_LIST);

@@ -21,7 +21,10 @@ public class HttpConstants {
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_TOKEN = "token";
 
-    public static final String FEED_RESOURCE = "feed.json";
+    public static final String NEWS_FEED_RESOURCE = "feed.json?format=json";
+    public static final String RECENT_FEED_RESOURCE = "recent?format=json";
+    public static final String MOST_VIEWED_FEED_RESOURCE = "most_viewed?format=json";
+    public static final String FEATURED_FEED_RESOURCE = "featured?format=json";
     public static final String POI_RESOURCE = "pois/";
     public static final String REGISTER_RESOURCE = "mobile/register.json";
     public static final String COMMENTS_RESOURCE = "comments";
