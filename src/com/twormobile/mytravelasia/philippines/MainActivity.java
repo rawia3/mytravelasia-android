@@ -492,12 +492,14 @@ public class MainActivity extends BaseMtaFragmentActivity
                         break;
                     case 1: // News
                         mFeedType = FeedListIntentService.FEED_TYPE_NEWS;
+
                         onNextPage(1L);
                         mDlContainer.closeDrawers();
 
                         break;
                     case 2: // Featured
                         mFeedType = FeedListIntentService.FEED_TYPE_FEATURED;
+
                         onNextPage(1L);
                         mDlContainer.closeDrawers();
 
@@ -505,12 +507,14 @@ public class MainActivity extends BaseMtaFragmentActivity
 
                     case 3: // Most Viewed
                         mFeedType = FeedListIntentService.FEED_TYPE_MOST_VIEWED;
+
                         onNextPage(1L);
                         mDlContainer.closeDrawers();
 
                         break;
                     case 4: // Recent
                         mFeedType = FeedListIntentService.FEED_TYPE_RECENT;
+
                         onNextPage(1L);
                         mDlContainer.closeDrawers();
 

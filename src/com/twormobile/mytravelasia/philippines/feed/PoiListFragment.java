@@ -86,7 +86,8 @@ public class PoiListFragment extends ListFragment implements OnRefreshListener {
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             Log.d(TAG, "created loader");
             return new CursorLoader(getActivity(), MtaPhProvider.POI_URI, projection, null, null,
-                    Poi.CREATED_AT + " DESC");
+                    null);
+//                    Poi.CREATED_AT + " DESC");
         }
 
         @Override
