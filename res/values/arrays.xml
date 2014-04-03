@@ -2,11 +2,12 @@
 <resources>
     <string-array name="nav_items">
         <item>Home</item>
-        <!--<item>Near Me</item>-->
+        <item>Near Me</item>
         <item>News Feed</item>
         <item>Featured</item>
         <item>Most Viewed</item>
         <item>Recent</item>
+
         <!--<item>Attractions</item>-->
         <!--<item>Hotels</item>-->
         <!--<item>Restaurants</item>-->

@@ -212,6 +212,7 @@ public class MainActivity extends BaseMtaFragmentActivity
 
         feedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_FETCH_PAGE, page);
         feedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_TYPE, mFeedType);
+        feedIntent.putExtra(FeedListIntentService.EXTRAS_COORDS, mCoords);
         startService(feedIntent);
     }
 
@@ -490,14 +491,21 @@ public class MainActivity extends BaseMtaFragmentActivity
                         finish();
 
                         break;
-                    case 1: // News
+                    case 1: // Nearby
+                        mFeedType = FeedListIntentService.FEED_TYPE_NEARBY;
+
+                        onNextPage(1L);;
+                        mDlContainer.closeDrawers();
+
+                        break;
+                    case 2: // News
                         mFeedType = FeedListIntentService.FEED_TYPE_NEWS;
 
                         onNextPage(1L);
                         mDlContainer.closeDrawers();
 
                         break;
-                    case 2: // Featured
+                    case 3: // Featured
                         mFeedType = FeedListIntentService.FEED_TYPE_FEATURED;
 
                         onNextPage(1L);
@@ -505,14 +513,14 @@ public class MainActivity extends BaseMtaFragmentActivity
 
                         break;
 
-                    case 3: // Most Viewed
+                    case 4: // Most Viewed
                         mFeedType = FeedListIntentService.FEED_TYPE_MOST_VIEWED;
 
                         onNextPage(1L);
                         mDlContainer.closeDrawers();
 
                         break;
-                    case 4: // Recent
+                    case 5: // Recent
                         mFeedType = FeedListIntentService.FEED_TYPE_RECENT;
 
                         onNextPage(1L);

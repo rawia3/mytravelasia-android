@@ -53,6 +53,11 @@ public class FeedListIntentService extends BaseIntentService {
     public static final String EXTRAS_FEED_TYPE = "com.twormobile.mytravelasia.extras.fetch_type";
 
     /**
+     * Key to use for the intent extra to tell {@link FeedListIntentService} the user's current coordinates.
+     */
+    public static final String EXTRAS_COORDS = "com.twormobile.mytravelasia.extras.coords";
+
+    /**
      * Tell {@link FeedListIntentService} to fetch news.
      */
     public static final int FEED_TYPE_NEWS = 0;
@@ -71,6 +76,11 @@ public class FeedListIntentService extends BaseIntentService {
      * Tell {@link FeedListIntentService} to fetch featured POIs.
      */
     public static final int FEED_TYPE_FEATURED = 3;
+
+    /**
+     * Tell {@link FeedListIntentService} to fetch POIs nearby.
+     */
+    public static final int FEED_TYPE_NEARBY = 4;
 
     public FeedListIntentService() {
         super(TAG);
@@ -93,33 +103,53 @@ public class FeedListIntentService extends BaseIntentService {
         HashMap<String, String> params = new HashMap<String, String>();
         Response.Listener<FeedResponse> successListener = getFeedResponseListener(page);
         Response.ErrorListener errorListener = getErrorListener();
-        String resource;
+        String url;
 
         params.put(HttpConstants.PARAM_COUNTRY_NAME, "Philippines");
         params.put(HttpConstants.PARAM_PAGE, Long.toString(page));
 
         switch (feed) {
             case FEED_TYPE_FEATURED:
-                resource = HttpConstants.FEATURED_FEED_RESOURCE;
-
+                url = String.format(HttpConstants.BASE_URL + HttpConstants.FEATURED_FEED_RESOURCE + "&"
+                        + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s&"
+                        + HttpConstants.PARAM_PAGE + "=%2$s",
+                        "Philippines", page);
                 break;
             case FEED_TYPE_MOST_VIEWED:
-                resource = HttpConstants.MOST_VIEWED_FEED_RESOURCE;
-
+                url = String.format(HttpConstants.BASE_URL + HttpConstants.MOST_VIEWED_FEED_RESOURCE + "&"
+                        + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s&"
+                        + HttpConstants.PARAM_PAGE + "=%2$s",
+                        "Philippines", page);
                 break;
             case FEED_TYPE_RECENT:
-                resource = HttpConstants.RECENT_FEED_RESOURCE;
+                url = String.format(HttpConstants.BASE_URL + HttpConstants.RECENT_FEED_RESOURCE + "&"
+                        + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s&"
+                        + HttpConstants.PARAM_PAGE + "=%2$s",
+                        "Philippines", page);
+
+                break;
+            case FEED_TYPE_NEARBY:
+                double[] coords = intent.getDoubleArrayExtra(EXTRAS_COORDS);
+
+                if (null == coords) return;
+
+                Log.d(TAG, "coords " + coords[0] + " " + coords[1]);
+                url = String.format(HttpConstants.BASE_URL + HttpConstants.NEARBY_FEED_RESOURCE + "&"
+                        + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s&"
+                        + HttpConstants.PARAM_LATITUDE + "=%2$s&"
+                        + HttpConstants.PARAM_LONGITUDE + "=%3$s&"
+                        + HttpConstants.PARAM_PAGE + "=%4$s",
+                        "Philippines", coords[0], coords[1], page);
 
                 break;
             case FEED_TYPE_NEWS:
             default:
-                resource = HttpConstants.NEWS_FEED_RESOURCE;
+                url = String.format(HttpConstants.BASE_URL + HttpConstants.NEWS_FEED_RESOURCE + "&"
+                        + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s&"
+                        + HttpConstants.PARAM_PAGE + "=%2$s",
+                        "Philippines", page);
         }
 
-        String url = String.format(HttpConstants.BASE_URL + resource
-                + "&" + HttpConstants.PARAM_COUNTRY_NAME + "=%1$s"
-                + "&" + HttpConstants.PARAM_PAGE + "=%2$s",
-                "Philippines", page);
         GsonRequest<FeedResponse> gsonRequest = new GsonRequest<FeedResponse>(
                 url, FeedResponse.class, null, params, successListener, errorListener);
 
