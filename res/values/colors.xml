@@ -7,5 +7,6 @@
     <color name="gray">#CCCCCC</color>
     <color name="dark_gray">#888</color>
     <color name="darker_gray">#333</color>
+    <color name="splash_background">#ff1e1e1e</color>
     <color name="pressed">#CC33B5E5</color>
 </resources>

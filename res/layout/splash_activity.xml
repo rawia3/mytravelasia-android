@@ -2,13 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:gravity="center"
+              android:background="@color/splash_background"
               style="@style/LayoutMatchMatch">
-    <TextView android:id="@+id/tv_my_travel"
-              android:text="@string/lbl_my_travel_splash"
-              style="@style/SplashText"/>
-    <TextView android:id="@+id/tv_asia"
-              android:textColor="@color/red"
-              android:paddingLeft="5dp"
-              android:text="@string/lbl_asia"
-              style="@style/SplashText"/>
+    <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/splash" />
 </LinearLayout>
