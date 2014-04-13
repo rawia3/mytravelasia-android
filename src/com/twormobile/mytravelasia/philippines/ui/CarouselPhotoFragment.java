@@ -48,7 +48,7 @@ public class CarouselPhotoFragment extends Fragment {
         final String imageUrl = args.getString(AppConstants.ARG_PHOTO_URL);
 
         if (imageUrl != null) ivPhoto.setImageUrl(imageUrl);
-        else ivPhoto.setImageResource(R.drawable.city);
+        else ivPhoto.setImageResource(R.drawable.loading);
 
         ivPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
