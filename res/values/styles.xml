@@ -95,7 +95,7 @@
     <style name="StartUpHeader" parent="LayoutMatchWrap">
         <item name="android:orientation">vertical</item>
         <item name="android:paddingTop">@dimen/startup_hdr_padding_top</item>
-        <item name="android:background">@android:color/darker_gray</item>
+        <item name="android:background">@color/darker_gray</item>
     </style>
 
     <style name="StartUpTitleBar" parent="LayoutMatchWrap">
