@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            style="@style/LayoutMatchMatch">
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
     <LinearLayout android:orientation="vertical"
-                  style="@style/LayoutMatchMatch">
+                  style="@style/LayoutMatchMatch"
+                  android:background="@color/darker_gray">
 
         <include layout="@layout/startup_layout_include"/>
 
     </LinearLayout>
+
 </ScrollView>

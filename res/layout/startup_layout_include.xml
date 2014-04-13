@@ -6,58 +6,34 @@
             style="@style/StartUpTitleBar"
             android:text="@string/hdr_website"/>
 
-    <LinearLayout style="@style/StartUpHeader">
+    <ImageView
+            android:layout_marginTop="10dp"
+            android:src="@drawable/country_bg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
-        <LinearLayout
-                android:orientation="horizontal"
-                android:gravity="center"
-                style="@style/LayoutMatchWrap">
+    <Button
+            android:id="@+id/btn_enter"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:text="@string/btn_enter"
+            android:textSize="24dp"
 
-            <ImageView
-                    android:src="@drawable/ic_launcher"
-                    android:layout_marginRight="@dimen/startup_hdr_logo_margin_right"
-                    style="@style/LayoutWrapWrap"/>
+            android:background="@color/red"/>
 
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    style="@style/LayoutWrapWrap">
-
-                <TextView
-                        android:textSize="@dimen/startup_hdr_minor_text_size"
-                        style="@style/LayoutWrapWrap"
-                        android:text="@string/lbl_my_travel"/>
-
-                <TextView
-                        android:textSize="@dimen/startup_hdr_major_text_size"
-                        style="@style/LayoutWrapWrap"
-                        android:text="@string/app_name"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <Button android:id="@+id/btn_enter"
-                android:layout_marginTop="20dp"
-                android:text="@string/btn_enter"
-                style="@style/StartUpButton"/>
-        <com.facebook.widget.LoginButton
+    <com.facebook.widget.LoginButton
             android:id="@+id/btn_fb_login"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"/>
-    </LinearLayout>
-
-    <ImageView
-            android:id="@+id/img_preview"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/startup_img_banner_height"
-            android:scaleType="fitXY"
-            android:src="@drawable/city"/>
+            android:layout_marginTop="10dp" />
 
     <WebView android:id="@+id/wv_ads"
              android:layout_width="@dimen/startup_ads_width"
              android:layout_height="@dimen/startup_ads_height"
-             android:layout_marginTop="@dimen/startup_ads_margin_top"
+             android:layout_marginTop="20dp"
              android:layout_gravity="center"
              android:background="@android:color/transparent"/>
 </merge>
