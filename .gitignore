@@ -1,13 +1,24 @@
+#Android
 .gradle
-.DS_Store
-.classpath
-.irb-history
-/local.properties
-/.idea/workspace.xml
-gen
+.metadata
+*.class
+*.dex
+*.iws
+bin/
+gen/
 out/
-test_servers/
+local.properties
+
+#IntellJ Idea
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/misc.xml
+
+#Calabash
+test_servers
+
+#Application Specific
 tests/screenshot*.png
 res/values/api_keys.xml
 keystores/
-.idea/misc.xml
