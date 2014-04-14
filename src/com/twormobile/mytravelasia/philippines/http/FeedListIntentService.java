@@ -168,11 +168,13 @@ public class FeedListIntentService extends BaseIntentService {
                         contentResolver.delete(MtaPhProvider.POI_URI, null, null);
                     }
 
+                    Log.d(TAG, "the response is " + response);
                     for (Poi poi : response.getFeeds()) {
-//                        Log.d(TAG, "poi name: " + poi.getName() + " poi id: " + poi.getResourceId() + " created_at " + poi.getCreatedAt());
+                        Log.d(TAG, "poi name: " + poi.getFeedName() + " poi id: " + poi.getResourceId() + " created_at " + poi.getCreatedAt());
                         ContentValues values = new ContentValues();
 
                         values.put(Poi.RESOURCE_ID, poi.getResourceId());
+                        values.put(Poi.FEED_NAME, poi.getFeedName());
                         values.put(Poi.NAME, poi.getName());
                         values.put(Poi.ADDRESS, poi.getAddress());
                         values.put(Poi.CONTENT, poi.getContent());

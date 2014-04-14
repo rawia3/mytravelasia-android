@@ -78,7 +78,7 @@ public class PoiListFragment extends ListFragment implements OnRefreshListener {
      */
     private class PoiListLoader implements LoaderCallbacks<Cursor> {
         String[] projection = {
-                Poi._ID, Poi.NAME, Poi.ADDRESS, Poi.TOTAL_COMMENTS, Poi.TOTAL_LIKES,
+                Poi._ID, Poi.FEED_NAME, Poi.NAME, Poi.ADDRESS, Poi.TOTAL_COMMENTS, Poi.TOTAL_LIKES,
                 Poi.LATITUDE, Poi.LONGITUDE, Poi.IMAGE_THUMB_URL, Poi.RESOURCE_ID
         };
 

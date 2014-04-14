@@ -29,6 +29,11 @@ public class Poi implements BaseColumns {
     public static final String NAME = "name";
 
     /**
+     * Column: POI's feedName. Usually a name of a place.
+     */
+    public static final String FEED_NAME = "feed_name";
+
+    /**
      * Column: POI's location in human readable form.
      */
     public static final String ADDRESS = "address";
@@ -100,6 +105,7 @@ public class Poi implements BaseColumns {
             + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + RESOURCE_ID + " INTEGER UNIQUE, "
             + NAME + " TEXT,"
+            + FEED_NAME + " TEXT,"
             + ADDRESS + " TEXT,"
             + CONTENT + " TEXT,"
             + FB_USER_PROFILE_ID + " TEXT,"
@@ -136,8 +142,15 @@ public class Poi implements BaseColumns {
      * POI's name. Usually a name of a place.
      */
     @Expose
-    @SerializedName("poi_name")
+    @SerializedName("name")
     private String name;
+
+    /**
+     * POI's feedName. Usually a name of a place.
+     */
+    @Expose
+    @SerializedName("poi_name")
+    private String feedName;
 
     /**
      * POI's location in human readable form.
@@ -236,12 +249,12 @@ public class Poi implements BaseColumns {
         this.resourceId = resourceId;
     }
 
-    public String getName() {
-        return name;
+    public String getFeedName() {
+        return feedName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFeedName(String feedName) {
+        this.feedName = feedName;
     }
 
     public String getAddress() {
@@ -346,5 +359,13 @@ public class Poi implements BaseColumns {
 
     public void setTotalComments(long totalComments) {
         this.totalComments = totalComments;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

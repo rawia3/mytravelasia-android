@@ -61,14 +61,15 @@ public class PoiCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        String title = cursor.getString(cursor.getColumnIndex(Poi.NAME));
+        String name = cursor.getString(cursor.getColumnIndex(Poi.NAME));
+        String feedName = cursor.getString(cursor.getColumnIndex(Poi.FEED_NAME));
         String subTitle = cursor.getString(cursor.getColumnIndex(Poi.ADDRESS));
         String imgPath = cursor.getString(cursor.getColumnIndex(Poi.IMAGE_THUMB_URL));
         long totalLikes = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_LIKES));
         long totalComments = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_COMMENTS));
 
         viewHolder.ivThumbnail.setImageUrl(imgPath);
-        viewHolder.tvTitle.setText(title);
+        viewHolder.tvTitle.setText(null == name || "".equals(name) ? feedName : name);
         viewHolder.tvSubTitle.setText(subTitle);
         viewHolder.tvLikes.setText(totalLikes + "");
         viewHolder.tvComments.setText(totalComments + "");
