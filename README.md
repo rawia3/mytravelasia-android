@@ -1,12 +1,9 @@
 mytravelasia-android
 ====================
 
-MyTravelAsia Android App
+Create a Google Maps API key and update the key in ```res/values/api_keys.xml```
 
-![Splash Screen](docs/screenshots/splash_screen.png)
-
-![Startup Activity](docs/screenshots/startup_activity.png)
-
-![Main Activity](docs/screenshots/feed_list.png)
-
-![Side Navigation](docs/screenshots/side_nav.png)
+	<?xml version="1.0" encoding="utf-8"?>
+	<resources>
+    	<string name="google_maps_key">ADD-YOUR-GOOGLE-MAPS-KEY-HERE</string>
+	</resources>
