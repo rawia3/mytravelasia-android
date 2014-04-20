@@ -196,10 +196,13 @@ public class MainActivity extends BaseMtaFragmentActivity
 
     @Override
     public void onPoiSelected(long feedId) {
-        Intent getDetailsIntent = new Intent(MainActivity.this, FeedDetailIntentService.class);
+//        Intent getDetailsIntent = new Intent(MainActivity.this, FeedDetailIntentService.class);
+//        getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID, feedId);
+//        startService(getDetailsIntent);
 
-        getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID, feedId);
-        startService(getDetailsIntent);
+        Intent detailsIntent = new Intent(this, PoiDetailsActivity.class);
+        detailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID, feedId);
+        startActivity(detailsIntent);
     }
 
     @Override
