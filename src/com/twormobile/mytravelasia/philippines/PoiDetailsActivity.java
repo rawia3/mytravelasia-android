@@ -75,7 +75,7 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
                     Log.d(TAG, "poi detail name " + poiDetails);
                     args.putParcelable(PoiDetailsFragment.ARG_POI_DETAILS, poiDetails);
                     poiDetailsFragment.setArguments(args);
-                    fragmentTransaction.addToBackStack(null);
+//                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.replace(R.id.fragment_poi_details, poiDetailsFragment, TAG_DETAILS_FRAGMENT)
                             .commit();
 
