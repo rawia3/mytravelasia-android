@@ -14,10 +14,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
+import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.model.PoiDetails;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
+import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
 
 import java.util.ArrayList;
@@ -129,6 +131,9 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
 
     @Override
     public void onPhotoClicked(String url) {
+        Intent intent = new Intent(PoiDetailsActivity.this, PoiPhotoActivity.class);
 
+        intent.putExtra(AppConstants.ARG_PHOTO_URL, url);
+        startActivity(intent);
     }
 }
