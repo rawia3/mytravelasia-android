@@ -117,16 +117,16 @@ public class MainActivity extends BaseMtaFragmentActivity
 
         localBroadcastManager.registerReceiver(mFeedListBroadcastReceiver,
                 new IntentFilter(FeedListIntentService.BROADCAST_GET_FEED_LIST));
-        localBroadcastManager.registerReceiver(mFeedDetailBroadcastReceiver,
-                new IntentFilter(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL));
-        localBroadcastManager.registerReceiver(mLikeBroadcastReceiver,
-                new IntentFilter(LikeIntentService.BROADCAST_LIKE_POI));
-        localBroadcastManager.registerReceiver(mCreateCommentBroadcastReceiver,
-                new IntentFilter(CreateCommentIntentService.BROADCAST_CREATE_COMMENT));
-        localBroadcastManager.registerReceiver(mDeleteCommentBroadcastReceiver,
-                new IntentFilter(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT));
-        localBroadcastManager.registerReceiver(mEditCommentBroadcastReceiver,
-                new IntentFilter(EditCommentIntentService.BROADCAST_EDIT_COMMENT));
+//        localBroadcastManager.registerReceiver(mFeedDetailBroadcastReceiver,
+//                new IntentFilter(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL));
+//        localBroadcastManager.registerReceiver(mLikeBroadcastReceiver,
+//                new IntentFilter(LikeIntentService.BROADCAST_LIKE_POI));
+//        localBroadcastManager.registerReceiver(mCreateCommentBroadcastReceiver,
+//                new IntentFilter(CreateCommentIntentService.BROADCAST_CREATE_COMMENT));
+//        localBroadcastManager.registerReceiver(mDeleteCommentBroadcastReceiver,
+//                new IntentFilter(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT));
+//        localBroadcastManager.registerReceiver(mEditCommentBroadcastReceiver,
+//                new IntentFilter(EditCommentIntentService.BROADCAST_EDIT_COMMENT));
     }
 
     @Override
@@ -141,11 +141,11 @@ public class MainActivity extends BaseMtaFragmentActivity
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
 
         localBroadcastManager.unregisterReceiver(mFeedListBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(mFeedDetailBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(mLikeBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(mCreateCommentBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(mDeleteCommentBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(mEditCommentBroadcastReceiver);
+//        localBroadcastManager.unregisterReceiver(mFeedDetailBroadcastReceiver);
+//        localBroadcastManager.unregisterReceiver(mLikeBroadcastReceiver);
+//        localBroadcastManager.unregisterReceiver(mCreateCommentBroadcastReceiver);
+//        localBroadcastManager.unregisterReceiver(mDeleteCommentBroadcastReceiver);
+//        localBroadcastManager.unregisterReceiver(mEditCommentBroadcastReceiver);
 
         super.onPause();
     }
