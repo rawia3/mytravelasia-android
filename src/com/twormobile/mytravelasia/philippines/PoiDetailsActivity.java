@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
+import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
@@ -30,6 +31,7 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
     private static final String TAG = PoiDetailsActivity.class.getSimpleName();
 
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
+    private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiMapFragment";
 
     private BroadcastReceiver mFeedDetailBroadcastReceiver;
 
@@ -37,12 +39,6 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.poi_details_activity);
-
-//        FragmentManager fm = getSupportFragmentManager();
-//        Fragment poiDetailsFragment = new PoiDetailsFragment();
-//        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-//        fragmentTransaction.add(R.id.fragment_poi_details, poiDetailsFragment);
-//        fragmentTransaction.commit();
 
         Intent intent = getIntent();
         final long feedId = intent.getLongExtra(FeedDetailIntentService.EXTRAS_FEED_ID, -1);
@@ -77,7 +73,6 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
                     Log.d(TAG, "poi detail name " + poiDetails);
                     args.putParcelable(PoiDetailsFragment.ARG_POI_DETAILS, poiDetails);
                     poiDetailsFragment.setArguments(args);
-//                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.replace(R.id.fragment_poi_details, poiDetailsFragment, TAG_DETAILS_FRAGMENT)
                             .commit();
 
@@ -97,7 +92,17 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
 
     @Override
     public void onViewMap(double latitude, double longitude, String name) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        PoiMapFragment poiMapFragment = new PoiMapFragment();
+        Bundle args = new Bundle();
 
+        args.putDouble(PoiMapFragment.ARGS_LAT, latitude);
+        args.putDouble(PoiMapFragment.ARGS_LNG, longitude);
+        args.putString(PoiMapFragment.ARGS_NAME, name);
+
+        poiMapFragment.setArguments(args);
+        fragmentTransaction.replace(R.id.fragment_poi_details, poiMapFragment, TAG_MAP_FRAGMENT)
+                .commit();
     }
 
     @Override
