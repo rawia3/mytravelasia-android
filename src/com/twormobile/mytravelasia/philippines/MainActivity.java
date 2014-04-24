@@ -202,6 +202,7 @@ public class MainActivity extends BaseMtaFragmentActivity
 
         Intent detailsIntent = new Intent(this, PoiDetailsActivity.class);
         detailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID, feedId);
+        detailsIntent.putExtra(AppConstants.ARG_FB_PROFILE_ID, mProfileId);
         startActivity(detailsIntent);
     }
 

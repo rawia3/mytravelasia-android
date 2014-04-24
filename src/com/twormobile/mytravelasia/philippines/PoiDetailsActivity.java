@@ -17,13 +17,13 @@ import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
+import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.model.PoiDetails;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks{
@@ -33,7 +33,10 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
     private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiMapFragment";
 
+    private String mProfileId;
+
     private BroadcastReceiver mFeedDetailBroadcastReceiver;
+    private BroadcastReceiver mLikeBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,17 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
         final long feedId = intent.getLongExtra(FeedDetailIntentService.EXTRAS_FEED_ID, -1);
         initFeed(feedId);
 
+        initProfileId(savedInstanceState, intent);
+
         initBroadcastReceivers();
+    }
+
+    private void initProfileId(Bundle savedInstanceState, Intent intent) {
+        mProfileId = null != savedInstanceState
+                ? savedInstanceState.getString(AppConstants.ARG_FB_PROFILE_ID)
+                : intent.getStringExtra(AppConstants.ARG_FB_PROFILE_ID);
+
+        Log.d(TAG, "profile id " + mProfileId);
     }
 
     private void initBroadcastReceivers() {
@@ -80,6 +93,22 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
             }
         };
 
+        mLikeBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra(LikeIntentService.BROADCAST_LIKE_FAILED)) {
+                    Toast.makeText(PoiDetailsActivity.this, "Failed to like POI. Please try again.", Toast.LENGTH_LONG)
+                            .show();
+                } else if (intent.hasExtra(LikeIntentService.BROADCAST_LIKE_SUCCESS)) {
+                    PoiDetailsFragment poiDetailsFragment = (PoiDetailsFragment) getSupportFragmentManager()
+                            .findFragmentByTag(TAG_DETAILS_FRAGMENT);
+
+                    poiDetailsFragment.likePoi(intent.getBooleanExtra(LikeIntentService.BROADCAST_LIKE_SUCCESS, false));
+                }
+            }
+        };
+
+
 
     }
 
@@ -107,7 +136,12 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
 
     @Override
     public void onLikeClicked(long poiId, boolean isLiked) {
+        Intent likeIntent = new Intent(PoiDetailsActivity.this, LikeIntentService.class);
 
+        likeIntent.putExtra(LikeIntentService.EXTRAS_POI_ID, poiId);
+        likeIntent.putExtra(LikeIntentService.EXTRAS_PROFILE_ID, mProfileId);
+        likeIntent.putExtra(LikeIntentService.EXTRAS_IS_LIKE, isLiked);
+        startService(likeIntent);
     }
 
     @Override
@@ -122,6 +156,8 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
 
         localBroadcastManager.registerReceiver(mFeedDetailBroadcastReceiver,
                 new IntentFilter(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL));
+        localBroadcastManager.registerReceiver(mLikeBroadcastReceiver,
+                new IntentFilter(LikeIntentService.BROADCAST_LIKE_POI));
     }
 
     @Override
@@ -129,6 +165,7 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
 
         localBroadcastManager.unregisterReceiver(mFeedDetailBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mLikeBroadcastReceiver);
 
         super.onPause();
     }
