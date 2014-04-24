@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
+import com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
@@ -21,17 +23,24 @@ import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.model.PoiDetails;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
+import com.twormobile.mytravelasia.philippines.ui.EditCommentDialogFragment;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks{
+public class PoiDetailsActivity extends FragmentActivity
+        implements PoiDetailsFragment.Callbacks,
+        CarouselPhotoFragment.Callbacks,
+        PoiCommentsFragment.Callbacks,
+        EditCommentDialogFragment.Callbacks {
 
     private static final String TAG = PoiDetailsActivity.class.getSimpleName();
 
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
     private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiMapFragment";
+    private static final String TAG_COMMENTS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment";
 
     private String mProfileId;
 
@@ -72,11 +81,10 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
 
                 } else if (intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS)) {
 
-                   PoiDetails poiDetails = intent.getParcelableExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS);
+                    PoiDetails poiDetails = intent.getParcelableExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS);
 
                     if (null == poiDetails) return;
 
-                    // If the active fragment is the comments fragment, update the comment list.
                     Log.d(TAG, "displaying detail fragment");
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -86,9 +94,18 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
                     Log.d(TAG, "poi detail name " + poiDetails);
                     args.putParcelable(PoiDetailsFragment.ARG_POI_DETAILS, poiDetails);
                     poiDetailsFragment.setArguments(args);
-                    fragmentTransaction.replace(R.id.fragment_poi_details, poiDetailsFragment, TAG_DETAILS_FRAGMENT)
-                            .commit();
+                    fragmentTransaction.replace(R.id.fragment_poi_details, poiDetailsFragment, TAG_DETAILS_FRAGMENT);
 
+                    PoiCommentsFragment poiCommentsFragment = new PoiCommentsFragment();
+
+                    args.putLong(PoiCommentsFragment.ARGS_POI_ID, poiDetails.getResourceId());
+                    args.putParcelableArrayList(PoiCommentsFragment.ARGS_POI_COMMENTS,
+                            (ArrayList<? extends Parcelable>) poiDetails.getCommentEntries());
+                    args.putString(PoiCommentsFragment.ARGS_PROFILE_ID, mProfileId);
+
+                    poiCommentsFragment.setArguments(args);
+                    fragmentTransaction.replace(R.id.fragment_poi_comments, poiCommentsFragment, TAG_COMMENTS_FRAGMENT);
+                    fragmentTransaction.commit();
                 }
             }
         };
@@ -146,7 +163,7 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
 
     @Override
     public void onCommentClicked(long poiId, List<CommentEntry> commentEntries) {
-
+        //TODO: Scroll to comments in listview
     }
 
     @Override
@@ -177,5 +194,25 @@ public class PoiDetailsActivity extends FragmentActivity implements PoiDetailsFr
 
         intent.putExtra(AppConstants.ARG_PHOTO_URL, url);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPostClicked(long poiId, String comment) {
+
+    }
+
+    @Override
+    public void onPostEdit(long poiId, long commentId, String content) {
+
+    }
+
+    @Override
+    public void onPostDelete(long poiId, long commentId) {
+
+    }
+
+    @Override
+    public void onPostEdited(long poiId, long commentId, String content) {
+
     }
 }
