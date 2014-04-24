@@ -49,6 +49,8 @@
 
         <activity android:name=".PoiDetailsActivity"/>
 
+        <activity android:name=".PoiMapActivity"/>
+
         <provider android:authorities="com.twormobile.mytravelasia.philippines.db.MtaPhProvider"
                   android:name=".db.MtaPhProvider"
                   android:exported="false"

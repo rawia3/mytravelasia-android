@@ -38,7 +38,6 @@ public class PoiDetailsActivity extends FragmentActivity
     private static final String TAG = PoiDetailsActivity.class.getSimpleName();
 
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
-    private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiMapFragment";
     private static final String TAG_COMMENTS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment";
     private static final String TAG_EDIT_COMMENT = "com.twormobile.mytravelasia.philippines.comment.EditCommentDialogFragment";
 
@@ -191,17 +190,11 @@ public class PoiDetailsActivity extends FragmentActivity
 
     @Override
     public void onViewMap(double latitude, double longitude, String name) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        PoiMapFragment poiMapFragment = new PoiMapFragment();
-        Bundle args = new Bundle();
-
-        args.putDouble(PoiMapFragment.ARGS_LAT, latitude);
-        args.putDouble(PoiMapFragment.ARGS_LNG, longitude);
-        args.putString(PoiMapFragment.ARGS_NAME, name);
-
-        poiMapFragment.setArguments(args);
-        fragmentTransaction.replace(R.id.fragment_poi_details, poiMapFragment, TAG_MAP_FRAGMENT)
-                .commit();
+        Intent mapIntent = new Intent(this, PoiMapActivity.class);
+        mapIntent.putExtra(PoiMapFragment.ARGS_LAT, latitude);
+        mapIntent.putExtra(PoiMapFragment.ARGS_LNG, longitude);
+        mapIntent.putExtra(PoiMapFragment.ARGS_NAME, name);
+        startActivity(mapIntent);
     }
 
     @Override
