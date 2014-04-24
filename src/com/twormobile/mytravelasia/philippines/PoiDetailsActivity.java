@@ -18,8 +18,7 @@ import com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
-import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
-import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
+import com.twormobile.mytravelasia.philippines.http.*;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
 import com.twormobile.mytravelasia.philippines.model.PoiDetails;
 import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
@@ -41,11 +40,15 @@ public class PoiDetailsActivity extends FragmentActivity
     private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
     private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiMapFragment";
     private static final String TAG_COMMENTS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment";
+    private static final String TAG_EDIT_COMMENT = "com.twormobile.mytravelasia.philippines.comment.EditCommentDialogFragment";
 
     private String mProfileId;
 
     private BroadcastReceiver mFeedDetailBroadcastReceiver;
     private BroadcastReceiver mLikeBroadcastReceiver;
+    private BroadcastReceiver mCreateCommentBroadcastReceiver;
+    private BroadcastReceiver mDeleteCommentBroadcastReceiver;
+    private BroadcastReceiver mEditCommentBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,6 +128,56 @@ public class PoiDetailsActivity extends FragmentActivity
             }
         };
 
+        mCreateCommentBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_FAILED)) {
+                    String message = intent.getStringExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_FAILED);
+
+                    Toast.makeText(PoiDetailsActivity.this, message, Toast.LENGTH_LONG).show();
+                } else if (intent.hasExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_SUCCESS)) {
+                    Intent getDetailsIntent = new Intent(PoiDetailsActivity.this, FeedDetailIntentService.class);
+
+                    getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID,
+                            intent.getLongExtra(CreateCommentIntentService.BROADCAST_CREATE_COMMENT_SUCCESS, 0));
+                    startService(getDetailsIntent);
+                }
+            }
+        };
+
+        mDeleteCommentBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT_FAILED)) {
+                    String message = intent.getStringExtra(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT_FAILED);
+
+                    Toast.makeText(PoiDetailsActivity.this, message, Toast.LENGTH_LONG).show();
+                } else if (intent.hasExtra(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT_SUCCESS)) {
+                    Intent getDetailsIntent = new Intent(PoiDetailsActivity.this, FeedDetailIntentService.class);
+
+                    getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID,
+                            intent.getLongExtra(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT_SUCCESS, 0));
+                    startService(getDetailsIntent);
+                }
+            }
+        };
+
+        mEditCommentBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.hasExtra(EditCommentIntentService.BROADCAST_EDIT_COMMENT_FAILED)) {
+                    String message = intent.getStringExtra(EditCommentIntentService.BROADCAST_EDIT_COMMENT_FAILED);
+
+                    Toast.makeText(PoiDetailsActivity.this, message, Toast.LENGTH_LONG).show();
+                } else if (intent.hasExtra(EditCommentIntentService.BROADCAST_EDIT_COMMENT_SUCCESS)) {
+                    Intent getDetailsIntent = new Intent(PoiDetailsActivity.this, FeedDetailIntentService.class);
+
+                    getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID,
+                            intent.getLongExtra(EditCommentIntentService.BROADCAST_EDIT_COMMENT_SUCCESS, 0));
+                    startService(getDetailsIntent);
+                }
+            }
+        };
 
 
     }
@@ -175,6 +228,13 @@ public class PoiDetailsActivity extends FragmentActivity
                 new IntentFilter(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL));
         localBroadcastManager.registerReceiver(mLikeBroadcastReceiver,
                 new IntentFilter(LikeIntentService.BROADCAST_LIKE_POI));
+        localBroadcastManager.registerReceiver(mCreateCommentBroadcastReceiver,
+                new IntentFilter(CreateCommentIntentService.BROADCAST_CREATE_COMMENT));
+        localBroadcastManager.registerReceiver(mDeleteCommentBroadcastReceiver,
+                new IntentFilter(DeleteCommentIntentService.BROADCAST_DELETE_COMMENT));
+        localBroadcastManager.registerReceiver(mEditCommentBroadcastReceiver,
+                new IntentFilter(EditCommentIntentService.BROADCAST_EDIT_COMMENT));
+
     }
 
     @Override
@@ -183,6 +243,9 @@ public class PoiDetailsActivity extends FragmentActivity
 
         localBroadcastManager.unregisterReceiver(mFeedDetailBroadcastReceiver);
         localBroadcastManager.unregisterReceiver(mLikeBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mCreateCommentBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mDeleteCommentBroadcastReceiver);
+        localBroadcastManager.unregisterReceiver(mEditCommentBroadcastReceiver);
 
         super.onPause();
     }
@@ -198,21 +261,55 @@ public class PoiDetailsActivity extends FragmentActivity
 
     @Override
     public void onPostClicked(long poiId, String comment) {
+        if (null == mProfileId || "".equals(mProfileId)) {
+            Toast.makeText(PoiDetailsActivity.this, R.string.msg_must_login, Toast.LENGTH_LONG).show();
 
+            return;
+        }
+        Intent createCommentIntent = new Intent(PoiDetailsActivity.this, CreateCommentIntentService.class);
+
+        createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_POI_ID, poiId);
+        createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_COMMENT_CONTENT, comment);
+        createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
+
+        startService(createCommentIntent);
     }
 
     @Override
     public void onPostEdit(long poiId, long commentId, String content) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        EditCommentDialogFragment editCommentDialogFragment = new EditCommentDialogFragment();
+        Bundle args = new Bundle();
 
-    }
-
-    @Override
-    public void onPostDelete(long poiId, long commentId) {
-
+        args.putLong(EditCommentDialogFragment.EXTRAS_POI_ID, poiId);
+        args.putLong(EditCommentDialogFragment.EXTRAS_COMMENT_ID, commentId);
+        args.putString(EditCommentDialogFragment.EXTRAS_COMMENT_CONTENT, content);
+        editCommentDialogFragment.setArguments(args);
+        editCommentDialogFragment.show(fragmentManager, TAG_EDIT_COMMENT);
     }
 
     @Override
     public void onPostEdited(long poiId, long commentId, String content) {
+        Intent editCommentIntent = new Intent(PoiDetailsActivity.this, EditCommentIntentService.class);
 
+        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_POI_ID, poiId);
+        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_COMMENT_ID, commentId);
+        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
+        editCommentIntent.putExtra(EditCommentIntentService.EXTRAS_COMMENT_CONTENT, content);
+
+        startService(editCommentIntent);
     }
+
+    @Override
+    public void onPostDelete(long poiId, long commentId) {
+        Intent deleteCommentIntent = new Intent(PoiDetailsActivity.this, DeleteCommentIntentService.class);
+
+        deleteCommentIntent.putExtra(DeleteCommentIntentService.EXTRAS_POI_ID, poiId);
+        deleteCommentIntent.putExtra(DeleteCommentIntentService.EXTRAS_COMMENT_ID, commentId);
+        deleteCommentIntent.putExtra(DeleteCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
+
+        startService(deleteCommentIntent);
+    }
+
+
 }
