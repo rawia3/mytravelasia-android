@@ -14,6 +14,7 @@ local.properties
 .idea/tasks.xml
 .idea/dictionaries
 .idea/misc.xml
+.idea/uiDesigner.xml
 
 #Calabash
 test_servers
