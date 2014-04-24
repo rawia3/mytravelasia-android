@@ -54,14 +54,10 @@ import java.util.List;
  *
  * @author avendael
  */
-public class MainActivity extends BaseMtaFragmentActivity
-        implements PoiListFragment.Callbacks, PoiDetailsFragment.Callbacks, CarouselPhotoFragment.Callbacks,
-                   PoiCommentsFragment.Callbacks, EditCommentDialogFragment.Callbacks {
+public class MainActivity extends BaseMtaFragmentActivity implements PoiListFragment.Callbacks {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String TAG_FEED_LIST_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiListFragment";
     private static final String TAG_COMMENTS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment";
-    private static final String TAG_DETAILS_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment";
-    private static final String TAG_MAP_FRAGMENT = "com.twormobile.mytravelasia.philippines.feed.PoiMapFragment";
     private static final String TAG_EDIT_COMMENT = "com.twormobile.mytravelasia.philippines.comment.EditCommentDialogFragment";
 
     private boolean mIsDualPane;
@@ -74,8 +70,6 @@ public class MainActivity extends BaseMtaFragmentActivity
     private ListView mLvNav;
     private ActionBarDrawerToggle mDrawerToggle;
     private BroadcastReceiver mFeedListBroadcastReceiver;
-    private BroadcastReceiver mFeedDetailBroadcastReceiver;
-    private BroadcastReceiver mLikeBroadcastReceiver;
     private BroadcastReceiver mCreateCommentBroadcastReceiver;
     private BroadcastReceiver mDeleteCommentBroadcastReceiver;
     private BroadcastReceiver mEditCommentBroadcastReceiver;
@@ -117,10 +111,6 @@ public class MainActivity extends BaseMtaFragmentActivity
 
         localBroadcastManager.registerReceiver(mFeedListBroadcastReceiver,
                 new IntentFilter(FeedListIntentService.BROADCAST_GET_FEED_LIST));
-//        localBroadcastManager.registerReceiver(mFeedDetailBroadcastReceiver,
-//                new IntentFilter(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL));
-//        localBroadcastManager.registerReceiver(mLikeBroadcastReceiver,
-//                new IntentFilter(LikeIntentService.BROADCAST_LIKE_POI));
 //        localBroadcastManager.registerReceiver(mCreateCommentBroadcastReceiver,
 //                new IntentFilter(CreateCommentIntentService.BROADCAST_CREATE_COMMENT));
 //        localBroadcastManager.registerReceiver(mDeleteCommentBroadcastReceiver,
@@ -141,8 +131,6 @@ public class MainActivity extends BaseMtaFragmentActivity
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
 
         localBroadcastManager.unregisterReceiver(mFeedListBroadcastReceiver);
-//        localBroadcastManager.unregisterReceiver(mFeedDetailBroadcastReceiver);
-//        localBroadcastManager.unregisterReceiver(mLikeBroadcastReceiver);
 //        localBroadcastManager.unregisterReceiver(mCreateCommentBroadcastReceiver);
 //        localBroadcastManager.unregisterReceiver(mDeleteCommentBroadcastReceiver);
 //        localBroadcastManager.unregisterReceiver(mEditCommentBroadcastReceiver);
@@ -196,10 +184,6 @@ public class MainActivity extends BaseMtaFragmentActivity
 
     @Override
     public void onPoiSelected(long feedId) {
-//        Intent getDetailsIntent = new Intent(MainActivity.this, FeedDetailIntentService.class);
-//        getDetailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID, feedId);
-//        startService(getDetailsIntent);
-
         Intent detailsIntent = new Intent(this, PoiDetailsActivity.class);
         detailsIntent.putExtra(FeedDetailIntentService.EXTRAS_FEED_ID, feedId);
         detailsIntent.putExtra(AppConstants.ARG_FB_PROFILE_ID, mProfileId);
@@ -239,41 +223,6 @@ public class MainActivity extends BaseMtaFragmentActivity
         }.execute();
     }
 
-    @Override
-    public void onPhotoClicked(String url) {
-        Intent intent = new Intent(MainActivity.this, PoiPhotoActivity.class);
-
-        intent.putExtra(AppConstants.ARG_PHOTO_URL, url);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onViewMap(double latitude, double longitude, String name) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        PoiMapFragment poiMapFragment = new PoiMapFragment();
-        Bundle args = new Bundle();
-
-        args.putDouble(PoiMapFragment.ARGS_LAT, latitude);
-        args.putDouble(PoiMapFragment.ARGS_LNG, longitude);
-        args.putString(PoiMapFragment.ARGS_NAME, name);
-
-        poiMapFragment.setArguments(args);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.replace(R.id.fl_list_container, poiMapFragment, TAG_MAP_FRAGMENT)
-                .commit();
-    }
-
-    @Override
-    public void onLikeClicked(long poiId, boolean isLiked) {
-        Intent likeIntent = new Intent(MainActivity.this, LikeIntentService.class);
-
-        likeIntent.putExtra(LikeIntentService.EXTRAS_POI_ID, poiId);
-        likeIntent.putExtra(LikeIntentService.EXTRAS_PROFILE_ID, mProfileId);
-        likeIntent.putExtra(LikeIntentService.EXTRAS_IS_LIKE, isLiked);
-        startService(likeIntent);
-    }
-
-    @Override
     public void onCommentClicked(long poiId, List<CommentEntry> commentEntries) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         PoiCommentsFragment poiCommentsFragment = new PoiCommentsFragment();
@@ -290,7 +239,6 @@ public class MainActivity extends BaseMtaFragmentActivity
                 .commit();
     }
 
-    @Override
     public void onPostClicked(long poiId, String comment) {
         if (null == mProfileId || "".equals(mProfileId)) {
             Toast.makeText(MainActivity.this, R.string.msg_must_login, Toast.LENGTH_LONG).show();
@@ -306,7 +254,6 @@ public class MainActivity extends BaseMtaFragmentActivity
         startService(createCommentIntent);
     }
 
-    @Override
     public void onPostEdit(long poiId, long commentId, String content) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         EditCommentDialogFragment editCommentDialogFragment = new EditCommentDialogFragment();
@@ -319,7 +266,6 @@ public class MainActivity extends BaseMtaFragmentActivity
         editCommentDialogFragment.show(fragmentManager, TAG_EDIT_COMMENT);
     }
 
-    @Override
     public void onPostEdited(long poiId, long commentId, String content) {
         Intent editCommentIntent = new Intent(MainActivity.this, EditCommentIntentService.class);
 
@@ -331,7 +277,6 @@ public class MainActivity extends BaseMtaFragmentActivity
         startService(editCommentIntent);
     }
 
-    @Override
     public void onPostDelete(long poiId, long commentId) {
         Intent deleteCommentIntent = new Intent(MainActivity.this, DeleteCommentIntentService.class);
 
@@ -369,56 +314,6 @@ public class MainActivity extends BaseMtaFragmentActivity
                     poiListFragment.hideFooter();
 
                     if (currentPage < totalPages && currentPage < 5) onNextPage(currentPage + 1L);
-                }
-            }
-        };
-
-        mFeedDetailBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_FAILED)
-                        || intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_FAILED)) {
-                    Toast.makeText(MainActivity.this, "Failed to retrieve details", Toast.LENGTH_LONG).show();
-                } else if (intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS)) {
-                    PoiCommentsFragment poiCommentsFragment = (PoiCommentsFragment) getSupportFragmentManager()
-                            .findFragmentByTag(TAG_COMMENTS_FRAGMENT);
-                    PoiDetails poiDetails = intent.getParcelableExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_SUCCESS);
-
-                    if (null == poiDetails) return;
-
-                    // If the active fragment is the comments fragment, update the comment list.
-                    if (null != poiCommentsFragment) {
-                        poiCommentsFragment.updateCommentList((ArrayList<CommentEntry>) poiDetails.getCommentEntries());
-                    } else { // Otherwise, show the detail fragment
-                        Log.d(TAG, "displaying detail fragment");
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        Fragment poiDetailsFragment = new PoiDetailsFragment();
-                        Bundle args = new Bundle();
-
-                        Log.d(TAG, "poi detail name " + poiDetails);
-                        args.putParcelable(PoiDetailsFragment.ARG_POI_DETAILS,
-                                poiDetails);
-                        poiDetailsFragment.setArguments(args);
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.replace(R.id.fl_list_container, poiDetailsFragment, TAG_DETAILS_FRAGMENT)
-                                .commit();
-                    }
-                }
-            }
-        };
-
-        mLikeBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.hasExtra(LikeIntentService.BROADCAST_LIKE_FAILED)) {
-                    Toast.makeText(MainActivity.this, "Failed to like POI. Please try again.", Toast.LENGTH_LONG)
-                            .show();
-                } else if (intent.hasExtra(LikeIntentService.BROADCAST_LIKE_SUCCESS)) {
-                    PoiDetailsFragment poiDetailsFragment = (PoiDetailsFragment) getSupportFragmentManager()
-                            .findFragmentByTag(TAG_DETAILS_FRAGMENT);
-
-                    poiDetailsFragment.likePoi(intent.getBooleanExtra(LikeIntentService.BROADCAST_LIKE_SUCCESS, false));
                 }
             }
         };
