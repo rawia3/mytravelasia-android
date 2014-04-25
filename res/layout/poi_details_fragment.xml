@@ -47,6 +47,7 @@
             <TextView android:id="@+id/tv_comments"
                       android:layout_alignParentLeft="true"
                       android:drawableLeft="@drawable/btn_comment"
+                      android:drawablePadding="5dp"
                       android:textColor="@android:color/black"
                       android:clickable="true"
                       style="@style/LayoutWrapWrap"/>
@@ -54,6 +55,7 @@
             <TextView android:id="@+id/tv_likes"
                       android:layout_alignParentRight="true"
                       android:drawableLeft="@drawable/btn_like"
+                      android:drawablePadding="5dp"
                       android:textColor="@android:color/black"
                       android:clickable="true"
                       style="@style/LayoutWrapWrap"/>

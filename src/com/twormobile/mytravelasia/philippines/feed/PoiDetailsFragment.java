@@ -113,8 +113,10 @@ public class PoiDetailsFragment extends Fragment {
 
             tvPoiName.setText(mPoiDetails.getName());
             tvPoiAddress.setText(mPoiDetails.getAddress());
-            mTvComments.setText(Long.toString(mPoiDetails.getTotalComments()));
-            mTvLikes.setText(Long.toString(mPoiDetails.getTotalLikes()));
+
+            updateTotalComments((int) mPoiDetails.getTotalComments());
+            updateTotalLikes((int)mPoiDetails.getTotalLikes());
+
             tvTelephone.setText(mPoiDetails.getTelNo());
             tvWebsite.setText(mPoiDetails.getWebUrl());
             tvEmail.setText(mPoiDetails.getEmail());
@@ -175,7 +177,29 @@ public class PoiDetailsFragment extends Fragment {
     public void updateTotalComments(int totalComments) {
         mPoiDetails.setTotalComments(totalComments);
 
-        mTvComments.setText(Integer.toString(totalComments));
+        String text = "";
+        if(totalComments > 1) {
+            text = Integer.toString(totalComments) + " comments";
+        }
+        else if(totalComments == 1) {
+            text = Integer.toString(totalComments) + " comment";
+        }
+
+        mTvComments.setText(text);
+    }
+
+    public void updateTotalLikes(int totalLikes) {
+        mPoiDetails.setTotalLikes(  totalLikes);
+
+        String text = "";
+        if(totalLikes > 1) {
+            text = Integer.toString(totalLikes) + " likes";
+        }
+        else if(totalLikes == 1) {
+            text = Integer.toString(totalLikes) + " like";
+        }
+
+        mTvLikes.setText(text);
     }
 
     private void initCarousel(View view) {
