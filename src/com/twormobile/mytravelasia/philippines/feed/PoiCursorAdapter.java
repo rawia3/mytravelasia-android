@@ -68,7 +68,7 @@ public class PoiCursorAdapter extends CursorAdapter {
         long totalLikes = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_LIKES));
         long totalComments = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_COMMENTS));
 
-        viewHolder.ivThumbnail.setImageUrl(imgPath);
+        viewHolder.ivThumbnail.setImageUrl(imgPath, R.drawable.loading);
         viewHolder.tvTitle.setText(null == name || "".equals(name) ? feedName : name);
         viewHolder.tvSubTitle.setText(subTitle);
         viewHolder.tvLikes.setText(totalLikes + "");

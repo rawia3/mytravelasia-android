@@ -23,6 +23,6 @@ public class PoiPhotoActivity extends Activity {
         SmartImageView ivPhoto = (SmartImageView) findViewById(R.id.iv_photo);
         Log.d(TAG, photoUrl);
 
-        if (photoUrl != null) ivPhoto.setImageUrl(photoUrl);
+        if (photoUrl != null) ivPhoto.setImageUrl(photoUrl, R.drawable.loading);
     }
 }

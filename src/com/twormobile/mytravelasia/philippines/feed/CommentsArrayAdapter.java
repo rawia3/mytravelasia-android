@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.loopj.android.image.SmartImageView;
+import com.facebook.widget.ProfilePictureView;
+
 import com.twormobile.mytravelasia.philippines.R;
 import com.twormobile.mytravelasia.philippines.model.CommentEntry;
+import com.twormobile.mytravelasia.philippines.util.Log;
 
 import java.util.List;
 
@@ -19,10 +21,12 @@ import java.util.List;
  * @author avendael
  */
 public class CommentsArrayAdapter extends ArrayAdapter<CommentEntry> {
+    private static final String TAG = CommentsArrayAdapter.class.getSimpleName();
+
     static class ViewHolder {
         TextView tvContent;
         TextView tvProfileName;
-        SmartImageView ivProfilePic;
+        ProfilePictureView fbProfilePic;
     }
 
     public CommentsArrayAdapter(Context context, int resource, List<CommentEntry> objects) {
@@ -39,7 +43,7 @@ public class CommentsArrayAdapter extends ArrayAdapter<CommentEntry> {
             view = inflater.inflate(R.layout.comment_list_item, parent, false);
             viewHolder.tvContent = (TextView) view.findViewById(R.id.tv_content);
             viewHolder.tvProfileName = (TextView) view.findViewById(R.id.tv_profile_name);
-            viewHolder.ivProfilePic = (SmartImageView) view.findViewById(R.id.iv_profile_pic);
+            viewHolder.fbProfilePic = (ProfilePictureView) view.findViewById(R.id.iv_profile_pic);
 
             view.setTag(viewHolder);
         } else {
@@ -49,11 +53,11 @@ public class CommentsArrayAdapter extends ArrayAdapter<CommentEntry> {
         CommentEntry commentEntry = getItem(position);
         String content = commentEntry.getContent();
         String profileName = commentEntry.getFbUserProfileName();
-        String photoUrl = "http://graph.facebook.com/" + commentEntry.getFbUserProfileId() + "/picture";
+        String profileId = String.valueOf(commentEntry.getFbUserProfileId());
 
         viewHolder.tvContent.setText(content);
         viewHolder.tvProfileName.setText(profileName);
-        viewHolder.ivProfilePic.setImageUrl(photoUrl);
+        viewHolder.fbProfilePic.setProfileId(profileId);
 
         return view;
     }
