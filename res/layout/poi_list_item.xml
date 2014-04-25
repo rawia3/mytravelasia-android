@@ -8,6 +8,7 @@
             android:layout_width="61dp"
             android:layout_height="61dp"
             android:background="@android:color/darker_gray"
+            android:src="@drawable/loading"
             android:layout_alignParentLeft="true"/>
     <TextView android:id="@+id/tv_poi_title"
               android:layout_alignParentTop="true"
