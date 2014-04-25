@@ -8,11 +8,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,27 +21,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.twormobile.mytravelasia.philippines.db.MtaPhProvider;
-import com.twormobile.mytravelasia.philippines.feed.PoiCommentsFragment;
-import com.twormobile.mytravelasia.philippines.feed.PoiDetailsFragment;
 import com.twormobile.mytravelasia.philippines.feed.PoiListFragment;
-import com.twormobile.mytravelasia.philippines.feed.PoiMapFragment;
-import com.twormobile.mytravelasia.philippines.feed.PoiPhotoActivity;
-import com.twormobile.mytravelasia.philippines.http.CreateCommentIntentService;
-import com.twormobile.mytravelasia.philippines.http.DeleteCommentIntentService;
-import com.twormobile.mytravelasia.philippines.http.EditCommentIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedDetailIntentService;
 import com.twormobile.mytravelasia.philippines.http.FeedListIntentService;
-import com.twormobile.mytravelasia.philippines.http.LikeIntentService;
-import com.twormobile.mytravelasia.philippines.model.CommentEntry;
-import com.twormobile.mytravelasia.philippines.model.PoiDetails;
-import com.twormobile.mytravelasia.philippines.ui.CarouselPhotoFragment;
-import com.twormobile.mytravelasia.philippines.ui.EditCommentDialogFragment;
 import com.twormobile.mytravelasia.philippines.util.AppConstants;
 import com.twormobile.mytravelasia.philippines.util.Log;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An activity that manages the feed and map fragments. If the device has a smallest width of >= 530dp, it will show
@@ -68,6 +50,8 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
     private ListView mLvNav;
     private ActionBarDrawerToggle mDrawerToggle;
     private BroadcastReceiver mFeedListBroadcastReceiver;
+
+    private boolean mInitialLoad = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,6 +81,8 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                 .beginTransaction()
                 .replace(R.id.fl_list_container, new PoiListFragment(), TAG_FEED_LIST_FRAGMENT)
                 .commit();
+
+        resetInitialFeed(false);
     }
 
     @Override
@@ -111,8 +97,17 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
     @Override
     protected void onPostResume() {
         super.onPostResume();
+    }
 
-        onNextPage(1L);
+    private void resetInitialFeed(boolean reset) {
+        if(reset){
+            mInitialLoad = true;
+        }
+
+        if(mInitialLoad) {
+            onNextPage(1L);
+            mInitialLoad = false;
+        }
     }
 
     @Override
@@ -235,7 +230,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                     poiListFragment.setTotalPages(totalPages);
                     poiListFragment.hideFooter();
 
-                    if (currentPage < totalPages && currentPage < 5) onNextPage(currentPage + 1L);
+//                    if (currentPage < totalPages && currentPage < 5) onNextPage(currentPage + 1L);
                 }
             }
         };
@@ -265,21 +260,21 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                     case 1: // Nearby
                         mFeedType = FeedListIntentService.FEED_TYPE_NEARBY;
 
-                        onNextPage(1L);;
+                        resetInitialFeed(true);
                         mDlContainer.closeDrawers();
 
                         break;
                     case 2: // News
                         mFeedType = FeedListIntentService.FEED_TYPE_NEWS;
 
-                        onNextPage(1L);
+                        resetInitialFeed(true);
                         mDlContainer.closeDrawers();
 
                         break;
                     case 3: // Featured
                         mFeedType = FeedListIntentService.FEED_TYPE_FEATURED;
 
-                        onNextPage(1L);
+                        resetInitialFeed(true);
                         mDlContainer.closeDrawers();
 
                         break;
@@ -287,14 +282,14 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                     case 4: // Most Viewed
                         mFeedType = FeedListIntentService.FEED_TYPE_MOST_VIEWED;
 
-                        onNextPage(1L);
+                        resetInitialFeed(true);
                         mDlContainer.closeDrawers();
 
                         break;
                     case 5: // Recent
                         mFeedType = FeedListIntentService.FEED_TYPE_RECENT;
 
-                        onNextPage(1L);
+                        resetInitialFeed(true);
                         mDlContainer.closeDrawers();
 
                         break;
