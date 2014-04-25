@@ -150,6 +150,8 @@ public class FeedListIntentService extends BaseIntentService {
                         "Philippines", page);
         }
 
+        Log.d(TAG, "URL: " + url);
+
         GsonRequest<FeedResponse> gsonRequest = new GsonRequest<FeedResponse>(
                 url, FeedResponse.class, null, params, successListener, errorListener);
 
