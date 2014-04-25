@@ -43,69 +43,83 @@
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
                         style="@style/LayoutMatchWrap">
+
             <TextView android:id="@+id/tv_comments"
                       android:layout_alignParentLeft="true"
                       android:drawableLeft="@drawable/btn_comment"
                       android:textColor="@android:color/black"
                       android:clickable="true"
                       style="@style/LayoutWrapWrap"/>
+
             <TextView android:id="@+id/tv_likes"
                       android:layout_alignParentRight="true"
                       android:drawableLeft="@drawable/btn_like"
                       android:textColor="@android:color/black"
                       android:clickable="true"
                       style="@style/LayoutWrapWrap"/>
+
         </RelativeLayout>
 
         <RelativeLayout android:background="@color/light_gray"
                         android:paddingLeft="@dimen/side_padding"
                         android:paddingRight="@dimen/side_padding"
+                        android:paddingTop="5dp"
                         style="@style/LayoutMatchWrap">
-            <TextView android:layout_alignParentLeft="true"
+
+            <TextView android:id="@+id/label_tel"
+                      android:layout_alignParentLeft="true"
                       android:text="Telephone"
                       android:textColor="@android:color/black"
                       style="@style/LayoutWrapWrap"/>
+
             <TextView android:id="@+id/tv_telephone"
-                      android:layout_alignParentRight="true"
-                      android:text="@string/txt_empty"
-                      android:textColor="@android:color/black"
-                      style="@style/LayoutWrapWrap"/>
+                      android:layout_toRightOf="@+id/label_tel"
+                      style="@style/ContactDetails"/>
+
         </RelativeLayout>
 
         <RelativeLayout android:background="@color/light_gray"
                         android:paddingLeft="@dimen/side_padding"
                         android:paddingRight="@dimen/side_padding"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
                         style="@style/LayoutMatchWrap">
-            <TextView android:layout_alignParentLeft="true"
+
+            <TextView android:id="@+id/label_website"
+                      android:layout_alignParentLeft="true"
                       android:text="@string/lbl_website"
                       android:textColor="@android:color/black"
                       style="@style/LayoutWrapWrap"/>
+
             <TextView android:id="@+id/tv_website"
-                      android:layout_alignParentRight="true"
-                      android:text="@string/txt_empty"
-                      android:textColor="@android:color/black"
-                      style="@style/LayoutWrapWrap"/>
+                      android:layout_toRightOf="@+id/label_website"
+                      style="@style/ContactDetails"/>
+
         </RelativeLayout>
 
         <RelativeLayout android:background="@color/light_gray"
                         android:paddingLeft="@dimen/side_padding"
                         android:paddingRight="@dimen/side_padding"
+                        android:paddingBottom="5dp"
                         style="@style/LayoutMatchWrap">
-            <TextView android:layout_alignParentLeft="true"
+
+            <TextView android:id="@+id/label_email"
+                      android:layout_alignParentLeft="true"
                       android:text="@string/lbl_email"
                       android:textColor="@android:color/black"
                       style="@style/LayoutWrapWrap"/>
+
             <TextView android:id="@+id/tv_email"
-                      android:layout_alignParentRight="true"
-                      android:text="@string/txt_empty"
-                      android:textColor="@android:color/black"
-                      style="@style/LayoutWrapWrap"/>
+                      android:layout_toRightOf="@+id/label_email"
+                      style="@style/ContactDetails"/>
+
         </RelativeLayout>
 
         <TextView android:id="@+id/tv_description"
                   android:paddingLeft="@dimen/side_padding"
                   android:paddingRight="@dimen/side_padding"
                   android:textColor="@android:color/black"
+                  android:layout_marginTop="5dp"
                   style="@style/LayoutMatchWrap"/>
     </LinearLayout>
 </ScrollView>
