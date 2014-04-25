@@ -90,6 +90,7 @@ public class PoiDetailsActivity extends FragmentActivity
                     Log.d(TAG, "displaying detail fragment");
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
                     Fragment poiDetailsFragment = new PoiDetailsFragment();
                     Bundle args = new Bundle();
 
@@ -97,16 +98,6 @@ public class PoiDetailsActivity extends FragmentActivity
                     args.putParcelable(PoiDetailsFragment.ARG_POI_DETAILS, poiDetails);
                     poiDetailsFragment.setArguments(args);
                     fragmentTransaction.replace(R.id.fragment_poi_details, poiDetailsFragment, TAG_DETAILS_FRAGMENT);
-
-                    PoiCommentsFragment poiCommentsFragment = new PoiCommentsFragment();
-
-                    args.putLong(PoiCommentsFragment.ARGS_POI_ID, poiDetails.getResourceId());
-                    args.putParcelableArrayList(PoiCommentsFragment.ARGS_POI_COMMENTS,
-                            (ArrayList<? extends Parcelable>) poiDetails.getCommentEntries());
-                    args.putString(PoiCommentsFragment.ARGS_PROFILE_ID, mProfileId);
-
-                    poiCommentsFragment.setArguments(args);
-                    fragmentTransaction.replace(R.id.fragment_poi_comments, poiCommentsFragment, TAG_COMMENTS_FRAGMENT);
                     fragmentTransaction.commit();
                 }
             }
@@ -177,8 +168,6 @@ public class PoiDetailsActivity extends FragmentActivity
                 }
             }
         };
-
-
     }
 
     private void initFeed(long feedId) {
@@ -209,7 +198,22 @@ public class PoiDetailsActivity extends FragmentActivity
 
     @Override
     public void onCommentClicked(long poiId, List<CommentEntry> commentEntries) {
-        //TODO: Scroll to comments in listview
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        PoiCommentsFragment poiCommentsFragment = new PoiCommentsFragment();
+        Bundle args = new Bundle();
+
+        args.putLong(PoiCommentsFragment.ARGS_POI_ID, poiId);
+        args.putParcelableArrayList(PoiCommentsFragment.ARGS_POI_COMMENTS,
+                (ArrayList<? extends Parcelable>) commentEntries);
+        args.putString(PoiCommentsFragment.ARGS_PROFILE_ID, mProfileId);
+
+        poiCommentsFragment.setArguments(args);
+
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.fragment_poi_details, poiCommentsFragment, TAG_COMMENTS_FRAGMENT);
+        fragmentTransaction.commit();
     }
 
     @Override
