@@ -78,16 +78,22 @@ public class PoiListFragment extends ListFragment implements OnRefreshListener {
      */
     private class PoiListLoader implements LoaderCallbacks<Cursor> {
         String[] projection = {
-                Poi._ID, Poi.FEED_NAME, Poi.NAME, Poi.ADDRESS, Poi.TOTAL_COMMENTS, Poi.TOTAL_LIKES,
-                Poi.LATITUDE, Poi.LONGITUDE, Poi.IMAGE_THUMB_URL, Poi.RESOURCE_ID
+                Poi._ID,
+                Poi.FEED_NAME,
+                Poi.NAME,
+                Poi.ADDRESS,
+                Poi.TOTAL_COMMENTS,
+                Poi.TOTAL_LIKES,
+                Poi.LATITUDE,
+                Poi.LONGITUDE,
+                Poi.IMAGE_THUMB_URL,
+                Poi.RESOURCE_ID
         };
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             Log.d(TAG, "created loader");
-            return new CursorLoader(getActivity(), MtaPhProvider.POI_URI, projection, null, null,
-                    null);
-//                    Poi.CREATED_AT + " DESC");
+            return new CursorLoader(getActivity(), MtaPhProvider.POI_URI, projection, null, null, null);
         }
 
         @Override
