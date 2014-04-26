@@ -42,7 +42,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
 
     private boolean mIsDualPane;
     private boolean mIsRefreshing;
-    private int mFeedType;
+    private int mFeedType = FeedListIntentService.FEED_TYPE_NEARBY;
     private double[] mCoords;
     private String mProfileId;
     private String[] mNavItems;
@@ -82,6 +82,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                 .replace(R.id.fl_list_container, new PoiListFragment(), TAG_FEED_LIST_FRAGMENT)
                 .commit();
 
+        setTitle("Near Me");
         resetInitialFeed(false);
     }
 
@@ -261,6 +262,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                         mFeedType = FeedListIntentService.FEED_TYPE_NEARBY;
 
                         resetInitialFeed(true);
+                        setTitle("Near Me");
                         mDlContainer.closeDrawers();
 
                         break;
@@ -268,6 +270,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                         mFeedType = FeedListIntentService.FEED_TYPE_NEWS;
 
                         resetInitialFeed(true);
+                        setTitle("News Feed");
                         mDlContainer.closeDrawers();
 
                         break;
@@ -275,6 +278,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                         mFeedType = FeedListIntentService.FEED_TYPE_FEATURED;
 
                         resetInitialFeed(true);
+                        setTitle("Featured");
                         mDlContainer.closeDrawers();
 
                         break;
@@ -283,6 +287,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                         mFeedType = FeedListIntentService.FEED_TYPE_MOST_VIEWED;
 
                         resetInitialFeed(true);
+                        setTitle("Most Viewed");
                         mDlContainer.closeDrawers();
 
                         break;
@@ -290,6 +295,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                         mFeedType = FeedListIntentService.FEED_TYPE_RECENT;
 
                         resetInitialFeed(true);
+                        setTitle("Recent");
                         mDlContainer.closeDrawers();
 
                         break;
