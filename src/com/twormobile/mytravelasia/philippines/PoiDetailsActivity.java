@@ -29,7 +29,7 @@ import com.twormobile.mytravelasia.philippines.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PoiDetailsActivity extends FragmentActivity
+public class PoiDetailsActivity extends BaseMtaFragmentActivity
         implements PoiDetailsFragment.Callbacks,
         CarouselPhotoFragment.Callbacks,
         PoiCommentsFragment.Callbacks,
@@ -52,6 +52,7 @@ public class PoiDetailsActivity extends FragmentActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setOrientationLock();
         setContentView(R.layout.poi_details_activity);
 
         Intent intent = getIntent();
