@@ -87,7 +87,8 @@ public class PoiListFragment extends ListFragment implements OnRefreshListener {
                 Poi.LATITUDE,
                 Poi.LONGITUDE,
                 Poi.IMAGE_THUMB_URL,
-                Poi.RESOURCE_ID
+                Poi.RESOURCE_ID,
+                Poi.DISTANCE
         };
 
         @Override

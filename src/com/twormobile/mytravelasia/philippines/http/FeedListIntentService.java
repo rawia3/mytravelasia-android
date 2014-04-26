@@ -187,6 +187,8 @@ public class FeedListIntentService extends BaseIntentService {
                         values.put(Poi.TOTAL_COMMENTS, poi.getTotalComments());
                         values.put(Poi.TOTAL_LIKES, poi.getTotalLikes());
 
+                        if(null != poi.getDistance()) values.put(Poi.DISTANCE, poi.getDistance());
+
                         if (null != poi.getCreatedAt()) {
                             values.put(Poi.CREATED_AT, poi.getCreatedAt().getTime());
                         } else {

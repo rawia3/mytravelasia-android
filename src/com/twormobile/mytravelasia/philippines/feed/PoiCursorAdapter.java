@@ -67,12 +67,14 @@ public class PoiCursorAdapter extends CursorAdapter {
         String imgPath = cursor.getString(cursor.getColumnIndex(Poi.IMAGE_THUMB_URL));
         long totalLikes = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_LIKES));
         long totalComments = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_COMMENTS));
+        String distance = cursor.getString(cursor.getColumnIndex(Poi.DISTANCE));
 
         viewHolder.ivThumbnail.setImageUrl(imgPath, R.drawable.loading);
         viewHolder.tvTitle.setText(null == name || "".equals(name) ? feedName : name);
         viewHolder.tvSubTitle.setText(subTitle);
         viewHolder.tvLikes.setText(totalLikes + "");
         viewHolder.tvComments.setText(totalComments + "");
+        viewHolder.tvDistance.setText(null == distance ? "" : distance);
     }
 
     @Override
