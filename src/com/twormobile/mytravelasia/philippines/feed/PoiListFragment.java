@@ -173,7 +173,11 @@ public class PoiListFragment extends ListFragment implements OnRefreshListener {
 
     public void setCurrentPage(long currentPage) {
         Log.d(TAG, "setCurrentPage() -- " + mCurrentPage + " " + currentPage);
-        if (currentPage == mCurrentPage + 1) isLoadingNextPage = false;
+//        if (currentPage == mCurrentPage + 1) {
+//            isLoadingNextPage = false;
+//        }
+
+        isLoadingNextPage = false;
 
         mCurrentPage = currentPage;
         mPullToRefreshLayout.setRefreshComplete();

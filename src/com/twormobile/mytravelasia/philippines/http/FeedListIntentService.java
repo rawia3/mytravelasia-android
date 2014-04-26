@@ -166,10 +166,6 @@ public class FeedListIntentService extends BaseIntentService {
 
                     ContentResolver contentResolver = getContentResolver();
 
-                    if (1L == page) {
-                        contentResolver.delete(MtaPhProvider.POI_URI, null, null);
-                    }
-
                     Log.d(TAG, "the response is " + response);
                     for (Poi poi : response.getFeeds()) {
                         Log.d(TAG, "poi name: " + poi.getFeedName() + " poi id: " + poi.getResourceId() + " created_at " + poi.getCreatedAt());

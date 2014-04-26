@@ -1,10 +1,7 @@
 package com.twormobile.mytravelasia.philippines;
 
 import android.app.ActionBar;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -106,6 +103,13 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
         }
 
         if(mInitialLoad) {
+            ContentResolver contentResolver = getContentResolver();
+            contentResolver.delete(MtaPhProvider.POI_URI, null, null);
+
+            PoiListFragment poiListFragment = (PoiListFragment) getSupportFragmentManager()
+                    .findFragmentByTag(TAG_FEED_LIST_FRAGMENT);
+            if (poiListFragment != null) poiListFragment.setCurrentPage(0);
+
             onNextPage(1L);
             mInitialLoad = false;
         }
@@ -174,12 +178,12 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
 
     @Override
     public void onNextPage(long page) {
-        Intent feedIntent = new Intent(MainActivity.this, FeedListIntentService.class);
+        // show footer when loading next page
         PoiListFragment poiListFragment = (PoiListFragment) getSupportFragmentManager()
                 .findFragmentByTag(TAG_FEED_LIST_FRAGMENT);
-
         if (poiListFragment != null) poiListFragment.showFooter();
 
+        Intent feedIntent = new Intent(MainActivity.this, FeedListIntentService.class);
         feedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_FETCH_PAGE, page);
         feedIntent.putExtra(FeedListIntentService.EXTRAS_FEED_TYPE, mFeedType);
         feedIntent.putExtra(FeedListIntentService.EXTRAS_COORDS, mCoords);
