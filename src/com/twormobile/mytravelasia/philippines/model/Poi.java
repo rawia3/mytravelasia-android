@@ -103,7 +103,7 @@ public class Poi implements BaseColumns {
      */
     public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
             + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + RESOURCE_ID + " INTEGER UNIQUE, "
+            + RESOURCE_ID + " INTEGER, "
             + NAME + " TEXT,"
             + FEED_NAME + " TEXT,"
             + ADDRESS + " TEXT,"
