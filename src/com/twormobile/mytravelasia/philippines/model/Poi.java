@@ -64,6 +64,11 @@ public class Poi implements BaseColumns {
     public static final String FEED_TYPE = "feed_type";
 
     /**
+     * Column: Feed Remark. Can either be "Anonymous like this" or "Anynomous makes comment".
+     */
+    public static final String FEED_REMARK = "feed_remark";
+
+    /**
      * Column: Location of the POI in latitude.
      */
     public static final String LATITUDE = "latitude";
@@ -72,6 +77,11 @@ public class Poi implements BaseColumns {
      * Column: Location of the POI in longitude.
      */
     public static final String LONGITUDE = "longitude";
+
+    /**
+     * Column: Distance of the POI from the user.
+     */
+    public static final String DISTANCE = "distance";
 
     /**
      * Column: Type of POI. Can either be "attraction", "hotel", etc.
@@ -112,8 +122,10 @@ public class Poi implements BaseColumns {
             + FB_USER_PROFILE_NAME + " TEXT,"
             + CREATED_AT + " INTEGER,"
             + FEED_TYPE + " TEXT,"
+            + FEED_REMARK + " TEXT,"
             + LATITUDE + " REAL,"
             + LONGITUDE + " REAL,"
+            + DISTANCE + " TEXT,"
             + POI_TYPE + " TEXT,"
             + IMAGE_THUMB_URL + " TEXT,"
             + ANNOTATION_TYPE + " TEXT,"
@@ -197,10 +209,22 @@ public class Poi implements BaseColumns {
     private double latitude;
 
     /**
+     * Distance of the POI from the user.
+     */
+    @Expose
+    private String distance;
+
+    /**
      * Feed type. Can either be "like" or "comment".
      */
     @Expose
     private String feedType;
+
+    /**
+     * Column: Feed Remark. Can either be "Anonymous like this" or "Anynomous makes comment".
+     */
+    @Expose
+    private String feedRemark;
 
     /**
      * Type of POI. Can either be "attraction", "hotel", etc.
@@ -313,6 +337,12 @@ public class Poi implements BaseColumns {
         this.latitude = latitude;
     }
 
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) { this.distance = distance; }
+
     public String getFeedType() {
         return feedType;
     }
@@ -320,6 +350,10 @@ public class Poi implements BaseColumns {
     public void setFeedType(String feedType) {
         this.feedType = feedType;
     }
+
+    public String getFeedRemark() { return feedRemark; }
+
+    public void setFeedRemark(String feedRemark) { this.feedRemark = feedRemark; }
 
     public String getPoiType() {
         return poiType;
