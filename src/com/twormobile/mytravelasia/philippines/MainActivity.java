@@ -211,13 +211,13 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
             public void onReceive(Context context, Intent intent) {
                 Log.d(TAG, "received broadcast");
 
-                boolean isFailed = intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_FAILED)
-                        || intent.hasExtra(FeedDetailIntentService.BROADCAST_GET_FEED_DETAIL_FAILED);
+                boolean isFailed = intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_FAILED);
 
                 if (!mIsRefreshing && isFailed) {
+                    Log.d(TAG, "FEED: failed retrieved feeds");
                     Toast.makeText(MainActivity.this, "Failed to retrieve feeds", Toast.LENGTH_LONG).show();
                 } else if (intent.hasExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_SUCCESS)) {
-                    Log.d(TAG, "successfully retrieved feeds");
+                    Log.d(TAG, "FEED: successfully retrieved feeds");
                     long[] pageData = intent.getLongArrayExtra(FeedListIntentService.BROADCAST_GET_FEED_LIST_SUCCESS);
 
                     if (null == pageData) return;

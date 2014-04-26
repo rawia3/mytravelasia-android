@@ -201,8 +201,7 @@ public class PoiListFragment extends ListFragment implements OnRefreshListener {
                         + " visible " + visibleItemCount + " total " + totalItemCount);
                 Log.d(TAG, "current page " + mCurrentPage + " total pages " + mTotalPages
                         + " loading " + isLoadingNextPage);
-                Log.d(TAG, "" + (mCurrentPage < mTotalPages) + " "
-                        + (lastItemInScreen == totalItemCount) + " " + !isLoadingNextPage);
+                Log.d(TAG,  !isLoadingNextPage + " " + (mCurrentPage < mTotalPages) + " " + (lastItemInScreen == totalItemCount));
                 if (!isLoadingNextPage && mCurrentPage < mTotalPages && (lastItemInScreen == totalItemCount)) { // && !isLoadingNextPage) {
                     Log.d(TAG, "attempt to load the next page " + mCurrentPage + " " + mTotalPages);
                     isLoadingNextPage = true;
