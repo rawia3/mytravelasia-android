@@ -198,6 +198,12 @@ public class StartUpActivity extends BaseMtaActivity {
             }).executeAsync();
         } else {
             Log.d(TAG, "facebook logged out");
+
+            if(exception != null){
+                Log.d(TAG, "facebook exception: " + exception.getMessage());
+                exception.printStackTrace();
+            }
+
             mProfileId = null;
         }
     }
