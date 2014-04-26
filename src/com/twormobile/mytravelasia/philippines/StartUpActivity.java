@@ -60,6 +60,10 @@ public class StartUpActivity extends BaseMtaActivity {
                 Intent mainIntent = new Intent(StartUpActivity.this, MainActivity.class);
 
                 mainIntent.putExtra(AppConstants.ARG_CURRENT_LOCATION, mCoords);
+                if(mProfileId != null || ("".equals(mProfileId) == false)){
+                    mainIntent.putExtra(AppConstants.ARG_FB_PROFILE_ID, mProfileId);
+                }
+
                 startActivity(mainIntent);
             }
         });

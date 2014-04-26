@@ -189,6 +189,8 @@ public class PoiDetailsActivity extends BaseMtaFragmentActivity
 
     @Override
     public void onLikeClicked(long poiId, boolean isLiked) {
+        if (isNotLoggedIn()) return;
+
         Intent likeIntent = new Intent(PoiDetailsActivity.this, LikeIntentService.class);
 
         likeIntent.putExtra(LikeIntentService.EXTRAS_POI_ID, poiId);
@@ -259,11 +261,8 @@ public class PoiDetailsActivity extends BaseMtaFragmentActivity
 
     @Override
     public void onPostClicked(long poiId, String comment) {
-        if (null == mProfileId || "".equals(mProfileId)) {
-            Toast.makeText(PoiDetailsActivity.this, R.string.msg_must_login, Toast.LENGTH_LONG).show();
+        if (isNotLoggedIn()) return;
 
-            return;
-        }
         Intent createCommentIntent = new Intent(PoiDetailsActivity.this, CreateCommentIntentService.class);
 
         createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_POI_ID, poiId);
@@ -271,6 +270,15 @@ public class PoiDetailsActivity extends BaseMtaFragmentActivity
         createCommentIntent.putExtra(CreateCommentIntentService.EXTRAS_PROFILE_ID, mProfileId);
 
         startService(createCommentIntent);
+    }
+
+    private boolean isNotLoggedIn() {
+        if (null == mProfileId || "".equals(mProfileId)) {
+            Toast.makeText(PoiDetailsActivity.this, R.string.msg_must_login, Toast.LENGTH_LONG).show();
+
+            return true;
+        }
+        return false;
     }
 
     @Override

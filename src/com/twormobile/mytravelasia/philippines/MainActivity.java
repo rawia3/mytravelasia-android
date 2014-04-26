@@ -65,7 +65,7 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
                 ? savedInstanceState.getString(AppConstants.ARG_FB_PROFILE_ID)
                 : intent.getStringExtra(AppConstants.ARG_FB_PROFILE_ID);
 
-        Log.d(TAG, "profile id " + mProfileId);
+        Log.d(TAG, "current profile id " + mProfileId);
 
         initSideNav();
         initBroadcastReceivers();
