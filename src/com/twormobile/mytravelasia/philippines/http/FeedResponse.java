@@ -41,7 +41,7 @@ public class FeedResponse {
 
         buffer.append("FeedResponse: \n");
         for (Poi poi : feeds) {
-            buffer.append(poi.getContent() + "\n");
+            buffer.append(poi.getFeedContent() + "\n");
         }
 
         return buffer.toString();

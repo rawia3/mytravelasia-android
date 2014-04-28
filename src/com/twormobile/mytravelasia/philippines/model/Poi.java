@@ -49,24 +49,19 @@ public class Poi implements BaseColumns {
     public static final String FB_USER_PROFILE_NAME = "fb_user_profile_name";
 
     /**
-     * Column: The date when the POI was created in the remote resource. Creation date in the local db are not being recorded.
+     * Column: Content that was applied by the FB user. Can either be "Anonymous like this" or "Anynomous makes comment".
      */
-    public static final String CREATED_AT = "created_at";
+    public static final String FB_FULL_FEED_CONTENT = "fb_full_feed_content";
 
     /**
-     * Column: Content that was applied by the FB user.
+     * Column: Content that was applied by the FB user. Can either be "Anonymous like this" or "Anynomous makes comment".
      */
-    public static final String CONTENT = "content";
+    public static final String FB_FEED_AGE = "fb_feed_age";
 
     /**
      * Column: Feed type. Can either be "like" or "comment".
      */
-    public static final String FEED_TYPE = "feed_type";
-
-    /**
-     * Column: Feed Remark. Can either be "Anonymous like this" or "Anynomous makes comment".
-     */
-    public static final String FEED_REMARK = "feed_remark";
+    public static final String FB_FEED_TYPE = "fb_feed_type";
 
     /**
      * Column: Location of the POI in latitude.
@@ -109,6 +104,11 @@ public class Poi implements BaseColumns {
     public static final String TOTAL_COMMENTS = "total_comments";
 
     /**
+     * Column: The date when the POI was created in the remote resource. Creation date in the local db are not being recorded.
+     */
+    public static final String CREATED_AT = "created_at";
+
+    /**
      * SQL command to create the POI table.
      */
     public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
@@ -117,12 +117,12 @@ public class Poi implements BaseColumns {
             + NAME + " TEXT,"
             + FEED_NAME + " TEXT,"
             + ADDRESS + " TEXT,"
-            + CONTENT + " TEXT,"
             + FB_USER_PROFILE_ID + " TEXT,"
             + FB_USER_PROFILE_NAME + " TEXT,"
+            + FB_FULL_FEED_CONTENT + " TEXT,"
+            + FB_FEED_AGE + " TEXT,"
+            + FB_FEED_TYPE + " TEXT,"
             + CREATED_AT + " INTEGER,"
-            + FEED_TYPE + " TEXT,"
-            + FEED_REMARK + " TEXT,"
             + LATITUDE + " REAL,"
             + LONGITUDE + " REAL,"
             + DISTANCE + " TEXT,"
@@ -171,12 +171,6 @@ public class Poi implements BaseColumns {
     private String address;
 
     /**
-     * Content that was applied by the FB user.
-     */
-    @Expose
-    private String content;
-
-    /**
      * Facebook profile ID of the user that created the POI.
      */
     @Expose
@@ -189,6 +183,21 @@ public class Poi implements BaseColumns {
     @Expose
     @SerializedName("user")
     private String fbUserProfileName;
+
+    /**
+     * Content that was applied by the FB user.
+     * Column: Feed Remark. Can either be "Anonymous like this" or "Anynomous makes comment".
+     */
+    @Expose
+    @SerializedName("content")
+    private String fbFeedContent;
+
+    /**
+     * Age of feed remark (like or comment).
+     */
+    @Expose
+    @SerializedName("age")
+    private String fbFeedAge;
 
     /**
      * The date when the POI was created in the remote resource. Creation date in the local db is not being recorded.
@@ -219,12 +228,6 @@ public class Poi implements BaseColumns {
      */
     @Expose
     private String feedType;
-
-    /**
-     * Column: Feed Remark. Can either be "Anonymous like this" or "Anynomous makes comment".
-     */
-    @Expose
-    private String feedRemark;
 
     /**
      * Type of POI. Can either be "attraction", "hotel", etc.
@@ -289,12 +292,12 @@ public class Poi implements BaseColumns {
         this.address = address;
     }
 
-    public String getContent() {
-        return content;
+    public String getFeedContent() {
+        return fbFeedContent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setFeedContent(String content) {
+        this.fbFeedContent = content;
     }
 
     public long getFbUserProfileId() {
@@ -312,6 +315,12 @@ public class Poi implements BaseColumns {
     public void setFbUserProfileName(String fbUserProfileName) {
         this.fbUserProfileName = fbUserProfileName;
     }
+
+    public String getFeedAge() {
+        return fbFeedAge;
+    }
+
+    public void setFeedAge(String age) { this.fbFeedAge = age; }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -350,10 +359,6 @@ public class Poi implements BaseColumns {
     public void setFeedType(String feedType) {
         this.feedType = feedType;
     }
-
-    public String getFeedRemark() { return feedRemark; }
-
-    public void setFeedRemark(String feedRemark) { this.feedRemark = feedRemark; }
 
     public String getPoiType() {
         return poiType;
@@ -401,5 +406,17 @@ public class Poi implements BaseColumns {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getFullFeedContent(){
+        String text = getFbUserProfileName();
+
+        if(getFeedType() != null && getFeedType().equals("comment")) {
+            text = text + ":";
+        }
+
+        text = text + " " + getFeedContent();
+
+        return text;
     }
 }

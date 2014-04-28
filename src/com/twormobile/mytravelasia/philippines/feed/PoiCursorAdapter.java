@@ -63,18 +63,29 @@ public class PoiCursorAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         String name = cursor.getString(cursor.getColumnIndex(Poi.NAME));
         String feedName = cursor.getString(cursor.getColumnIndex(Poi.FEED_NAME));
-        String subTitle = cursor.getString(cursor.getColumnIndex(Poi.ADDRESS));
+        String address = cursor.getString(cursor.getColumnIndex(Poi.ADDRESS));
         String imgPath = cursor.getString(cursor.getColumnIndex(Poi.IMAGE_THUMB_URL));
         long totalLikes = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_LIKES));
         long totalComments = cursor.getLong(cursor.getColumnIndex(Poi.TOTAL_COMMENTS));
         String distance = cursor.getString(cursor.getColumnIndex(Poi.DISTANCE));
 
+        String feedContent = cursor.getString(cursor.getColumnIndex(Poi.FB_FULL_FEED_CONTENT));
+        String feedAge = cursor.getString(cursor.getColumnIndex(Poi.FB_FEED_AGE));
+
         viewHolder.ivThumbnail.setImageUrl(imgPath, R.drawable.loading);
         viewHolder.tvTitle.setText(null == name || "".equals(name) ? feedName : name);
-        viewHolder.tvSubTitle.setText(subTitle);
+
+        if(feedAge != null && feedAge.equals("") == false) {
+            viewHolder.tvSubTitle.setText(feedContent);
+            viewHolder.tvDistance.setText(feedAge);
+        }
+        else {
+            viewHolder.tvSubTitle.setText(address);
+            viewHolder.tvDistance.setText(null == distance ? "" : distance);
+        }
+
         viewHolder.tvLikes.setText(totalLikes + "");
         viewHolder.tvComments.setText(totalComments + "");
-        viewHolder.tvDistance.setText(null == distance ? "" : distance);
     }
 
     @Override

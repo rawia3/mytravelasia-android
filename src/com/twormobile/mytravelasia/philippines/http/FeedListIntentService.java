@@ -168,19 +168,22 @@ public class FeedListIntentService extends BaseIntentService {
 
                     Log.d(TAG, "the response is " + response);
                     for (Poi poi : response.getFeeds()) {
-                        Log.d(TAG, "poi name: " + poi.getFeedName() + " poi id: " + poi.getResourceId() + " created_at " + poi.getCreatedAt());
+                        Log.d(TAG, " poi id: " + poi.getResourceId() + "poi name: " + poi.getFeedName() + " created_at " + poi.getCreatedAt());
+                        Log.d(TAG, "content:"  + poi.getFullFeedContent());
+
                         ContentValues values = new ContentValues();
 
                         values.put(Poi.RESOURCE_ID, poi.getResourceId());
                         values.put(Poi.FEED_NAME, poi.getFeedName());
                         values.put(Poi.NAME, poi.getName());
                         values.put(Poi.ADDRESS, poi.getAddress());
-                        values.put(Poi.CONTENT, poi.getContent());
+                        values.put(Poi.FB_FEED_TYPE, poi.getFeedType());
                         values.put(Poi.FB_USER_PROFILE_ID, poi.getFbUserProfileId());
                         values.put(Poi.FB_USER_PROFILE_NAME, poi.getFbUserProfileName());
+                        values.put(Poi.FB_FEED_AGE, poi.getFeedAge());
+                        values.put(Poi.FB_FULL_FEED_CONTENT, poi.getFullFeedContent());
                         values.put(Poi.LONGITUDE, poi.getLongitude());
                         values.put(Poi.LATITUDE, poi.getLatitude());
-                        values.put(Poi.FEED_TYPE, poi.getFeedType());
                         values.put(Poi.POI_TYPE, poi.getPoiType());
                         values.put(Poi.IMAGE_THUMB_URL, poi.getImageThumbUrl());
                         values.put(Poi.ANNOTATION_TYPE, poi.getAnnotationType());

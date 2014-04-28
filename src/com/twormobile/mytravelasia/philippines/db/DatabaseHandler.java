@@ -12,7 +12,7 @@ import com.twormobile.mytravelasia.philippines.model.Poi;
  * @author avendael
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "mytravelasia-ph.db";
 
     public DatabaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory,
