@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
-import com.twormobile.mytravelasia.philippines.util.AppConstants;
 
 /**
  * Base activity for all MyTravelAsia activities.
@@ -22,7 +21,8 @@ public abstract class BaseMtaActivity extends Activity {
         float density = resources.getDisplayMetrics().densityDpi;
         float dpWidth = metrics.widthPixels / (density / 160f);
 
-        if (dpWidth >= AppConstants.TABLET_MIN_SW) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        if (dpWidth >= AppConstants.TABLET_MIN_SW) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 }

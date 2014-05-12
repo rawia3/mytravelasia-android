@@ -1,7 +1,11 @@
 package com.twormobile.mytravelasia.philippines;
 
 import android.app.ActionBar;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -55,7 +59,8 @@ public class MainActivity extends BaseMtaFragmentActivity implements PoiListFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         setOrientationLock();
-        mIsDualPane = findViewById(R.id.fl_map_container) != null;
+//        mIsDualPane = findViewById(R.id.fl_map_container) != null;
+        mIsDualPane = false;
         Intent intent = getIntent();
         mCoords = intent.getDoubleArrayExtra(AppConstants.ARG_CURRENT_LOCATION);
         mProfileId = null != savedInstanceState

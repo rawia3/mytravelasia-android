@@ -4,8 +4,13 @@
               android:orientation="vertical"
               style="@style/LayoutMatchMatch">
 
-    <include xmlns:android="http://schemas.android.com/apk/res/android"
-             style="@style/LayoutMatchMatch"
-             layout="@layout/startup_layout_include"/>
+    <LinearLayout android:orientation="vertical"
+                  style="@style/LayoutMatchMatch"
+                  android:background="@color/darker_gray">
 
+        <include xmlns:android="http://schemas.android.com/apk/res/android"
+                 style="@style/LayoutMatchMatch"
+                 layout="@layout/startup_layout_include"/>
+
+    </LinearLayout>
 </LinearLayout>
